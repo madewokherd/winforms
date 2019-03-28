@@ -4865,7 +4865,7 @@ Stack trace where the illegal operation occurred was:
   <data name="PrintPreviewControlZoomNegative" xml:space="preserve">
     <value>Zoom must be 0 or greater. Negative values are not permitted.</value>
   </data>
-   <data name="PrintPreviewDialog_PrintPreview" xml:space="preserve">
+  <data name="PrintPreviewDialog_PrintPreview" xml:space="preserve">
     <value>Print preview</value>
    </data>
   <data name="PrintPreviewDocumentDescr" xml:space="preserve">
