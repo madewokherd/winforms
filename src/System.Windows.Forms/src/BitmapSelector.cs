@@ -5,7 +5,7 @@
 namespace System.Drawing {
     using System;
     using System.Configuration;
-    using System.Drawing.Configuration;
+    using System.Drawing;
     using System.IO;
     using System.Reflection;
 
@@ -27,6 +27,7 @@ namespace System.Drawing {
             get {
                 if (_suffix == null) {
                     _suffix = string.Empty;
+#if TODO
                     var section = ConfigurationManager.GetSection("system.drawing") as SystemDrawingSection;
                     if (section != null) {
                         var value = section.BitmapSuffix;
@@ -34,6 +35,7 @@ namespace System.Drawing {
                             _suffix = (string)value;
                         }
                     }
+#endif
                 }
                 return _suffix;
             }
