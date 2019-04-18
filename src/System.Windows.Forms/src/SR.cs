@@ -7,7 +7,7 @@ using System.Resources;
 
 internal static partial class SR
 {   
-    public static ResourceManager ResourceManager = new System.Resources.ResourceManager("System.Windows.Forms", Assembly.GetExecutingAssembly());
+    public static ResourceManager ResourceManager = new System.Resources.ResourceManager("SR", Assembly.GetExecutingAssembly());
 
     public static object GetObject(string name)
     {
