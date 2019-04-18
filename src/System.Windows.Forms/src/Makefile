@@ -32,3 +32,4 @@ embeddedresources.flags: embeddedresources.list
 
 System.Windows.Forms.dll: sources.list $(LIB_SRCS) $(SIBLING_PATHS) embeddedresources.flags $(EMBEDDED_RES_PATHS)
 	$(COMPILE_LIB) $(LIB_FLAGS) $(LIB_REFS) $(SIBLING_REFS) -out:$@ @sources.list @embeddedresources.flags
+	sn -R $@ ../../mono.snk
