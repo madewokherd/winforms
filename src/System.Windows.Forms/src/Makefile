@@ -20,6 +20,9 @@ all: System.Windows.Forms.dll
 SR.resources.cs: Resources/SR.resx
 	$(RESX2SR) $< > $@ || rm -f $@
 
+%.resources: %.resx
+	resgen $< $@
+
 EMBEDDED_RESOURCES=$(shell cat embeddedresources.list)
 
 EMBEDDED_RES_PATHS=$(foreach f,$(EMBEDDED_RESOURCES),Resources/$(f))
@@ -27,5 +30,5 @@ EMBEDDED_RES_PATHS=$(foreach f,$(EMBEDDED_RESOURCES),Resources/$(f))
 embeddedresources.flags: embeddedresources.list
 	for i in `cat embeddedresources.list`; do printf -- '-resource:Resources/%s,%s\n' $$i `echo $$i|sed 's:/:.:g'`; done > $@ || rm -f $@
 
-System.Windows.Forms.dll: sources.list $(LIB_SRCS) $(SIBLING_PATHS) $(EMBEDDED_RES_PATHS)
+System.Windows.Forms.dll: sources.list $(LIB_SRCS) $(SIBLING_PATHS) embeddedresources.flags $(EMBEDDED_RES_PATHS)
 	$(COMPILE_LIB) $(LIB_FLAGS) $(LIB_REFS) $(SIBLING_REFS) -out:$@ @sources.list @embeddedresources.flags

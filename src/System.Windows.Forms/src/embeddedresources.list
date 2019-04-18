@@ -13,7 +13,7 @@ System/Windows/Forms/nomovev.cur
 System/Windows/Forms/hsplit.cur
 System/Windows/Forms/DataGridViewRow.rightstar.ico
 System/Windows/Forms/Design/ComponentEditorPage.ico
-System/Windows/Forms/mdiwindowdialog.resx
+System/Windows/Forms/MdiWindowDialog.resources
 System/Windows/Forms/Button.bmp
 System/Windows/Forms/NotifyIcon.bmp
 System/Windows/Forms/NumericUpDown.bmp
@@ -119,7 +119,7 @@ System/Windows/Forms/Printing/PrintDialog.bmp
 System/Windows/Forms/Printing/PageSetupDialog.bmp
 System/Windows/Forms/DefaultControl.bmp
 System/Windows/Forms/Splitter.bmp
-System/Windows/Forms/PrintPreviewDialog.resx
+System/Windows/Forms/PrintPreviewDialog.resources
 System/Windows/Forms/Grid.bmp
 System/Windows/Forms/DataGridViewRow.right.ico
 System/Windows/Forms/nw.cur
