@@ -130,16 +130,28 @@ namespace System.Windows.Forms {
             [In]
             ref Guid refiid);
 
-        [return: MarshalAs(UnmanagedType.Interface)][DllImport(ExternDll.Ole32, ExactSpelling=true, PreserveSig=false)]
+        [DllImport(ExternDll.Ole32, ExactSpelling=true, PreserveSig=false)]
         
-        public static extern object CoCreateInstance(
+        private static extern int CoCreateInstance(
             [In]
             ref Guid clsid,
             [MarshalAs(UnmanagedType.Interface)]
             object punkOuter,
             int context,
             [In]
-            ref Guid iid);
+            ref Guid iid,
+			[Out]
+			out IntPtr result);
+
+		public static object CoCreateInstance(ref Guid clsid, object punkOuter, int context, ref Guid iid)
+		{
+			IntPtr unk;
+			int hr = CoCreateInstance(ref clsid, punkOuter, context, ref iid, out unk);
+			Marshal.ThrowExceptionForHR(hr);
+			object result = Marshal.GetObjectForIUnknown(unk);
+			Marshal.Release(unk);
+			return result;
+		}
 
         //This marshals differently than NativeMethods.POINTSTRUCT
         internal struct POINTSTRUCT {
