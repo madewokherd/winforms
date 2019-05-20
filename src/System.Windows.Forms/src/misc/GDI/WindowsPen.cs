@@ -11,7 +11,6 @@ namespace System.Experimental.Gdi
 #endif
 {
     using System;
-    using System.Internal;
     using System.Runtime.InteropServices;
     using System.ComponentModel;
     using System.Diagnostics;
@@ -20,11 +19,11 @@ namespace System.Experimental.Gdi
     using System.Globalization;
     using System.Runtime.Versioning;
 
-    /// <devdoc>
+    /// <summary>
     ///     <para>
     ///         Encapsulates a GDI Pen object.
     ///     </para>
-    /// </devdoc>
+    /// </summary>
 #if WINFORMS_PUBLIC_GRAPHICS_LIBRARY
     public
 #else

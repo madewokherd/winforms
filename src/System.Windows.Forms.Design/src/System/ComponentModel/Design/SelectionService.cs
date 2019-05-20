@@ -166,6 +166,11 @@ namespace System.ComponentModel.Design
             _state[s_stateTransaction] = true;
         }
 
+        internal object PrimarySelection
+        {
+            get => (_selection != null && _selection.Count > 0) ? _selection[0] : null;
+        }
+
         /// <summary>
         /// Removes the given selection from the selection list.
         /// </summary>
@@ -321,14 +326,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event EventHandler ISelectionService.SelectionChanged
         {
-            add
-            {
-                _events.AddHandler(s_eventSelectionChanged, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventSelectionChanged, value);
-            }
+            add => _events.AddHandler(s_eventSelectionChanged, value);
+            remove => _events.RemoveHandler(s_eventSelectionChanged, value);
         }
 
         /// <summary>
@@ -336,14 +335,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event EventHandler ISelectionService.SelectionChanging
         {
-            add
-            {
-                _events.AddHandler(s_eventSelectionChanging, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventSelectionChanging, value);
-            }
+            add => _events.AddHandler(s_eventSelectionChanging, value);
+            remove => _events.RemoveHandler(s_eventSelectionChanging, value);
         }
 
         /// <summary>

@@ -327,7 +327,7 @@ namespace System.ComponentModel.Design
 
             try
             {
-                _loader.BeginLoad(this);
+                _loader?.BeginLoad(this);
             }
             catch (Exception e)
             {
@@ -509,6 +509,11 @@ namespace System.ComponentModel.Design
         private void OnActiveDesignerChanged(object sender, ActiveDesignerEventArgs e)
         {
             // NOTE: sender can be null (we call this directly in BeginLoad)
+            if (e == null)
+            {
+                return;
+            }
+
             object eventobj = null;
 
             if (e.OldDesigner == this)
@@ -527,7 +532,6 @@ namespace System.ComponentModel.Design
             }
 
             // If we are deactivating, flush any code changes. We always route through the design surface so it can correctly raise its Flushed event.
-            Debug.Assert(_surface != null, "calling OnActiveDesignerChanged on a disposed DesignerHost");
             if (e.OldDesigner == this && _surface != null)
             {
                 _surface.Flush();
@@ -690,7 +694,7 @@ namespace System.ComponentModel.Design
         [SuppressMessage("Microsoft.Security", "CA2102:CatchNonClsCompliantExceptionsInGeneralHandlers")]
         private void Unload()
         {
-            _surface.OnUnloading();
+            _surface?.OnUnloading();
 
             if (GetService(typeof(IHelpService)) is IHelpService helpService && _rootComponent != null && _designers[_rootComponent] != null)
             {
@@ -791,7 +795,7 @@ namespace System.ComponentModel.Design
                 }
             }
 
-            _surface.OnUnloaded();
+            _surface?.OnUnloaded();
 
             if (exceptions.Count > 0)
             {
@@ -804,14 +808,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event ComponentEventHandler IComponentChangeService.ComponentAdded
         {
-            add
-            {
-                _events.AddHandler(s_eventComponentAdded, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventComponentAdded, value);
-            }
+            add => _events.AddHandler(s_eventComponentAdded, value);
+            remove => _events.RemoveHandler(s_eventComponentAdded, value);
         }
 
         /// <summary>
@@ -819,14 +817,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event ComponentEventHandler IComponentChangeService.ComponentAdding
         {
-            add
-            {
-                _events.AddHandler(s_eventComponentAdding, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventComponentAdding, value);
-            }
+            add => _events.AddHandler(s_eventComponentAdding, value);
+            remove => _events.RemoveHandler(s_eventComponentAdding, value);
         }
 
         /// <summary>
@@ -834,14 +826,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event ComponentChangedEventHandler IComponentChangeService.ComponentChanged
         {
-            add
-            {
-                _events.AddHandler(s_eventComponentChanged, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventComponentChanged, value);
-            }
+            add => _events.AddHandler(s_eventComponentChanged, value);
+            remove => _events.RemoveHandler(s_eventComponentChanged, value);
         }
 
         /// <summary>
@@ -849,14 +835,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event ComponentChangingEventHandler IComponentChangeService.ComponentChanging
         {
-            add
-            {
-                _events.AddHandler(s_eventComponentChanging, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventComponentChanging, value);
-            }
+            add => _events.AddHandler(s_eventComponentChanging, value);
+            remove => _events.RemoveHandler(s_eventComponentChanging, value);
         }
 
         /// <summary>
@@ -864,14 +844,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event ComponentEventHandler IComponentChangeService.ComponentRemoved
         {
-            add
-            {
-                _events.AddHandler(s_eventComponentRemoved, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventComponentRemoved, value);
-            }
+            add => _events.AddHandler(s_eventComponentRemoved, value);
+            remove => _events.RemoveHandler(s_eventComponentRemoved, value);
         }
 
         /// <summary>
@@ -879,14 +853,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event ComponentEventHandler IComponentChangeService.ComponentRemoving
         {
-            add
-            {
-                _events.AddHandler(s_eventComponentRemoving, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventComponentRemoving, value);
-            }
+            add => _events.AddHandler(s_eventComponentRemoving, value);
+            remove => _events.RemoveHandler(s_eventComponentRemoving, value);
         }
 
         /// <summary>
@@ -894,14 +862,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event ComponentRenameEventHandler IComponentChangeService.ComponentRename
         {
-            add
-            {
-                _events.AddHandler(s_eventComponentRename, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventComponentRename, value);
-            }
+            add => _events.AddHandler(s_eventComponentRename, value);
+            remove => _events.RemoveHandler(s_eventComponentRename, value);
         }
 
         /// <summary>
@@ -987,14 +949,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event EventHandler IDesignerHost.Activated
         {
-            add
-            {
-                _events.AddHandler(s_eventActivated, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventActivated, value);
-            }
+            add => _events.AddHandler(s_eventActivated, value);
+            remove => _events.RemoveHandler(s_eventActivated, value);
         }
 
         /// <summary>
@@ -1002,14 +958,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event EventHandler IDesignerHost.Deactivated
         {
-            add
-            {
-                _events.AddHandler(s_eventDeactivated, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventDeactivated, value);
-            }
+            add => _events.AddHandler(s_eventDeactivated, value);
+            remove => _events.RemoveHandler(s_eventDeactivated, value);
         }
 
         /// <summary>
@@ -1017,14 +967,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event EventHandler IDesignerHost.LoadComplete
         {
-            add
-            {
-                _events.AddHandler(s_eventLoadComplete, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventLoadComplete, value);
-            }
+            add => _events.AddHandler(s_eventLoadComplete, value);
+            remove => _events.RemoveHandler(s_eventLoadComplete, value);
         }
 
         /// <summary>
@@ -1032,14 +976,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event DesignerTransactionCloseEventHandler IDesignerHost.TransactionClosed
         {
-            add
-            {
-                _events.AddHandler(s_eventTransactionClosed, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventTransactionClosed, value);
-            }
+            add => _events.AddHandler(s_eventTransactionClosed, value);
+            remove => _events.RemoveHandler(s_eventTransactionClosed, value);
         }
 
         /// <summary>
@@ -1047,14 +985,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event DesignerTransactionCloseEventHandler IDesignerHost.TransactionClosing
         {
-            add
-            {
-                _events.AddHandler(s_eventTransactionClosing, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventTransactionClosing, value);
-            }
+            add => _events.AddHandler(s_eventTransactionClosing, value);
+            remove => _events.RemoveHandler(s_eventTransactionClosing, value);
         }
 
         /// <summary>
@@ -1062,14 +994,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event EventHandler IDesignerHost.TransactionOpened
         {
-            add
-            {
-                _events.AddHandler(s_eventTransactionOpened, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventTransactionOpened, value);
-            }
+            add => _events.AddHandler(s_eventTransactionOpened, value);
+            remove => _events.RemoveHandler(s_eventTransactionOpened, value);
         }
 
         /// <summary>
@@ -1077,14 +1003,8 @@ namespace System.ComponentModel.Design
         /// </summary>
         event EventHandler IDesignerHost.TransactionOpening
         {
-            add
-            {
-                _events.AddHandler(s_eventTransactionOpening, value);
-            }
-            remove
-            {
-                _events.RemoveHandler(s_eventTransactionOpening, value);
-            }
+            add => _events.AddHandler(s_eventTransactionOpening, value);
+            remove => _events.RemoveHandler(s_eventTransactionOpening, value);
         }
 
         /// <summary>
@@ -1092,7 +1012,7 @@ namespace System.ComponentModel.Design
         /// </summary>
         void IDesignerHost.Activate()
         {
-            _surface.OnViewActivate();
+            _surface?.OnViewActivate();
         }
 
         /// <summary>
@@ -1941,8 +1861,7 @@ namespace System.ComponentModel.Design
 
                         if (validateName)
                         {
-                            INameCreationService nameService = (INameCreationService)((IServiceProvider)this).GetService(typeof(INameCreationService));
-                            if (nameService != null)
+                            if (((IServiceProvider)this).GetService(typeof(INameCreationService)) is INameCreationService nameService)
                             {
                                 nameService.ValidateName(value);
                             }
@@ -1953,168 +1872,6 @@ namespace System.ComponentModel.Design
                         _name = value;
                         _host.OnComponentRename(_component, oldName, _name);
                     }
-                }
-            }
-        }
-    }
-
-
-    /// <summary>
-    /// This is a nested container.  Anything added to the nested container will be hostable in a designer.
-    /// </summary>
-    internal sealed class SiteNestedContainer : NestedContainer
-    {
-        private readonly DesignerHost _host;
-        private IServiceContainer _services;
-        private readonly string _containerName;
-        private bool _safeToCallOwner;
-
-        internal SiteNestedContainer(IComponent owner, string containerName, DesignerHost host) : base(owner)
-        {
-            _containerName = containerName;
-            _host = host;
-            _safeToCallOwner = true;
-        }
-
-        /// <summary>
-        /// Override to support named containers.
-        /// </summary>
-        protected override string OwnerName
-        {
-            get
-            {
-                string ownerName = base.OwnerName;
-                if (_containerName != null && _containerName.Length > 0)
-                {
-                    ownerName = string.Format(CultureInfo.CurrentCulture, "{0}.{1}", ownerName, _containerName);
-                }
-                return ownerName;
-            }
-        }
-
-        /// <summary>
-        /// Called to add a component to its container.
-        /// </summary>
-        public override void Add(IComponent component, string name)
-        {
-            if (_host.AddToContainerPreProcess(component, name, this))
-            {
-                // Site creation fabricates a name for this component.
-                base.Add(component, name);
-                try
-                {
-                    _host.AddToContainerPostProcess(component, name, this);
-                }
-                catch (Exception t)
-                {
-                    if (t != CheckoutException.Canceled)
-                    {
-                        Remove(component);
-                    }
-                    throw;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates a site for the component within the container.
-        /// </summary>
-        protected override ISite CreateSite(IComponent component, string name)
-        {
-            if (component == null)
-            {
-                throw new ArgumentNullException(nameof(component));
-            }
-            return new NestedSite(component, _host, name, this);
-        }
-
-        /// <summary>
-        /// Called to remove a component from its container.
-        /// </summary>
-        public override void Remove(IComponent component)
-        {
-            if (_host.RemoveFromContainerPreProcess(component, this))
-            {
-                ISite site = component.Site;
-                Debug.Assert(site != null, "RemoveFromContainerPreProcess should have returned false for this.");
-                RemoveWithoutUnsiting(component);
-                _host.RemoveFromContainerPostProcess(component, this);
-            }
-        }
-
-
-        protected override object GetService(Type serviceType)
-        {
-            object service = base.GetService(serviceType);
-            if (service != null)
-            {
-                return service;
-            }
-
-
-            if (serviceType == typeof(IServiceContainer))
-            {
-                if (_services == null)
-                {
-                    _services = new ServiceContainer(_host);
-                }
-                return _services;
-            }
-
-
-            if (_services != null)
-            {
-                return _services.GetService(serviceType);
-            }
-            else
-            {
-                if (Owner.Site != null && _safeToCallOwner)
-                {
-                    try
-                    {
-                        _safeToCallOwner = false;
-                        return Owner.Site.GetService(serviceType);
-                    }
-                    finally
-                    {
-                        _safeToCallOwner = true;
-                    }
-                }
-            }
-            return null;
-        }
-
-        internal object GetServiceInternal(Type serviceType)
-        {
-            return GetService(serviceType);
-        }
-
-        private sealed class NestedSite : DesignerHost.Site, INestedSite
-        {
-            private readonly SiteNestedContainer _container;
-            private string _name;
-
-            internal NestedSite(IComponent component, DesignerHost host, string name, Container container) : base(component, host, name, container)
-            {
-                _container = container as SiteNestedContainer;
-                _name = name;
-            }
-
-            public string FullName
-            {
-                get
-                {
-                    if (_name != null)
-                    {
-                        string ownerName = _container.OwnerName;
-                        string childName = ((ISite)this).Name;
-                        if (ownerName != null)
-                        {
-                            childName = string.Format(CultureInfo.CurrentCulture, "{0}.{1}", ownerName, childName);
-                        }
-                        return childName;
-                    }
-                    return _name;
                 }
             }
         }
