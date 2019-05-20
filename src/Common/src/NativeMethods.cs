@@ -2332,7 +2332,7 @@ namespace System.Windows.Forms {
             internal RECT    rcWork = new RECT();
             internal int     dwFlags = 0;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst=32)]
-            internal char[]  szDevice = new char[32];
+            internal byte[]  szDevice = new byte[32];
         }
 
         [StructLayout(LayoutKind.Sequential,CharSet=CharSet.Auto, Pack=4)]

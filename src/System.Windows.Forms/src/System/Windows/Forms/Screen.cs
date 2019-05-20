@@ -89,7 +89,7 @@ namespace System.Windows.Forms {
                 bounds = Rectangle.FromLTRB(info.rcMonitor.left, info.rcMonitor.top, info.rcMonitor.right, info.rcMonitor.bottom);
                 primary = ((info.dwFlags & MONITORINFOF_PRIMARY) != 0);
 
-                deviceName = new string(info.szDevice);
+                deviceName = System.Text.Encoding.Default.GetString(info.szDevice);
                 deviceName = deviceName.TrimEnd((char)0);
 
                 if (hdc == IntPtr.Zero) {

@@ -326,7 +326,7 @@ namespace System.Windows.Forms {
         
         public static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref NativeMethods.DEVMODE lpDevMode);
 
-        [DllImport(ExternDll.User32, CharSet=CharSet.Auto)]
+        [DllImport(ExternDll.User32, CharSet=CharSet.Ansi, EntryPoint="GetMonitorInfoA")]
         
         public static extern bool GetMonitorInfo(HandleRef hmonitor, [In, Out]NativeMethods.MONITORINFOEX info);
         [DllImport(ExternDll.User32, ExactSpelling=true)]
