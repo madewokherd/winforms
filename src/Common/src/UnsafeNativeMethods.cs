@@ -1170,7 +1170,7 @@ namespace System.Windows.Forms {
         public static extern IntPtr GetDesktopWindow();
         [DllImport(ExternDll.Ole32, ExactSpelling=true, CharSet=CharSet.Auto)]
         
-        public static extern int RegisterDragDrop(HandleRef hwnd, UnsafeNativeMethods.IOleDropTarget target);
+        public static extern int RegisterDragDrop(HandleRef hwnd, [MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IOleDropTarget target);
         [DllImport(ExternDll.Ole32, ExactSpelling=true, CharSet=CharSet.Auto)]
         
         public static extern int RevokeDragDrop(HandleRef hwnd);
