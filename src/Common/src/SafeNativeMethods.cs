@@ -320,7 +320,7 @@ namespace System.Windows.Forms {
 #if DEBUG
         [DllImport(ExternDll.Comctl32, EntryPoint="ImageList_Read")]
         
-        private static extern IntPtr IntImageList_Read(UnsafeNativeMethods.IStream pstm);
+        private static extern IntPtr IntImageList_Read([MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IStream pstm);
         public static IntPtr ImageList_Read(UnsafeNativeMethods.IStream pstm) {
             IntPtr newHandle = IntImageList_Read(pstm);
             validImageListHandles.Add(newHandle);
@@ -329,15 +329,15 @@ namespace System.Windows.Forms {
 #else
         [DllImport(ExternDll.Comctl32)]
         
-        public static extern IntPtr ImageList_Read(UnsafeNativeMethods.IStream pstm);
+        public static extern IntPtr ImageList_Read([MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IStream pstm);
 #endif
 
         [DllImport(ExternDll.Comctl32)]
         
-        public static extern bool ImageList_Write(HandleRef himl, UnsafeNativeMethods.IStream pstm);
+        public static extern bool ImageList_Write(HandleRef himl, [MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IStream pstm);
         [DllImport(ExternDll.Comctl32)]
         
-        public static extern int ImageList_WriteEx(HandleRef himl, int dwFlags, UnsafeNativeMethods.IStream pstm);
+        public static extern int ImageList_WriteEx(HandleRef himl, int dwFlags, [MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IStream pstm);
         [DllImport(ExternDll.User32, ExactSpelling=true, CharSet=CharSet.Auto)]
         
         public static extern bool TrackPopupMenuEx(HandleRef hmenu, int fuFlags, int x, int y, HandleRef hwnd, NativeMethods.TPMPARAMS tpm);
@@ -486,7 +486,7 @@ namespace System.Windows.Forms {
 
         [DllImport(ExternDll.Ole32, ExactSpelling=true, CharSet=CharSet.Auto)]
         
-        public static extern int DoDragDrop(IComDataObject dataObject, UnsafeNativeMethods.IOleDropSource dropSource, int allowedEffects, int[] finalEffect);
+        public static extern int DoDragDrop(IComDataObject dataObject, [MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IOleDropSource dropSource, int allowedEffects, int[] finalEffect);
         [DllImport(ExternDll.User32, ExactSpelling=true, CharSet=CharSet.Auto)]
         
         public static extern IntPtr GetSysColorBrush(int nIndex);

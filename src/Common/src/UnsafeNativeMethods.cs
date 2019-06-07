@@ -129,7 +129,7 @@ namespace System.Windows.Forms {
             int serverInfo,
             [In]
             ref Guid refiid,
-			out UnsafeNativeMethods.IClassFactory2 result);
+			[MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IClassFactory2 result);
         
         public static UnsafeNativeMethods.IClassFactory2 CoGetClassObject(
             [In]
@@ -250,7 +250,7 @@ namespace System.Windows.Forms {
         public static extern void OleCreatePropertyFrameIndirect(NativeMethods.OCPFIPARAMS p);
         [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreateFontIndirect", ExactSpelling = true, PreserveSig = true)]
         
-        public static extern int OleCreateIFontIndirect(NativeMethods.FONTDESC fd, ref Guid iid, out UnsafeNativeMethods.IFont result);
+        public static extern int OleCreateIFontIndirect(NativeMethods.FONTDESC fd, ref Guid iid, [MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IFont result);
 
         public static UnsafeNativeMethods.IFont OleCreateIFontIndirect(NativeMethods.FONTDESC fd, ref Guid iid)
 		{
@@ -272,7 +272,7 @@ namespace System.Windows.Forms {
 
         [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreatePictureIndirect", ExactSpelling = true, PreserveSig = true)]
         
-        public static extern int OleCreateIPictureDispIndirect([MarshalAs(UnmanagedType.AsAny)] object pictdesc, ref Guid iid, bool fOwn, out UnsafeNativeMethods.IPictureDisp result);
+        public static extern int OleCreateIPictureDispIndirect([MarshalAs(UnmanagedType.AsAny)] object pictdesc, ref Guid iid, bool fOwn, [MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IPictureDisp result);
 
         public static UnsafeNativeMethods.IPictureDisp OleCreateIPictureDispIndirect([MarshalAs(UnmanagedType.AsAny)] object pictdesc, ref Guid iid, bool fOwn)
 		{
@@ -284,7 +284,7 @@ namespace System.Windows.Forms {
         // cpb: #8309 -- next two methods, refiid arg must be IPicture.iid
         [DllImport(ExternDll.Oleaut32, PreserveSig = true)]
         
-        public static extern int OleCreatePictureIndirect(NativeMethods.PICTDESC pictdesc, [In]ref Guid refiid, bool fOwn, out UnsafeNativeMethods.IPicture result);
+        public static extern int OleCreatePictureIndirect(NativeMethods.PICTDESC pictdesc, [In]ref Guid refiid, bool fOwn, [MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IPicture result);
 
         public static UnsafeNativeMethods.IPicture OleCreatePictureIndirect(NativeMethods.PICTDESC pictdesc, [In]ref Guid refiid, bool fOwn)
 		{
@@ -295,7 +295,7 @@ namespace System.Windows.Forms {
 
         [DllImport(ExternDll.Oleaut32, PreserveSig = true)]
         
-        public static extern int OleCreateFontIndirect(NativeMethods.tagFONTDESC fontdesc, [In]ref Guid refiid, out UnsafeNativeMethods.IFont result);
+        public static extern int OleCreateFontIndirect(NativeMethods.tagFONTDESC fontdesc, [In]ref Guid refiid, [MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IFont result);
 
         public static UnsafeNativeMethods.IFont OleCreateFontIndirect(NativeMethods.tagFONTDESC fontdesc, [In]ref Guid refiid)
 		{
@@ -438,7 +438,7 @@ namespace System.Windows.Forms {
         
         [DllImport(ExternDll.Ole32, PreserveSig=true)]
         
-        public static extern int StgOpenStorageOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, UnsafeNativeMethods.IStorage pStgPriority, int grfMode, int sndExcluded, int reserved, out UnsafeNativeMethods.IStorage result);
+        public static extern int StgOpenStorageOnILockBytes([MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.ILockBytes iLockBytes, [MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IStorage pStgPriority, int grfMode, int sndExcluded, int reserved, [MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IStorage result);
 
         public static UnsafeNativeMethods.IStorage StgOpenStorageOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, UnsafeNativeMethods.IStorage pStgPriority, int grfMode, int sndExcluded, int reserved)
 		{
@@ -449,7 +449,7 @@ namespace System.Windows.Forms {
 
         [DllImport(ExternDll.Ole32, PreserveSig=true)]
         
-        public static extern int GetHGlobalFromILockBytes(UnsafeNativeMethods.ILockBytes pLkbyt, out IntPtr result);
+        public static extern int GetHGlobalFromILockBytes([MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.ILockBytes pLkbyt, out IntPtr result);
 
         public static IntPtr GetHGlobalFromILockBytes(UnsafeNativeMethods.ILockBytes pLkbyt)
 		{
@@ -1224,7 +1224,7 @@ namespace System.Windows.Forms {
         public static extern int GetMenuItemCount(HandleRef hMenu);
         [DllImport(ExternDll.Oleaut32, EntryPoint="GetErrorInfo", PreserveSig=true)]
         
-        public static extern int GetErrorInfo_raw(int reserved, [In, Out] ref UnsafeNativeMethods.IErrorInfo errorInfo);
+        public static extern int GetErrorInfo_raw(int reserved, [In, Out, MarshalAs(UnmanagedType.Interface)] ref UnsafeNativeMethods.IErrorInfo errorInfo);
 
         public static void GetErrorInfo(int reserved, [In, Out] ref UnsafeNativeMethods.IErrorInfo errorInfo)
 		{
@@ -1392,7 +1392,7 @@ namespace System.Windows.Forms {
 
         [DllImport(ExternDll.Ole32, PreserveSig = true)]
         
-        public static extern int CreateILockBytesOnHGlobal(HandleRef hGlobal, bool fDeleteOnRelease, out UnsafeNativeMethods.ILockBytes result);
+        public static extern int CreateILockBytesOnHGlobal(HandleRef hGlobal, bool fDeleteOnRelease, [MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.ILockBytes result);
 
         public static UnsafeNativeMethods.ILockBytes CreateILockBytesOnHGlobal(HandleRef hGlobal, bool fDeleteOnRelease)
 		{
@@ -1403,7 +1403,7 @@ namespace System.Windows.Forms {
 
         [DllImport(ExternDll.Ole32, PreserveSig=true)]
         
-        public static extern int StgCreateDocfileOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, int grfMode, int reserved, out UnsafeNativeMethods.IStorage result);
+        public static extern int StgCreateDocfileOnILockBytes([MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.ILockBytes iLockBytes, int grfMode, int reserved, [MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IStorage result);
 
         public static UnsafeNativeMethods.IStorage StgCreateDocfileOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, int grfMode, int reserved)
 		{
@@ -2120,13 +2120,13 @@ namespace System.Windows.Forms {
             int ShowUI(
                 [In, MarshalAs(UnmanagedType.I4)]
                 int dwID,
-                [In]
+                [In, MarshalAs(UnmanagedType.Interface)]
                 UnsafeNativeMethods.IOleInPlaceActiveObject activeObject,
                 [In]
                 NativeMethods.IOleCommandTarget commandTarget,
-                [In]
+                [In, MarshalAs(UnmanagedType.Interface)]
                 UnsafeNativeMethods.IOleInPlaceFrame frame,
-                [In]
+                [In, MarshalAs(UnmanagedType.Interface)]
                 UnsafeNativeMethods.IOleInPlaceUIWindow doc);
 
             [return: MarshalAs(UnmanagedType.I4)]
@@ -2160,7 +2160,7 @@ namespace System.Windows.Forms {
             int ResizeBorder(
                 [In]
                 NativeMethods.COMRECT rect,
-                [In]
+                [In, MarshalAs(UnmanagedType.Interface)]
                 UnsafeNativeMethods.IOleInPlaceUIWindow doc,
                 bool fFrameWindow);
 
@@ -5554,7 +5554,7 @@ namespace System.Windows.Forms {
              void ResizeBorder(
                     [In]
                       NativeMethods.COMRECT prcBorder,
-                    [In]
+                    [In, MarshalAs(UnmanagedType.Interface)] 
                       UnsafeNativeMethods.IOleInPlaceUIWindow pUIWindow,
                     
                      bool fFrameWindow);
@@ -5620,6 +5620,7 @@ namespace System.Windows.Forms {
                       UnsafeNativeMethods.IOleClientSite pClientSite);
 
              
+			 [return: MarshalAs(UnmanagedType.Interface)] 
              UnsafeNativeMethods.IOleClientSite GetClientSite();
 
              [PreserveSig]
@@ -5681,7 +5682,7 @@ namespace System.Windows.Forms {
                      NativeMethods.COMRECT lprcPosRect);
 
              [PreserveSig]
-             int EnumVerbs(out UnsafeNativeMethods.IEnumOLEVERB e);
+             int EnumVerbs([MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IEnumOLEVERB e);
 
              [PreserveSig]
              int OleUpdate();
@@ -5749,7 +5750,7 @@ namespace System.Windows.Forms {
                       UnsafeNativeMethods.IOleClientSite pClientSite);
 
              [PreserveSig]
-             int GetClientSite(out UnsafeNativeMethods.IOleClientSite site);
+             int GetClientSite([MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IOleClientSite site);
 
              [PreserveSig]
              int SetHostNames(
@@ -5810,7 +5811,7 @@ namespace System.Windows.Forms {
                      NativeMethods.COMRECT lprcPosRect);
 
              [PreserveSig]
-             int EnumVerbs(out UnsafeNativeMethods.IEnumOLEVERB e);
+             int EnumVerbs([MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IEnumOLEVERB e);
 
              [PreserveSig]
              int OleUpdate();
@@ -7237,12 +7238,14 @@ namespace System.Windows.Forms {
       [MarshalAs(UnmanagedType.U4)]
       public int cbSize = Marshal.SizeOf<tagQACONTAINER>();
 
-      public UnsafeNativeMethods.IOleClientSite pClientSite;
+      [MarshalAs(UnmanagedType.Interface)]
+	  public UnsafeNativeMethods.IOleClientSite pClientSite;
 
       [MarshalAs(UnmanagedType.Interface)]
       public object pAdviseSink = null;
 
-      public UnsafeNativeMethods.IPropertyNotifySink pPropertyNotifySink;
+      [MarshalAs(UnmanagedType.Interface)]
+	  public UnsafeNativeMethods.IPropertyNotifySink pPropertyNotifySink;
 
       [MarshalAs(UnmanagedType.Interface)]
       public object pUnkEventSink = null;
@@ -7698,7 +7701,7 @@ namespace System.Windows.Forms {
             IntPtr GetHFont();
 
             void Clone(
-                      out UnsafeNativeMethods.IFont ppfont);
+                      [MarshalAs(UnmanagedType.Interface)] out UnsafeNativeMethods.IFont ppfont);
 
             [System.Runtime.InteropServices.PreserveSig]
             int IsEqual(
