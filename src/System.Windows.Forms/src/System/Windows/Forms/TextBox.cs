@@ -895,6 +895,7 @@ namespace System.Windows.Forms {
 
             if ((m.Msg == Interop.WindowMessages.WM_PAINT || m.Msg == Interop.WindowMessages.WM_KILLFOCUS) &&
                  !this.GetStyle(ControlStyles.UserPaint) &&
+				   !string.IsNullOrEmpty(placeholderText) &&
                    string.IsNullOrEmpty(this.Text) &&
                    !this.Focused)
             {
