@@ -120,17 +120,31 @@ namespace System.Windows.Forms {
         
         public static extern IntPtr SetClassLongPtr64(HandleRef hwnd, int nIndex, IntPtr dwNewLong);
 
-        [DllImport(ExternDll.Ole32, ExactSpelling=true, PreserveSig=false)]
+        [DllImport(ExternDll.Ole32, ExactSpelling=true, PreserveSig=true)]
         
-        public static extern UnsafeNativeMethods.IClassFactory2 CoGetClassObject(
+        public static extern int CoGetClassObject(
             [In]
             ref Guid clsid,
             int dwContext,
             int serverInfo,
             [In]
-            ref Guid refiid);
+            ref Guid refiid,
+			out UnsafeNativeMethods.IClassFactory2 result);
+        
+        public static UnsafeNativeMethods.IClassFactory2 CoGetClassObject(
+            [In]
+            ref Guid clsid,
+            int dwContext,
+            int serverInfo,
+            [In]
+            ref Guid refiid)
+		{
+			UnsafeNativeMethods.IClassFactory2 result;
+			Marshal.ThrowExceptionForHR(CoGetClassObject(ref clsid,dwContext,serverInfo,ref refiid,out result));
+			return result;
+		}
 
-        [DllImport(ExternDll.Ole32, ExactSpelling=true, PreserveSig=false)]
+        [DllImport(ExternDll.Ole32, ExactSpelling=true, PreserveSig=true)]
         
         private static extern int CoCreateInstance(
             [In]
@@ -234,22 +248,62 @@ namespace System.Windows.Forms {
         [DllImport(ExternDll.Oleaut32, ExactSpelling=true)]
         
         public static extern void OleCreatePropertyFrameIndirect(NativeMethods.OCPFIPARAMS p);
-        [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreateFontIndirect", ExactSpelling = true, PreserveSig = false)]
+        [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreateFontIndirect", ExactSpelling = true, PreserveSig = true)]
         
-        public static extern UnsafeNativeMethods.IFont OleCreateIFontIndirect(NativeMethods.FONTDESC fd, ref Guid iid);
-        [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreatePictureIndirect", ExactSpelling = true, PreserveSig = false)]
+        public static extern int OleCreateIFontIndirect(NativeMethods.FONTDESC fd, ref Guid iid, out UnsafeNativeMethods.IFont result);
+
+        public static UnsafeNativeMethods.IFont OleCreateIFontIndirect(NativeMethods.FONTDESC fd, ref Guid iid)
+		{
+			UnsafeNativeMethods.IFont result;
+			Marshal.ThrowExceptionForHR(OleCreateIFontIndirect(fd,ref iid,out result));
+			return result;
+		}
+
+        [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreatePictureIndirect", ExactSpelling = true, PreserveSig = true)]
         
-        public static extern UnsafeNativeMethods.IPicture OleCreateIPictureIndirect([MarshalAs(UnmanagedType.AsAny)]object pictdesc, ref Guid iid, bool fOwn);
-        [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreatePictureIndirect", ExactSpelling = true, PreserveSig = false)]
+        public static extern int OleCreateIPictureIndirect([MarshalAs(UnmanagedType.AsAny)]object pictdesc, ref Guid iid, bool fOwn, out UnsafeNativeMethods.IPicture result);
+
+        public static UnsafeNativeMethods.IPicture OleCreateIPictureIndirect([MarshalAs(UnmanagedType.AsAny)]object pictdesc, ref Guid iid, bool fOwn)
+		{
+			UnsafeNativeMethods.IPicture result;
+			Marshal.ThrowExceptionForHR(OleCreateIPictureIndirect(pictdesc,ref iid,fOwn,out result));
+			return result;
+		}
+
+        [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreatePictureIndirect", ExactSpelling = true, PreserveSig = true)]
         
-        public static extern UnsafeNativeMethods.IPictureDisp OleCreateIPictureDispIndirect([MarshalAs(UnmanagedType.AsAny)] object pictdesc, ref Guid iid, bool fOwn);
+        public static extern int OleCreateIPictureDispIndirect([MarshalAs(UnmanagedType.AsAny)] object pictdesc, ref Guid iid, bool fOwn, out UnsafeNativeMethods.IPictureDisp result);
+
+        public static UnsafeNativeMethods.IPictureDisp OleCreateIPictureDispIndirect([MarshalAs(UnmanagedType.AsAny)] object pictdesc, ref Guid iid, bool fOwn)
+		{
+			UnsafeNativeMethods.IPictureDisp result;
+			Marshal.ThrowExceptionForHR(OleCreateIPictureDispIndirect(pictdesc,ref iid,fOwn,out result));
+			return result;
+		}
+
         // cpb: #8309 -- next two methods, refiid arg must be IPicture.iid
-        [DllImport(ExternDll.Oleaut32, PreserveSig = false)]
+        [DllImport(ExternDll.Oleaut32, PreserveSig = true)]
         
-        public static extern UnsafeNativeMethods.IPicture OleCreatePictureIndirect(NativeMethods.PICTDESC pictdesc, [In]ref Guid refiid, bool fOwn);
-        [DllImport(ExternDll.Oleaut32, PreserveSig = false)]
+        public static extern int OleCreatePictureIndirect(NativeMethods.PICTDESC pictdesc, [In]ref Guid refiid, bool fOwn, out UnsafeNativeMethods.IPicture result);
+
+        public static UnsafeNativeMethods.IPicture OleCreatePictureIndirect(NativeMethods.PICTDESC pictdesc, [In]ref Guid refiid, bool fOwn)
+		{
+			UnsafeNativeMethods.IPicture result;
+			Marshal.ThrowExceptionForHR(OleCreatePictureIndirect(pictdesc,ref refiid,fOwn,out result));
+			return result;
+		}
+
+        [DllImport(ExternDll.Oleaut32, PreserveSig = true)]
         
-        public static extern UnsafeNativeMethods.IFont OleCreateFontIndirect(NativeMethods.tagFONTDESC fontdesc, [In]ref Guid refiid);
+        public static extern int OleCreateFontIndirect(NativeMethods.tagFONTDESC fontdesc, [In]ref Guid refiid, out UnsafeNativeMethods.IFont result);
+
+        public static UnsafeNativeMethods.IFont OleCreateFontIndirect(NativeMethods.tagFONTDESC fontdesc, [In]ref Guid refiid)
+		{
+			UnsafeNativeMethods.IFont result;
+			Marshal.ThrowExceptionForHR(OleCreateFontIndirect(fontdesc,ref refiid,out result));
+			return result;
+		}
+
         [DllImport(ExternDll.Oleaut32, ExactSpelling = true)]
         
         public static extern int VarFormat(ref object pvarIn, HandleRef pstrFormat, int iFirstDay, int iFirstWeek, uint dwFlags, [In, Out]ref IntPtr pbstr);
@@ -382,12 +436,28 @@ namespace System.Windows.Forms {
             return ret;
         }
         
-        [DllImport(ExternDll.Ole32, PreserveSig=false)]
+        [DllImport(ExternDll.Ole32, PreserveSig=true)]
         
-        public static extern UnsafeNativeMethods.IStorage StgOpenStorageOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, UnsafeNativeMethods.IStorage pStgPriority, int grfMode, int sndExcluded, int reserved);
-        [DllImport(ExternDll.Ole32, PreserveSig=false)]
+        public static extern int StgOpenStorageOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, UnsafeNativeMethods.IStorage pStgPriority, int grfMode, int sndExcluded, int reserved, out UnsafeNativeMethods.IStorage result);
+
+        public static UnsafeNativeMethods.IStorage StgOpenStorageOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, UnsafeNativeMethods.IStorage pStgPriority, int grfMode, int sndExcluded, int reserved)
+		{
+			UnsafeNativeMethods.IStorage result;
+			Marshal.ThrowExceptionForHR(StgOpenStorageOnILockBytes(iLockBytes,pStgPriority,grfMode,sndExcluded,reserved,out result));
+			return result;
+		}
+
+        [DllImport(ExternDll.Ole32, PreserveSig=true)]
         
-        public static extern IntPtr GetHGlobalFromILockBytes(UnsafeNativeMethods.ILockBytes pLkbyt);
+        public static extern int GetHGlobalFromILockBytes(UnsafeNativeMethods.ILockBytes pLkbyt, out IntPtr result);
+
+        public static IntPtr GetHGlobalFromILockBytes(UnsafeNativeMethods.ILockBytes pLkbyt)
+		{
+			IntPtr result;
+			Marshal.ThrowExceptionForHR(GetHGlobalFromILockBytes(pLkbyt,out result));
+			return result;
+		}
+
         [DllImport(ExternDll.User32, CharSet=CharSet.Auto)]
         
         public static extern IntPtr SetWindowsHookEx(int hookid, NativeMethods.HookProc pfnhook, HandleRef hinst, int threadid);
@@ -1152,9 +1222,15 @@ namespace System.Windows.Forms {
         [DllImport(ExternDll.User32, ExactSpelling=true, CharSet=CharSet.Auto)]
         
         public static extern int GetMenuItemCount(HandleRef hMenu);
-        [DllImport(ExternDll.Oleaut32, PreserveSig=false)]
+        [DllImport(ExternDll.Oleaut32, EntryPoint="GetErrorInfo", PreserveSig=true)]
         
-        public static extern void GetErrorInfo(int reserved, [In, Out] ref UnsafeNativeMethods.IErrorInfo errorInfo);
+        public static extern int GetErrorInfo_raw(int reserved, [In, Out] ref UnsafeNativeMethods.IErrorInfo errorInfo);
+
+        public static void GetErrorInfo(int reserved, [In, Out] ref UnsafeNativeMethods.IErrorInfo errorInfo)
+		{
+			Marshal.ThrowExceptionForHR(GetErrorInfo_raw(reserved,ref errorInfo));
+		}
+
         [DllImport(ExternDll.User32, ExactSpelling=true, EntryPoint="BeginPaint", CharSet=CharSet.Auto)]
         
         private static extern IntPtr IntBeginPaint(HandleRef hWnd, [In, Out] ref NativeMethods.PAINTSTRUCT lpPaint);
@@ -1314,12 +1390,27 @@ namespace System.Windows.Forms {
         
         public static extern IntPtr SetWindowLongPtr64(HandleRef hWnd, int nIndex, NativeMethods.WndProc wndproc);
 
-        [DllImport(ExternDll.Ole32, PreserveSig = false)]
+        [DllImport(ExternDll.Ole32, PreserveSig = true)]
         
-        public static extern UnsafeNativeMethods.ILockBytes CreateILockBytesOnHGlobal(HandleRef hGlobal, bool fDeleteOnRelease);
-        [DllImport(ExternDll.Ole32, PreserveSig=false)]
+        public static extern int CreateILockBytesOnHGlobal(HandleRef hGlobal, bool fDeleteOnRelease, out UnsafeNativeMethods.ILockBytes result);
+
+        public static UnsafeNativeMethods.ILockBytes CreateILockBytesOnHGlobal(HandleRef hGlobal, bool fDeleteOnRelease)
+		{
+			UnsafeNativeMethods.ILockBytes result;
+			Marshal.ThrowExceptionForHR(CreateILockBytesOnHGlobal(hGlobal,fDeleteOnRelease,out result));
+			return result;
+		}
+
+        [DllImport(ExternDll.Ole32, PreserveSig=true)]
         
-        public static extern UnsafeNativeMethods.IStorage StgCreateDocfileOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, int grfMode, int reserved);
+        public static extern int StgCreateDocfileOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, int grfMode, int reserved, out UnsafeNativeMethods.IStorage result);
+
+        public static UnsafeNativeMethods.IStorage StgCreateDocfileOnILockBytes(UnsafeNativeMethods.ILockBytes iLockBytes, int grfMode, int reserved)
+		{
+			UnsafeNativeMethods.IStorage result;
+			Marshal.ThrowExceptionForHR(StgCreateDocfileOnILockBytes(iLockBytes,grfMode,reserved,out result));
+			return result;
+		}
 
         [DllImport(ExternDll.User32, ExactSpelling=true, EntryPoint="CreatePopupMenu", CharSet=CharSet.Auto)]
         
@@ -7890,15 +7981,26 @@ namespace System.Windows.Forms {
             private static extern bool CloseHandle(HandleRef handle);
         }
 
-        [DllImport(ExternDll.Clr, CharSet=CharSet.Unicode, PreserveSig=false, SetLastError=false, BestFitMapping=false, ExactSpelling=true)]
+        [DllImport(ExternDll.Clr, CharSet=CharSet.Unicode, PreserveSig=true, EntryPoint="CorLaunchApplication", SetLastError=false, BestFitMapping=false, ExactSpelling=true)]
         
-        internal static extern void CorLaunchApplication(uint hostType,
+        internal static extern int CorLaunchApplication_raw(uint hostType,
             string applicationFullName,
             int manifestPathsCount,
             string[] manifestPaths,
             int activationDataCount,
             string[] activationData,
             PROCESS_INFORMATION processInformation);
+        
+        internal static void CorLaunchApplication(uint hostType,
+            string applicationFullName,
+            int manifestPathsCount,
+            string[] manifestPaths,
+            int activationDataCount,
+            string[] activationData,
+            PROCESS_INFORMATION processInformation)
+		{
+			Marshal.ThrowExceptionForHR(CorLaunchApplication_raw(hostType,applicationFullName,manifestPathsCount,manifestPaths,activationDataCount,activationData,processInformation));
+		}
 
         // UIAutomationCore methods
 

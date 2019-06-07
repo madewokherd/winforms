@@ -82,15 +82,33 @@ namespace System.Windows.Forms {
         
         public static extern void SysFreeString(HandleRef bstr);
 
-        [DllImport(ExternDll.Oleaut32, PreserveSig=false)]
+        [DllImport(ExternDll.Oleaut32, EntryPoint="OleCreatePropertyFrame", PreserveSig=true)]
         
-        public static extern void OleCreatePropertyFrame(HandleRef hwndOwner, int x, int y, [MarshalAs(UnmanagedType.LPWStr)]string caption, int objects, [MarshalAs(UnmanagedType.Interface)] ref object pobjs, int pages, HandleRef pClsid, int locale, int reserved1, IntPtr reserved2);
-        [DllImport(ExternDll.Oleaut32, PreserveSig=false)]
+        public static extern int OleCreatePropertyFrame_raw(HandleRef hwndOwner, int x, int y, [MarshalAs(UnmanagedType.LPWStr)]string caption, int objects, [MarshalAs(UnmanagedType.Interface)] ref object pobjs, int pages, HandleRef pClsid, int locale, int reserved1, IntPtr reserved2);
+
+        public static void OleCreatePropertyFrame(HandleRef hwndOwner, int x, int y, [MarshalAs(UnmanagedType.LPWStr)]string caption, int objects, [MarshalAs(UnmanagedType.Interface)] ref object pobjs, int pages, HandleRef pClsid, int locale, int reserved1, IntPtr reserved2)
+		{
+			Marshal.ThrowExceptionForHR(OleCreatePropertyFrame_raw(hwndOwner,x,y,caption,objects,ref pobjs,pages,pClsid,locale,reserved1,reserved2));
+		}
+
+        [DllImport(ExternDll.Oleaut32, EntryPoint="OleCreatePropertyFrame", PreserveSig=true)]
         
-        public static extern void OleCreatePropertyFrame(HandleRef hwndOwner, int x, int y, [MarshalAs(UnmanagedType.LPWStr)]string caption, int objects, [MarshalAs(UnmanagedType.Interface)] ref object pobjs, int pages, Guid[] pClsid, int locale, int reserved1, IntPtr reserved2);
-        [DllImport(ExternDll.Oleaut32, PreserveSig=false)]
+        public static extern int OleCreatePropertyFrame_raw(HandleRef hwndOwner, int x, int y, [MarshalAs(UnmanagedType.LPWStr)]string caption, int objects, [MarshalAs(UnmanagedType.Interface)] ref object pobjs, int pages, Guid[] pClsid, int locale, int reserved1, IntPtr reserved2);
+
+        public static void OleCreatePropertyFrame(HandleRef hwndOwner, int x, int y, [MarshalAs(UnmanagedType.LPWStr)]string caption, int objects, [MarshalAs(UnmanagedType.Interface)] ref object pobjs, int pages, Guid[] pClsid, int locale, int reserved1, IntPtr reserved2)
+		{
+			Marshal.ThrowExceptionForHR(OleCreatePropertyFrame_raw(hwndOwner,x,y,caption,objects,ref pobjs,pages,pClsid,locale,reserved1,reserved2));
+		}
+
+        [DllImport(ExternDll.Oleaut32, EntryPoint="OleCreatePropertyFrame", PreserveSig=true)]
         
-        public static extern void OleCreatePropertyFrame(HandleRef hwndOwner, int x, int y, [MarshalAs(UnmanagedType.LPWStr)]string caption, int objects, HandleRef lplpobjs, int pages, HandleRef pClsid, int locale, int reserved1, IntPtr reserved2);
+        public static extern int OleCreatePropertyFrame_raw(HandleRef hwndOwner, int x, int y, [MarshalAs(UnmanagedType.LPWStr)]string caption, int objects, HandleRef lplpobjs, int pages, HandleRef pClsid, int locale, int reserved1, IntPtr reserved2);
+
+        public static void OleCreatePropertyFrame(HandleRef hwndOwner, int x, int y, [MarshalAs(UnmanagedType.LPWStr)]string caption, int objects, HandleRef lplpobjs, int pages, HandleRef pClsid, int locale, int reserved1, IntPtr reserved2)
+		{
+			Marshal.ThrowExceptionForHR(OleCreatePropertyFrame_raw(hwndOwner,x,y,caption,objects,lplpobjs,pages,pClsid,locale,reserved1,reserved2));
+		}
+
         [DllImport(ExternDll.Hhctrl, CharSet=CharSet.Auto)]
         
         public static extern int HtmlHelp(HandleRef hwndCaller, [MarshalAs(UnmanagedType.LPTStr)]string pszFile, int uCommand, int dwData);
@@ -109,9 +127,14 @@ namespace System.Windows.Forms {
         [DllImport(ExternDll.Oleaut32)]
         
         public static extern void VariantInit(HandleRef pObject);
-        [ DllImport(ExternDll.Oleaut32, PreserveSig=false)]
+        [ DllImport(ExternDll.Oleaut32, EntryPoint="VariantClear", PreserveSig=true)]
         
-        public static extern void VariantClear(HandleRef pObject);
+        public static extern int VariantClear_raw(HandleRef pObject);
+
+        public static void VariantClear(HandleRef pObject)
+		{
+			Marshal.ThrowExceptionForHR(VariantClear_raw(pObject));
+		}
 
         [DllImport(ExternDll.Gdi32, SetLastError=true, ExactSpelling=true, CharSet=CharSet.Auto)]
         
@@ -164,9 +187,16 @@ namespace System.Windows.Forms {
             return IntDeleteObject(hObject);
         }
 
-        [DllImport(ExternDll.Oleaut32, EntryPoint="OleCreateFontIndirect", ExactSpelling=true, PreserveSig=false)]
+        [DllImport(ExternDll.Oleaut32, EntryPoint="OleCreateFontIndirect", ExactSpelling=true, PreserveSig=true)]
         
-        public static extern SafeNativeMethods.IFontDisp OleCreateIFontDispIndirect(NativeMethods.FONTDESC fd, ref Guid iid);
+        public static extern int OleCreateIFontDispIndirect(NativeMethods.FONTDESC fd, ref Guid iid, out SafeNativeMethods.IFontDisp resul);
+
+        public static SafeNativeMethods.IFontDisp OleCreateIFontDispIndirect(NativeMethods.FONTDESC fd, ref Guid iid)
+		{
+			SafeNativeMethods.IFontDisp result;
+			Marshal.ThrowExceptionForHR(OleCreateIFontDispIndirect(fd,ref iid,out result));
+			return result;
+		}
 
         [DllImport(ExternDll.Gdi32, SetLastError=true, ExactSpelling=true, EntryPoint="CreateSolidBrush", CharSet=CharSet.Auto)]
         
