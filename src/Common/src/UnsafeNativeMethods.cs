@@ -261,13 +261,13 @@ namespace System.Windows.Forms {
 
         [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreatePictureIndirect", ExactSpelling = true, PreserveSig = true)]
         
-        public static extern int OleCreateIPictureIndirect([MarshalAs(UnmanagedType.AsAny)]object pictdesc, ref Guid iid, bool fOwn, out UnsafeNativeMethods.IPicture result);
+        public static extern int OleCreateIPictureIndirect([MarshalAs(UnmanagedType.AsAny)]object pictdesc, ref Guid iid, bool fOwn, out IntPtr result);
 
         public static UnsafeNativeMethods.IPicture OleCreateIPictureIndirect([MarshalAs(UnmanagedType.AsAny)]object pictdesc, ref Guid iid, bool fOwn)
 		{
-			UnsafeNativeMethods.IPicture result;
+			IntPtr result;
 			Marshal.ThrowExceptionForHR(OleCreateIPictureIndirect(pictdesc,ref iid,fOwn,out result));
-			return result;
+			return (IPicture)Marshal.GetObjectForIUnknown(result);
 		}
 
         [DllImport(ExternDll.Oleaut32, EntryPoint = "OleCreatePictureIndirect", ExactSpelling = true, PreserveSig = true)]
