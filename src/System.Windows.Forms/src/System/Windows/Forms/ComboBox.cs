@@ -2732,11 +2732,13 @@ namespace System.Windows.Forms {
             if (handler != null) handler(this, e);
         }
 
-        protected override bool ProcessKeyEventArgs(ref Message m) {
-            if (this.AutoCompleteMode != AutoCompleteMode.None &&
-                this.AutoCompleteSource == AutoCompleteSource.ListItems &&
-                this.DropDownStyle == ComboBoxStyle.DropDownList &&
-                InterceptAutoCompleteKeystroke(m)) {
+        protected override bool ProcessKeyEventArgs(ref Message m)
+        {
+            if (AutoCompleteMode != AutoCompleteMode.None &&
+                AutoCompleteSource == AutoCompleteSource.ListItems &&
+                DropDownStyle == ComboBoxStyle.DropDownList &&
+                InterceptAutoCompleteKeystroke(m))
+            {
                 return true;
             }
             else {
@@ -3583,6 +3585,10 @@ namespace System.Windows.Forms {
                             if (before != after) {
                                 (_owner.AccessibilityObject as ComboBoxAccessibleObject).SetComboBoxItemFocus();
                             }
+                        }
+                        else
+                        {
+                            _owner.ChildWndProc(ref m);
                         }
                         break;
                     default:
