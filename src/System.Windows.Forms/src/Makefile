@@ -3,7 +3,7 @@ RESX2SR=mono $(WINE_MONO_SRCDIR)/mono/mcs/class/lib/build-linux/resx2sr.exe
 
 COMPILE_LIB=csc -target:library
 
-LIB_FLAGS=-unsafe -delaysign+ -keyfile:../../ecma.pub -define:DRAWING_DESIGN_NAMESPACE -define:WINDOWS_FORMS_SWITCHES -define:WIN95_SUPPORT -define:OPTIMIZED_MEASUREMENTDC -langversion:7.3 -nowarn:CS0436 -nowarn:CS0618 -nostdlib -noconfig -lib:$(MONO_PREFIX)/lib/mono/4.5-api
+LIB_FLAGS=-unsafe -delaysign+ -keyfile:../../ecma.pub -define:DRAWING_DESIGN_NAMESPACE -define:WINDOWS_FORMS_SWITCHES -define:WIN95_SUPPORT -define:OPTIMIZED_MEASUREMENTDC -langversion:8.0 -nowarn:CS0436 -nowarn:CS0618 -nostdlib -noconfig -lib:$(MONO_PREFIX)/lib/mono/4.5-api
 
 LIB_REFS=-r:mscorlib.dll -r:System.dll -r:System.Configuration.dll -r:System.Core.dll -r:System.Drawing.dll -r:System.Xml.dll
 
