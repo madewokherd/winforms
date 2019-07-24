@@ -17,7 +17,6 @@ namespace System.Windows.Forms
         private Padding scaledDefaultMargin = defaultMargin;
         private Padding scaledDefaultStatusStripMargin = defaultStatusStripMargin;
 
-
         public ToolStripProgressBar()
             : base(CreateControlInstance())
         {
@@ -89,7 +88,7 @@ namespace System.Windows.Forms
         /// Specify what size you want the item to start out at
         /// </summary>
         /// <value></value>
-        protected override System.Drawing.Size DefaultSize
+        protected override Size DefaultSize
         {
             get
             {
@@ -127,7 +126,6 @@ namespace System.Windows.Forms
             set { ProgressBar.MarqueeAnimationSpeed = value; }
         }
 
-
         [
        DefaultValue(100),
        SRCategory(nameof(SR.CatBehavior)),
@@ -164,10 +162,10 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        ///     This is used for international applications where the language
-        ///     is written from RightToLeft. When this property is true,
+        ///  This is used for international applications where the language
+        ///  is written from RightToLeft. When this property is true,
         //      and the RightToLeft is true, mirroring will be turned on on the form, and
-        ///     control placement and text will be from right to left.
+        ///  control placement and text will be from right to left.
         /// </summary>
         [
         SRCategory(nameof(SR.CatAppearance)),
@@ -251,7 +249,6 @@ namespace System.Windows.Forms
             }
         }
 
-
         /// <summary>
         /// Wrap some commonly used properties
         /// </summary>
@@ -272,18 +269,6 @@ namespace System.Windows.Forms
             {
                 ProgressBar.Value = value;
             }
-        }
-
-        /// <summary>
-        ///     Constructs the new instance of the accessibility object for this ToolStripProgressBar ToolStrip item.
-        /// </summary>
-        /// <returns>
-        ///     The new instance of the accessibility object for this ToolStripProgressBar ToolStrip item
-        /// </returns>
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        protected override AccessibleObject CreateAccessibilityInstance()
-        {
-            return new ToolStripProgressBarAccessibleObject(this);
         }
 
         private static Control CreateControlInstance()
@@ -310,7 +295,7 @@ namespace System.Windows.Forms
             if (control is ProgressBar bar)
             {
                 // Please keep this alphabetized and in sync with Unsubscribe
-                // 
+                //
                 bar.RightToLeftLayoutChanged += new EventHandler(HandleRightToLeftLayoutChanged);
             }
 
@@ -322,7 +307,7 @@ namespace System.Windows.Forms
             if (control is ProgressBar bar)
             {
                 // Please keep this alphabetized and in sync with Subscribe
-                // 
+                //
                 bar.RightToLeftLayoutChanged -= new EventHandler(HandleRightToLeftLayoutChanged);
             }
             base.OnUnsubscribeControlEvents(control);
@@ -330,7 +315,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// <para>Hide the event.</para>
+        /// Hide the event.
         /// </summary>
         [
         Browsable(false),
@@ -343,7 +328,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// <para>Hide the event.</para>
+        /// Hide the event.
         /// </summary>
         [
         Browsable(false),
@@ -356,7 +341,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// <para>Hide the event.</para>
+        /// Hide the event.
         /// </summary>
         [
         Browsable(false),
@@ -368,7 +353,7 @@ namespace System.Windows.Forms
             remove => base.KeyUp -= value;
         }
         /// <summary>
-        /// <para>Hide the event.</para>
+        /// Hide the event.
         /// </summary>
         [
         Browsable(false),
@@ -381,7 +366,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// <para>Hide the event.</para>
+        /// Hide the event.
         /// </summary>
         [
         Browsable(false),
@@ -401,7 +386,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// <para>Hide the event.</para>
+        /// Hide the event.
         /// </summary>
         [
         Browsable(false),
@@ -413,9 +398,8 @@ namespace System.Windows.Forms
             remove => base.TextChanged -= value;
         }
 
-
         /// <summary>
-        /// <para>Hide the event.</para>
+        /// Hide the event.
         /// </summary>
         [
         Browsable(false),
@@ -428,7 +412,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// <para>Hide the event.</para>
+        /// Hide the event.
         /// </summary>
         [
         Browsable(false),
@@ -449,46 +433,8 @@ namespace System.Windows.Forms
             ProgressBar.PerformStep();
         }
 
-        [System.Runtime.InteropServices.ComVisible(true)]
-        internal class ToolStripProgressBarAccessibleObject : ToolStripItemAccessibleObject
-        {
-            private readonly ToolStripProgressBar ownerItem = null;
-
-            public ToolStripProgressBarAccessibleObject(ToolStripProgressBar ownerItem) : base(ownerItem)
-            {
-                this.ownerItem = ownerItem;
-            }
-
-            public override AccessibleRole Role
-            {
-                get
-                {
-                    AccessibleRole role = Owner.AccessibleRole;
-                    if (role != AccessibleRole.Default)
-                    {
-                        return role;
-                    }
-
-                    return AccessibleRole.ProgressBar;
-                }
-            }
-
-            internal override UnsafeNativeMethods.IRawElementProviderFragment FragmentNavigate(UnsafeNativeMethods.NavigateDirection direction)
-            {
-                if (direction == UnsafeNativeMethods.NavigateDirection.FirstChild ||
-                    direction == UnsafeNativeMethods.NavigateDirection.LastChild)
-                {
-                    return ownerItem.ProgressBar.AccessibilityObject;
-                }
-
-                // Handle Parent and other directions in base ToolStripItem.FragmentNavigate() method.
-                return base.FragmentNavigate(direction);
-            }
-        }
-
         internal class ToolStripProgressBarControl : ProgressBar
         {
-
             private ToolStripProgressBar ownerItem;
 
             public ToolStripProgressBar Owner

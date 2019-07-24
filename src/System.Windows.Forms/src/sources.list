@@ -1,4 +1,3 @@
-../../Common/src/ApiHelper.cs
 ../../Common/src/ClientUtils.cs
 ../../Common/src/CommonUnsafeNativeMethods.cs
 ../../Common/src/CompModSwitches.cs
@@ -6,13 +5,15 @@
 ../../Common/src/DpiHelper.DpiAwarenessContext.cs
 ../../Common/src/ExternDll.cs
 ../../Common/src/FileDialog_Vista_Interop.cs
-../../Common/src/Interop/Interop.CommonHandles.cs
+../../Common/src/Interop/Interop.BOOL.cs
 ../../Common/src/Interop/Interop.EditMessages.cs
-../../Common/src/Interop/Interop.HandleCollector.cs
 ../../Common/src/Interop/Interop.Libraries.cs
+../../Common/src/Interop/Interop.RichEditMessages.cs
 ../../Common/src/Interop/Interop.WindowMessages.cs
 ../../Common/src/Interop/Kernel32/Interop.MAX_PATH.cs
 ../../Common/src/Interop/Kernel32/Interop.MAX_UNICODESTRING_LEN.cs
+../../Common/src/Interop/NtDll/Interop.RTL_OSVERSIONINFOEX.cs
+../../Common/src/Interop/NtDll/Interop.RtlGetVersion.cs
 ../../Common/src/Interop/Shell32/Interop.SHBrowseForFolder.cs
 ../../Common/src/Interop/Shell32/Interop.SHGetKnownFolderPath.cs
 ../../Common/src/Interop/Shell32/Interop.SHGetPathFromIDListLongPath.cs
@@ -23,8 +24,10 @@
 ../../Common/src/Interop/UxTheme/Interop.GetThemeDocumentationProperty.cs
 ../../Common/src/Microsoft/Win32/SafeHandles/CoTaskMemSafeHandle.cs
 ../../Common/src/NativeMethods.cs
+../../Common/src/OsVersion.cs
 ../../Common/src/RTLAwareMessageBox.cs
 ../../Common/src/SafeNativeMethods.cs
+../../Common/src/SpanHelpers.cs
 ../../Common/src/UnsafeNativeMethods.cs
 Assembly/AssemblyInfo.cs
 AssemblyRef.cs
@@ -181,6 +184,7 @@ System/Windows/Forms/ContentsResizedEventHandler.cs
 System/Windows/Forms/ContextMenu.cs
 System/Windows/Forms/ContextMenuStrip.cs
 System/Windows/Forms/Control.cs
+System/Windows/Forms/Control.Ime.cs
 System/Windows/Forms/ControlBindingsCollection.cs
 System/Windows/Forms/ControlEventArgs.cs
 System/Windows/Forms/ControlEventHandler.cs
@@ -209,8 +213,8 @@ System/Windows/Forms/DataGridParentRowsLabel.cs
 System/Windows/Forms/DataGridRelationshipRow.cs
 System/Windows/Forms/DataGridRow.cs
 System/Windows/Forms/DataGridState.cs
-System/Windows/Forms/DataGridTable.cs
 System/Windows/Forms/DataGridTableCollection.cs
+System/Windows/Forms/DataGridTableStyle.cs
 System/Windows/Forms/DataGridTextBox.cs
 System/Windows/Forms/DataGridTextBoxColumn.cs
 System/Windows/Forms/DataGridToolTip.cs
@@ -404,8 +408,8 @@ System/Windows/Forms/FormClosingEventHandler.cs
 System/Windows/Forms/FormCollection.cs
 System/Windows/Forms/FormStartPosition.cs
 System/Windows/Forms/FormWindowState.cs
+System/Windows/Forms/Formatter.cs
 System/Windows/Forms/FrameStyle.cs
-System/Windows/Forms/FxCopSuppression.cs
 System/Windows/Forms/GDI/TextFormatFlags.cs
 System/Windows/Forms/GDI/TextRenderer.cs
 System/Windows/Forms/GDI/WindowsGraphicsWrapper.cs
@@ -522,6 +526,8 @@ System/Windows/Forms/LinkUtilities.cs
 System/Windows/Forms/ListBindingConverter.cs
 System/Windows/Forms/ListBindingHelper.cs
 System/Windows/Forms/ListBox.cs
+System/Windows/Forms/ListBox.AccessibleObject.cs
+System/Windows/Forms/ListBox.ItemAccessibleObject.cs
 System/Windows/Forms/ListControl.cs
 System/Windows/Forms/ListControlConvertEventArgs.cs
 System/Windows/Forms/ListControlConvertEventHandler.cs
@@ -669,6 +675,7 @@ System/Windows/Forms/RichTextBoxWordPunctuations.cs
 System/Windows/Forms/RightToLeft.cs
 System/Windows/Forms/SaveFileDialog.cs
 System/Windows/Forms/Screen.cs
+System/Windows/Forms/ScreenDC.cs
 System/Windows/Forms/ScreenOrientation.cs
 System/Windows/Forms/ScrollBar.cs
 System/Windows/Forms/ScrollBarRenderer.cs
@@ -810,6 +817,7 @@ System/Windows/Forms/ToolStripLocationCancelEventHandler.cs
 System/Windows/Forms/ToolStripManager.cs
 System/Windows/Forms/ToolStripManagerRenderMode.cs
 System/Windows/Forms/ToolStripMenuItem.cs
+System/Windows/Forms/ToolStripNumericUpDown.cs
 System/Windows/Forms/ToolStripOverflow.cs
 System/Windows/Forms/ToolStripOverflowButton.cs
 System/Windows/Forms/ToolStripPanel.cs
@@ -947,8 +955,6 @@ System/Windows/Forms/WinCategoryAttribute.cs
 System/Windows/Forms/WinFormsUtils.cs
 System/Windows/Forms/WindowsFormsSectionHandler.cs
 System/Windows/Forms/WindowsFormsSynchronizationContext.cs
-System/Windows/Forms/control.ime.cs
-System/Windows/Forms/formatter.cs
 misc/CompatibleIComparer.cs
 misc/CoreSwitches.cs
 misc/DbgUtil.cs
@@ -964,11 +970,9 @@ misc/GDI/DeviceContextRasterOperationFlags.cs
 misc/GDI/DeviceContextTextAlignment.cs
 misc/GDI/DeviceContextType.cs
 misc/GDI/DeviceContexts.cs
-misc/GDI/FxCopSuppression.cs
 misc/GDI/GdiObjectType.cs
 misc/GDI/MeasurementDCInfo.cs
 misc/GDI/NativeMethods.cs
-misc/GDI/SafeNativeMethods.cs
 misc/GDI/TextFormatFlags.cs
 misc/GDI/TextPaddingOptions.cs
 misc/GDI/UnsafeNativeMethods.cs

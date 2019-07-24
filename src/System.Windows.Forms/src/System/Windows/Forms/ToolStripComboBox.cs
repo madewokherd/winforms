@@ -41,106 +41,9 @@ namespace System.Windows.Forms
             }
         }
 
-
         public ToolStripComboBox(string name) : this()
         {
             Name = name;
-        }
-
-        /// <summary>
-        ///     Constructs the new instance of the accessibility object for this ToolStripComboBox ToolStrip item.
-        /// </summary>
-        /// <returns>
-        ///     The new instance of the accessibility object for this ToolStripComboBox ToolStrip item
-        /// </returns>
-        protected override AccessibleObject CreateAccessibilityInstance()
-        {
-            return new ToolStripComboBoxAccessibleObject(this);
-        }
-
-        /// <summary>
-        /// Defines the ToolStripComboBox AccessibleObject.
-        /// </summary>
-        [System.Runtime.InteropServices.ComVisible(true)]
-        internal class ToolStripComboBoxAccessibleObject : ToolStripItemAccessibleObject
-        {
-            private readonly ToolStripComboBox ownerItem = null;
-
-            /// <summary>
-            /// Initializes the new instance of ToolStripComboBoxAccessibleObject.
-            /// </summary>
-            /// <param name="ownerItem">The owning ToolStripComboBox.</param>
-            public ToolStripComboBoxAccessibleObject(ToolStripComboBox ownerItem) : base(ownerItem)
-            {
-                this.ownerItem = ownerItem;
-            }
-
-            /// <summary>
-            /// Gets a description of the default action for an object.
-            /// </summary>
-            public override string DefaultAction
-            {
-                get
-                {
-                    // Note: empty value is provided due to this Accessible object
-                    // represents the control container but not the contained ComboBox
-                    // control itself.
-                    return string.Empty;
-                }
-            }
-
-            /// <summary>
-            /// Performs the default action associated with this accessible object.
-            /// </summary>
-            public override void DoDefaultAction()
-            {
-                // Do nothing.
-            }
-
-            /// <summary>
-            /// Gets the role of this accessible object.
-            /// </summary>
-            public override AccessibleRole Role
-            {
-                get
-                {
-                    AccessibleRole role = Owner.AccessibleRole;
-                    if (role != AccessibleRole.Default)
-                    {
-                        return role;
-                    }
-
-                    return AccessibleRole.ComboBox;
-                }
-            }
-
-            /// <summary>
-            /// Request to return the element in the specified direction.
-            /// </summary>
-            /// <param name="direction">Indicates the direction in which to navigate.</param>
-            /// <returns>Returns the element in the specified direction.</returns>
-            internal override UnsafeNativeMethods.IRawElementProviderFragment FragmentNavigate(UnsafeNativeMethods.NavigateDirection direction)
-            {
-                if (direction == UnsafeNativeMethods.NavigateDirection.FirstChild ||
-                    direction == UnsafeNativeMethods.NavigateDirection.LastChild)
-                {
-                    return ownerItem.ComboBox.AccessibilityObject;
-                }
-
-                // Handle Parent and other directions in base ToolStripItem.FragmentNavigate() method.
-                return base.FragmentNavigate(direction);
-            }
-
-            /// <summary>
-            /// Return the element that is the root node of this fragment of UI.
-            /// </summary>
-            internal override UnsafeNativeMethods.IRawElementProviderFragmentRoot FragmentRoot
-            {
-                get
-                {
-                    return ownerItem.RootToolStrip.AccessibilityObject;
-                }
-            }
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -165,7 +68,7 @@ namespace System.Windows.Forms
         Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor, " + AssemblyRef.SystemDesign, typeof(UITypeEditor)),
         Browsable(true), EditorBrowsable(EditorBrowsableState.Always)
         ]
-        public System.Windows.Forms.AutoCompleteStringCollection AutoCompleteCustomSource
+        public AutoCompleteStringCollection AutoCompleteCustomSource
         {
             get { return ComboBox.AutoCompleteCustomSource; }
             set { ComboBox.AutoCompleteCustomSource = value; }
@@ -292,7 +195,6 @@ namespace System.Windows.Forms
             remove => Events.RemoveHandler(EventDropDownStyleChanged, value);
         }
 
-
         [
         SRCategory(nameof(SR.CatBehavior)),
         SRDescription(nameof(SR.ComboBoxDropDownHeightDescr)),
@@ -310,7 +212,7 @@ namespace System.Windows.Forms
         SRCategory(nameof(SR.CatAppearance)),
         DefaultValue(ComboBoxStyle.DropDown),
         SRDescription(nameof(SR.ComboBoxStyleDescr)),
-        RefreshPropertiesAttribute(RefreshProperties.Repaint)
+        RefreshProperties(RefreshProperties.Repaint)
         ]
         public ComboBoxStyle DropDownStyle
         {
@@ -473,7 +375,6 @@ namespace System.Windows.Forms
             set { ComboBox.Sorted = value; }
         }
 
-
         [SRCategory(nameof(SR.CatBehavior)), SRDescription(nameof(SR.ComboBoxOnTextUpdateDescr))]
         public event EventHandler TextUpdate
         {
@@ -481,7 +382,7 @@ namespace System.Windows.Forms
             remove => Events.RemoveHandler(EventTextUpdate, value);
         }
 
-        #region WrappedMethods        
+        #region WrappedMethods
 
         public void BeginUpdate() { ComboBox.BeginUpdate(); }
         public void EndUpdate() { ComboBox.EndUpdate(); }
@@ -497,35 +398,34 @@ namespace System.Windows.Forms
 
         public override Size GetPreferredSize(Size constrainingSize)
         {
-
-            // 
+            //
             Size preferredSize = base.GetPreferredSize(constrainingSize);
             preferredSize.Width = Math.Max(preferredSize.Width, 75);
 
             return preferredSize;
         }
-        private void HandleDropDown(object sender, System.EventArgs e)
+        private void HandleDropDown(object sender, EventArgs e)
         {
             OnDropDown(e);
         }
-        private void HandleDropDownClosed(object sender, System.EventArgs e)
+        private void HandleDropDownClosed(object sender, EventArgs e)
         {
             OnDropDownClosed(e);
         }
 
-        private void HandleDropDownStyleChanged(object sender, System.EventArgs e)
+        private void HandleDropDownStyleChanged(object sender, EventArgs e)
         {
             OnDropDownStyleChanged(e);
         }
-        private void HandleSelectedIndexChanged(object sender, System.EventArgs e)
+        private void HandleSelectedIndexChanged(object sender, EventArgs e)
         {
             OnSelectedIndexChanged(e);
         }
-        private void HandleSelectionChangeCommitted(object sender, System.EventArgs e)
+        private void HandleSelectionChangeCommitted(object sender, EventArgs e)
         {
             OnSelectionChangeCommitted(e);
         }
-        private void HandleTextUpdate(object sender, System.EventArgs e)
+        private void HandleTextUpdate(object sender, EventArgs e)
         {
             OnTextUpdate(e);
         }
@@ -543,7 +443,7 @@ namespace System.Windows.Forms
         {
             if (ParentInternal != null)
             {
-                // PERF, 
+                // PERF,
 
                 Application.ThreadContext.FromCurrent().RemoveMessageFilter(ParentInternal.RestoreFocusFilter);
                 ToolStripManager.ModalMenuFilter.ResumeMenuMode();
@@ -572,7 +472,7 @@ namespace System.Windows.Forms
             if (control is ComboBox comboBox)
             {
                 // Please keep this alphabetized and in sync with Unsubscribe
-                // 
+                //
                 comboBox.DropDown += new EventHandler(HandleDropDown);
                 comboBox.DropDownClosed += new EventHandler(HandleDropDownClosed);
                 comboBox.DropDownStyleChanged += new EventHandler(HandleDropDownStyleChanged);
@@ -589,7 +489,7 @@ namespace System.Windows.Forms
             if (control is ComboBox comboBox)
             {
                 // Please keep this alphabetized and in sync with Unsubscribe
-                // 
+                //
                 comboBox.DropDown -= new EventHandler(HandleDropDown);
                 comboBox.DropDownClosed -= new EventHandler(HandleDropDownClosed);
                 comboBox.DropDownStyleChanged -= new EventHandler(HandleDropDownStyleChanged);
@@ -614,7 +514,6 @@ namespace System.Windows.Forms
         {
             return base.ToString() + ", Items.Count: " + Items.Count.ToString(CultureInfo.CurrentCulture);
         }
-
 
         internal class ToolStripComboBoxControl : ComboBox
         {
@@ -648,10 +547,10 @@ namespace System.Windows.Forms
             }
 
             /// <summary>
-            ///     Constructs the new instance of the accessibility object for this ToolStripComboBoxControl.
+            ///  Constructs the new instance of the accessibility object for this ToolStripComboBoxControl.
             /// </summary>
             /// <returns>
-            ///     The new instance of the accessibility object for this ToolStripComboBoxControl item
+            ///  The new instance of the accessibility object for this ToolStripComboBoxControl item
             /// </returns>
             protected override AccessibleObject CreateAccessibilityInstance()
             {
@@ -813,10 +712,10 @@ namespace System.Windows.Forms
 
             internal override bool SupportsUiaProviders => true;
 
-            internal class ToolStripComboBoxControlAccessibleObject : ComboBox.ComboBoxAccessibleObject
+            internal class ToolStripComboBoxControlAccessibleObject : ComboBoxAccessibleObject
             {
 
-                private readonly ComboBox.ChildAccessibleObject childAccessibleObject;
+                private readonly ChildAccessibleObject childAccessibleObject;
 
                 public ToolStripComboBoxControlAccessibleObject(ToolStripComboBoxControl toolStripComboBoxControl) : base(toolStripComboBoxControl)
                 {

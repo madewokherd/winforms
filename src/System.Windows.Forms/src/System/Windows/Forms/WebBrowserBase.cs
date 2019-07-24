@@ -6,7 +6,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
 using System.Reflection;
@@ -52,9 +51,9 @@ namespace System.Windows.Forms
         private UnsafeNativeMethods.IOleInPlaceActiveObject axOleInPlaceActiveObject;
         private UnsafeNativeMethods.IOleControl axOleControl;
         private WebBrowserBaseNativeWindow axWindow;
-        // We need to change the size of the inner ActiveX control before the 
-        //WebBrowserBase control's size is changed (i.e., before WebBrowserBase.Bounds 
-        //is changed) for better visual effect. We use this field to know what size 
+        // We need to change the size of the inner ActiveX control before the
+        //WebBrowserBase control's size is changed (i.e., before WebBrowserBase.Bounds
+        //is changed) for better visual effect. We use this field to know what size
         //the WebBrowserBase control is changing to.
         private Size webBrowserBaseChangingSize = Size.Empty;
         private WebBrowserContainer wbContainer = null;
@@ -70,11 +69,9 @@ namespace System.Windows.Forms
         internal object activeXInstance;
 
         /// <summary>
-        ///     <para>
-        /// Creates a new instance of a WinForms control which wraps an ActiveX control
+            /// Creates a new instance of a WinForms control which wraps an ActiveX control
         /// given by the clsid parameter.
-        ///     </para>
-        /// </summary>
+            /// </summary>
         internal WebBrowserBase(string clsidString) : base()
         {
             if (Application.OleRequired() != ApartmentState.STA)
@@ -89,17 +86,13 @@ namespace System.Windows.Forms
             SetAXHostState(WebBrowserHelper.isMaskEdit, clsid.Equals(WebBrowserHelper.maskEdit_Clsid));
         }
 
-
-
         //
         // Public properties:
         //
 
         /// <summary>
-        ///     <para>
-        /// Returns the native webbrowser object that this control wraps.
-        ///     </para>
-        /// </summary>
+            /// Returns the native webbrowser object that this control wraps.
+            /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object ActiveXInstance
         {
@@ -128,10 +121,8 @@ namespace System.Windows.Forms
         // below method and return their own WebBrowserSiteBaseBase derived object.
         //
         /// <summary>
-        ///     <para>
         /// Returns an object that will be set as the site for the native ActiveX control.
-        /// Implementors of the site can derive from <see cref='System.Windows.Forms.WebBrowserSiteBase'/> class.
-        ///     </para>
+        /// Implementors of the site can derive from <see cref='WebBrowserSiteBase'/> class.
         /// </summary>
         protected virtual WebBrowserSiteBase CreateWebBrowserSiteBase()
         {
@@ -139,43 +130,35 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        ///     <para>
-        /// This will be called when the native ActiveX control has just been created.
+            /// This will be called when the native ActiveX control has just been created.
         /// Inheritors of this class can override this method to cast the nativeActiveXObject
         /// parameter to the appropriate interface. They can then cache this interface
         /// value in a member variable. However, they must release this value when
         /// DetachInterfaces is called (by setting the cached interface variable to null).
-        ///     </para>
-        /// </summary>
+            /// </summary>
         protected virtual void AttachInterfaces(object nativeActiveXObject)
         {
         }
 
         /// <summary>
-        ///     <para>
-        /// See AttachInterfaces for a description of when to override DetachInterfaces.
-        ///     </para>
-        /// </summary>
+            /// See AttachInterfaces for a description of when to override DetachInterfaces.
+            /// </summary>
         protected virtual void DetachInterfaces()
         {
         }
 
         /// <summary>
-        ///     <para>
-        /// This will be called when we are ready to start listening to events.
+            /// This will be called when we are ready to start listening to events.
         /// Inheritors can override this method to hook their own connection points.
-        ///     </para>
-        /// </summary>
+            /// </summary>
         protected virtual void CreateSink()
         {
         }
 
         /// <summary>
-        ///     <para>
-        /// This will be called when it is time to stop listening to events.
+            /// This will be called when it is time to stop listening to events.
         /// This is where inheritors have to disconnect their connection points.
-        ///     </para>
-        /// </summary>
+            /// </summary>
         protected virtual void DetachSink()
         {
         }
@@ -187,7 +170,6 @@ namespace System.Windows.Forms
         {
             base.DrawToBitmap(bitmap, targetBounds);
         }
-
 
         //
         // Overriding methods: Overrides of some of Control's virtual methods.
@@ -256,7 +238,6 @@ namespace System.Windows.Forms
         // set a flag and call back into this method. In this method, we first check
         // if this flag is set. If so, we call base.PreProcessMessage.
         //
-        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly")]
         public override bool PreProcessMessage(ref Message msg)
         {
             if (IsUserMode)
@@ -267,7 +248,6 @@ namespace System.Windows.Forms
                     // and is now giving us a chance to see if we want to process it.
                     return base.PreProcessMessage(ref msg);
                 }
-
 
                 // Convert Message to NativeMethods.MSG
                 NativeMethods.MSG win32Message = new NativeMethods.MSG
@@ -339,7 +319,6 @@ namespace System.Windows.Forms
 
             return false;
         }
-
 
         //
         // Process a mnemonic character. This is done by manufacturing a
@@ -514,7 +493,6 @@ namespace System.Windows.Forms
             }
         }
 
-        [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
         protected override void OnParentChanged(EventArgs e)
         {
             Control parent = ParentInternal;
@@ -525,7 +503,6 @@ namespace System.Windows.Forms
             base.OnParentChanged(e);
         }
 
-        [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
         protected override void OnVisibleChanged(EventArgs e)
         {
             if (Visible && !Disposing && !IsDisposed)
@@ -535,7 +512,6 @@ namespace System.Windows.Forms
             base.OnVisibleChanged(e);
         }
 
-        [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
         protected override void OnGotFocus(EventArgs e)
         {
             if (ActiveXState < WebBrowserHelper.AXState.UIActive)
@@ -545,7 +521,6 @@ namespace System.Windows.Forms
             base.OnGotFocus(e);
         }
 
-        [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
         protected override void OnLostFocus(EventArgs e)
         {
             base.OnLostFocus(e);
@@ -558,7 +533,6 @@ namespace System.Windows.Forms
             }
         }
 
-        [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
         protected override void OnRightToLeftChanged(EventArgs e)
         {
             //Do nothing: no point in recreating the handle when we don't obey RTL
@@ -582,7 +556,6 @@ namespace System.Windows.Forms
         // We have to inform the ActiveX control that an ambient property
         // has changed.
         //
-        [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);
@@ -593,7 +566,6 @@ namespace System.Windows.Forms
         // We have to inform the ActiveX control that an ambient property
         // has changed.
         //
-        [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
         protected override void OnForeColorChanged(EventArgs e)
         {
             base.OnForeColorChanged(e);
@@ -604,7 +576,6 @@ namespace System.Windows.Forms
         // We have to inform the ActiveX control that an ambient property
         // has changed.
         //
-        [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
         protected override void OnBackColorChanged(EventArgs e)
         {
             base.OnBackColorChanged(e);
@@ -619,7 +590,6 @@ namespace System.Windows.Forms
             }
         }
 
-
         //
         // TransitionDownTo Passive when we are being disposed.
         //
@@ -632,21 +602,9 @@ namespace System.Windows.Forms
             base.Dispose(disposing);
         }
 
-
-
-
         //
         // Internal helper methods:
         //
-
-#if false
-        // FxCop: Currently not used
-        internal Guid ClassId {
-            get {
-                return clsid;
-            }
-        }
-#endif
 
         internal WebBrowserHelper.AXState ActiveXState
         {
@@ -830,7 +788,7 @@ namespace System.Windows.Forms
                 if (iss != null && iss.GetComponentSelected(this))
                 {
                     // The ActiveX Host designer will offer an extender property
-                    // called "SelectionStyle" 
+                    // called "SelectionStyle"
                     PropertyDescriptor prop = TypeDescriptor.GetProperties(this)["SelectionStyle"];
                     if (prop != null && prop.PropertyType == typeof(int))
                     {
@@ -925,12 +883,6 @@ namespace System.Windows.Forms
                 noComponentChange = value;
             }
         }
-
-
-
-
-
-
 
         //
         // Private helper methods:
@@ -1373,65 +1325,6 @@ namespace System.Windows.Forms
             }
         }
 
-#if false
-        // FxCop: Currently not used
-        private Object GetAmbientProperty(int dispid) {
-
-            Control richParent = ParentInternal;
-
-            switch (dispid) {
-                case NativeMethods.ActiveX.DISPID_AMBIENT_USERMODE:
-                    return !DesignMode;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_AUTOCLIP:
-                    return true;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_MESSAGEREFLECT:
-                    return true;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_UIDEAD:
-                    return false;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_DISPLAYASDEFAULT:
-                    return false;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_FONT:
-                    if (richParent != null) {
-                        return WebBrowserHelper.GetIFontFromFont(richParent.Font);
-                    }
-                    return null;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_SHOWGRABHANDLES:
-                    return false;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_SHOWHATCHING:
-                    return false;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_BACKCOLOR:
-                    if (richParent != null) {
-                        return WebBrowserHelper.GetOleColorFromColor(richParent.BackColor);
-                    }
-                    return null;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_FORECOLOR:
-                    if (richParent != null) {
-                        return WebBrowserHelper.GetOleColorFromColor(richParent.ForeColor);
-                    }
-                    return null;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_DISPLAYNAME:
-                    string rval = this.GetParentContainer().GetNameForControl(this);
-                    if (rval == null) rval = string.Empty;
-                    return rval;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_LOCALEID:
-                    return Thread.CurrentThread.CurrentCulture.LCID;
-                case NativeMethods.ActiveX.DISPID_AMBIENT_RIGHTTOLEFT:
-                    Control ctl = this;
-                    while (ctl != null) {
-                        if (ctl.RightToLeft == System.Windows.Forms.RightToLeft.No)
-                            return false;
-                        if (ctl.RightToLeft == System.Windows.Forms.RightToLeft.Yes)
-                            return true;
-                        if (ctl.RightToLeft == System.Windows.Forms.RightToLeft.Inherit)
-                            ctl = ctl.Parent;
-                    }
-                    return null;
-                default:
-                    return null;
-            }
-        }
-#endif
-
         internal UnsafeNativeMethods.IOleInPlaceObject AXInPlaceObject
         {
             get
@@ -1457,7 +1350,6 @@ namespace System.Windows.Forms
             }
         }
 
-
         //
         // Overridden methods:
         //
@@ -1468,16 +1360,15 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        ///     Inheriting classes should override this method to find out when the
-        ///     handle has been created. Call base.OnHandleCreated first.
+        ///  Inheriting classes should override this method to find out when the
+        ///  handle has been created. Call base.OnHandleCreated first.
         /// </summary>
-        [SuppressMessage("Microsoft.Security", "CA2109:ReviewVisibleEventHandlers")]
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         protected override void OnHandleCreated(EventArgs e)
         {
             //
-            // This is needed to prevent some controls (for e.g. Office Web Components) from 
-            // failing to InPlaceActivate() when they call RegisterDragDrop() but do not call 
+            // This is needed to prevent some controls (for e.g. Office Web Components) from
+            // failing to InPlaceActivate() when they call RegisterDragDrop() but do not call
             // OleInitialize(). The EE calls CoInitializeEx() on the thread, but I believe
             // that is not good enough for DragDrop.
             //
@@ -1504,7 +1395,6 @@ namespace System.Windows.Forms
             }
 
         }
-
 
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -1549,7 +1439,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        ///     <para>Hide ImeMode: it doesn't make sense for this control</para>
+        ///  Hide ImeMode: it doesn't make sense for this control
         /// </summary>
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -1684,7 +1574,6 @@ namespace System.Windows.Forms
             }
         }
 
-
         //
         // Unavailable events
         //
@@ -1808,7 +1697,6 @@ namespace System.Windows.Forms
             remove { }
         }
 
-
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         new public event DragEventHandler DragEnter
         {
@@ -1838,7 +1726,7 @@ namespace System.Windows.Forms
         }
 
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        [SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")] //Everett
+//Everett
         new public event HelpEventHandler HelpRequested
         {
             add => throw new NotSupportedException(string.Format(SR.AXAddInvalidEvent, "HelpRequested"));
@@ -1972,7 +1860,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        ///     Defines a window that the ActiveX window is attached to so that we can override it's wndproc.
+        ///  Defines a window that the ActiveX window is attached to so that we can override it's wndproc.
         /// </summary>
         private class WebBrowserBaseNativeWindow : NativeWindow
         {
@@ -1984,7 +1872,7 @@ namespace System.Windows.Forms
             }
 
             /// <summary>
-            ///     Pass messages on to the NotifyIcon object's wndproc handler.
+            ///  Pass messages on to the NotifyIcon object's wndproc handler.
             /// </summary>
             protected override void WndProc(ref Message m)
             {

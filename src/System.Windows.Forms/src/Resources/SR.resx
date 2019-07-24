@@ -203,7 +203,7 @@
     <value>Unknown image type.</value>
   </data>
   <data name="AXWindowlessControl" xml:space="preserve">
-    <value>ActiveX control is a windowless control. The control is not supported in this version of the .NET Framework.</value>
+    <value>ActiveX control is a windowless control. The control is not supported in this version of the .NET.</value>
   </data>
   <data name="BadDataSourceForComplexBinding" xml:space="preserve">
     <value>Complex DataBinding accepts as a data source either an IList or an IListSource.</value>
@@ -2761,6 +2761,9 @@ To replace this default dialog please handle the DataError event.</value>
   <data name="DataGridVisibleRowCountDescr" xml:space="preserve">
     <value>Returns the count of visible rows in the grid.</value>
   </data>
+  <data name="DataObjectWhitespaceEmptyFormatNotAllowed" xml:space="preserve">
+    <value>Whitespace or empty string is not a valid value for parameter 'format'.</value>
+  </data>
   <data name="DataObjectDibNotSupported" xml:space="preserve">
     <value>Bitmap object does not directly support the device-independent bitmap format.  Either specify auto-conversion or perform a SetData with the Bitmap data format.</value>
   </data>
@@ -3083,7 +3086,7 @@ To replace this default dialog please handle the DataError event.</value>
     <value>Cancel</value>
   </data>
   <data name="ExDlgCaption" xml:space="preserve">
-    <value>Microsoft .NET Framework</value>
+    <value>Microsoft .NET</value>
   </data>
   <data name="ExDlgCaption2" xml:space="preserve">
     <value>{0}</value>
@@ -3158,14 +3161,14 @@ just-in-time (JIT) debugging instead of this dialog box.
     <value>&amp;Quit</value>
   </data>
   <data name="ExDlgSecurityContinueErrorText" xml:space="preserve">
-    <value>Application attempted to perform an operation not allowed by the security policy. To grant this application the required permission, contact your system administrator, or use the Microsoft .NET Framework Configuration tool.
+    <value>Application attempted to perform an operation not allowed by the security policy. To grant this application the required permission, contact your system administrator, or use the Microsoft .NET Configuration tool.
 
 If you click Continue, the application will ignore this error and attempt to continue.
 
 {1}.</value>
   </data>
   <data name="ExDlgSecurityErrorText" xml:space="preserve">
-    <value>Application attempted to perform an operation not allowed by the security policy. To grant this application the required permission, contact your system administrator, or use the Microsoft .NET Framework Configuration tool.
+    <value>Application attempted to perform an operation not allowed by the security policy. To grant this application the required permission, contact your system administrator, or use the Microsoft .NET Configuration tool.
 
 If you click Continue, the application will ignore this error and attempt to continue. If you click Quit, the application will close immediately.
 
@@ -4719,7 +4722,7 @@ Stack trace where the illegal operation occurred was:
     <value>Indicates whether the panel should have a border.</value>
   </data>
   <data name="PBRSDocCommentPaneTitle" xml:space="preserve">
-    <value>Description Pane</value>
+    <value>Description</value>
   </data>
   <data name="PBRSErrorInvalidPropertyValue" xml:space="preserve">
     <value>Property value is not valid.</value>
@@ -5250,7 +5253,7 @@ Stack trace where the illegal operation occurred was:
     <value>PropertyGrid</value>
   </data>
   <data name="PropertyGridToolbarAccessibleName" xml:space="preserve">
-    <value>ToolBar</value>
+    <value>PropertyGrid</value>
   </data>
   <data name="PropertyGridToolbarVisibleDesc" xml:space="preserve">
     <value>Sets whether to display the ToolBar at the top of the PropertyGrid.</value>

@@ -13,8 +13,7 @@ namespace System.Windows.Forms.Design.Behavior
 {
     /// <summary>
     /// The DragAssistanceManager, for lack of a better name, is responsible for integrating SnapLines into the DragBehavior.  At the beginning of a DragBehavior this class is instantiated and at every mouse move this class is called and given the opportunity to adjust the position of the drag.  The DragAssistanceManager needs to work as fast as possible - so not to interupt a drag operation.  Because of this, this class has many global variables that are re-used, in hopes to limit the # of allocations per mouse move / drag operation.  Also, for loops are used extensively (instead of foreach calls) to eliminate the creation of an enumerator.
-    /// </summary>    
-    [SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
+    /// </summary>
     internal sealed class DragAssistanceManager
     {
         private readonly BehaviorService _behaviorService;
@@ -84,8 +83,7 @@ namespace System.Windows.Forms.Design.Behavior
 
         /// <summary>
         /// Internal constructor called by DragBehavior.
-        /// </summary>        
-        [SuppressMessage("Microsoft.Performance", "CA1808:AvoidCallsThatBoxValueTypes")]
+        /// </summary>
         internal DragAssistanceManager(IServiceProvider serviceProvider, Graphics graphics, ArrayList dragComponents, Image backgroundImage, bool resizing, bool ctrlDrag)
         {
             _serviceProvider = serviceProvider;
@@ -777,8 +775,7 @@ namespace System.Windows.Forms.Design.Behavior
 
         /// <summary>
         /// Here, we store all the SnapLines we will render.  This way we can erase them when they are no longer needed.
-        /// </summary>        
-        [SuppressMessage("Microsoft.Performance", "CA1808:AvoidCallsThatBoxValueTypes")]
+        /// </summary>
         private void StoreSnapLine(SnapLine snapLine, Rectangle dragBounds)
         {
             Rectangle bounds = (Rectangle)_snapLineToBounds[snapLine];
@@ -846,8 +843,7 @@ namespace System.Windows.Forms.Design.Behavior
 
         /// <summary>
         /// This function validates a Margin or Padding SnapLine.  A valid Margin SnapLine is one that will be drawn only if the target control being dragged somehow intersects (vertically or horizontally) the coords of the given snapLine. This is done so we don't start drawing margin lines when controls are large distances apart (too much mess);
-        /// </summary>        
-        [SuppressMessage("Microsoft.Performance", "CA1808:AvoidCallsThatBoxValueTypes")]
+        /// </summary>
         private bool ValidateMarginOrPaddingLine(SnapLine snapLine, Rectangle dragBounds)
         {
             Rectangle bounds = (Rectangle)_snapLineToBounds[snapLine];
@@ -1066,7 +1062,6 @@ namespace System.Windows.Forms.Design.Behavior
                 set => _lineType = value;
             }
 
-
             public Rectangle OriginalBounds
             {
                 get => _originalBounds;
@@ -1078,7 +1073,6 @@ namespace System.Windows.Forms.Design.Behavior
                 get => _paddingLineType;
                 set => _paddingLineType = value;
             }
-
 
             public Line(int x1, int y1, int x2, int y2)
             {

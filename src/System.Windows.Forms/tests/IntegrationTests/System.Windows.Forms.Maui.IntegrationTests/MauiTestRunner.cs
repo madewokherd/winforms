@@ -13,8 +13,7 @@ namespace System.Windows.Forms.Maui.IntegrationTests
     /// Maui tests are executables that run one or more scenarios, and the results are
     /// stored in a results.log. This class handles running the exe, deserializing the log
     /// into a TestCase object, and returning that object to the caller.
-    /// 
-    /// 
+    ///
     /// </summary>
     public class MauiTestRunner
     {
@@ -80,11 +79,24 @@ namespace System.Windows.Forms.Maui.IntegrationTests
     [Serializable()]
     public class Scenario
     {
+        private string _name;
+
         [XmlAttribute("method")]
         public string Method { get; set; }
 
+        // strip the parens from the name
         [XmlAttribute("name")]
-        public string Name { get; set; }
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (value.EndsWith("()"))
+                {
+                    _name = value.Remove(value.Length - 2);
+                }
+            }
+        }
 
         [XmlElement()]
         public Result Result { get; set; }
