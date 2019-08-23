@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms.Design;
 using System.Windows.Forms.Layout;
 using Microsoft.Win32;
+using static Interop;
 
 namespace System.Windows.Forms
 {
@@ -86,8 +87,8 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// Deriving classes can override this to configure a default size for their control.
-        /// This is more efficient than setting the size in the control's constructor.
+        ///  Deriving classes can override this to configure a default size for their control.
+        ///  This is more efficient than setting the size in the control's constructor.
         /// </summary>
         protected internal override Padding DefaultMargin
         {
@@ -556,11 +557,11 @@ namespace System.Windows.Forms
             }
 
             // returns the distance from the client rect to the upper left hand corner of the control
-            private NativeMethods.RECT AbsoluteClientRECT
+            private RECT AbsoluteClientRECT
             {
                 get
                 {
-                    NativeMethods.RECT rect = new NativeMethods.RECT();
+                    RECT rect = new RECT();
                     CreateParams cp = CreateParams;
 
                     AdjustWindowRectEx(ref rect, cp.Style, HasMenu, cp.ExStyle);
@@ -584,7 +585,7 @@ namespace System.Windows.Forms
             {
                 get
                 {
-                    NativeMethods.RECT rect = AbsoluteClientRECT;
+                    RECT rect = AbsoluteClientRECT;
                     return Rectangle.FromLTRB(rect.top, rect.top, rect.right, rect.bottom);
                 }
             }
@@ -649,58 +650,37 @@ namespace System.Windows.Forms
                 {
                     return;
                 }
-                NativeMethods.RECT absoluteClientRectangle = AbsoluteClientRECT;
-                HandleRef hNonClientRegion = NativeMethods.NullHandleRef;
-                HandleRef hClientRegion = NativeMethods.NullHandleRef;
-                HandleRef hTotalRegion = NativeMethods.NullHandleRef;
 
-                try
+                RECT absoluteClientRectangle = AbsoluteClientRECT;
+
+                // Get the total client area, then exclude the client by using XOR
+                IntPtr hTotalRegion = Gdi32.CreateRectRgn(0, 0, Width, Height);
+                IntPtr hClientRegion = Gdi32.CreateRectRgn(absoluteClientRectangle.left, absoluteClientRectangle.top, absoluteClientRectangle.right, absoluteClientRectangle.bottom);
+                IntPtr hNonClientRegion = Gdi32.CreateRectRgn(0, 0, 0, 0);
+
+                Gdi32.CombineRgn(hNonClientRegion, hTotalRegion, hClientRegion, Gdi32.CombineMode.RGN_XOR);
+
+                // Call RedrawWindow with the region.
+                RECT ignored = default;
+                SafeNativeMethods.RedrawWindow(
+                    new HandleRef(this, Handle),
+                    ref ignored,
+                    hNonClientRegion,
+                    NativeMethods.RDW_INVALIDATE | NativeMethods.RDW_ERASE | NativeMethods.RDW_UPDATENOW
+                        | NativeMethods.RDW_ERASENOW | NativeMethods.RDW_FRAME);
+
+                if (hNonClientRegion != IntPtr.Zero)
                 {
-                    // get the total client area, then exclude the client by using XOR
-                    hTotalRegion = new HandleRef(this, SafeNativeMethods.CreateRectRgn(0, 0, Width, Height));
-                    hClientRegion = new HandleRef(this, SafeNativeMethods.CreateRectRgn(absoluteClientRectangle.left, absoluteClientRectangle.top, absoluteClientRectangle.right, absoluteClientRectangle.bottom));
-                    hNonClientRegion = new HandleRef(this, SafeNativeMethods.CreateRectRgn(0, 0, 0, 0));
-
-                    SafeNativeMethods.CombineRgn(hNonClientRegion, hTotalRegion, hClientRegion, NativeMethods.RGN_XOR);
-
-                    // Call RedrawWindow with the region.
-                    NativeMethods.RECT ignored = new NativeMethods.RECT();
-                    SafeNativeMethods.RedrawWindow(new HandleRef(this, Handle),
-                                                   ref ignored, hNonClientRegion,
-                                                   NativeMethods.RDW_INVALIDATE | NativeMethods.RDW_ERASE |
-                                                   NativeMethods.RDW_UPDATENOW | NativeMethods.RDW_ERASENOW |
-                                                   NativeMethods.RDW_FRAME);
+                    Gdi32.DeleteObject(hNonClientRegion);
                 }
-                finally
+                if (hClientRegion != IntPtr.Zero)
                 {
-                    // clean up our regions.
-                    try
-                    {
-                        if (hNonClientRegion.Handle != IntPtr.Zero)
-                        {
-                            SafeNativeMethods.DeleteObject(hNonClientRegion);
-                        }
-                    }
-                    finally
-                    {
-                        try
-                        {
-                            if (hClientRegion.Handle != IntPtr.Zero)
-                            {
-                                SafeNativeMethods.DeleteObject(hClientRegion);
-                            }
-                        }
-                        finally
-                        {
-                            if (hTotalRegion.Handle != IntPtr.Zero)
-                            {
-                                SafeNativeMethods.DeleteObject(hTotalRegion);
-                            }
-                        }
-                    }
-
+                    Gdi32.DeleteObject(hClientRegion);
                 }
-
+                if (hTotalRegion != IntPtr.Zero)
+                {
+                    Gdi32.DeleteObject(hTotalRegion);
+                }
             }
 
             protected override void OnGotFocus(EventArgs e)
@@ -807,8 +787,8 @@ namespace System.Windows.Forms
                 // Using GetWindowDC instead of GetDCEx as GetDCEx seems to return a null handle and a last error of
                 // the operation succeeded.  We're not going to use the clipping rect anyways - so it's not
                 // that bigga deal.
-                HandleRef hdc = new HandleRef(this, UnsafeNativeMethods.GetWindowDC(new HandleRef(this, m.HWnd)));
-                if (hdc.Handle == IntPtr.Zero)
+                IntPtr hdc = UnsafeNativeMethods.GetWindowDC(new HandleRef(this, m.HWnd));
+                if (hdc == IntPtr.Zero)
                 {
                     throw new Win32Exception();
                 }
@@ -824,7 +804,7 @@ namespace System.Windows.Forms
                         outerBorderColor = SystemColors.ControlDark;
                         innerBorderColor = SystemColors.Control;
                     }
-                    using (Graphics g = Graphics.FromHdcInternal(hdc.Handle))
+                    using (Graphics g = Graphics.FromHdcInternal(hdc))
                     {
 
                         Rectangle clientRect = AbsoluteClientRectangle;
@@ -848,7 +828,7 @@ namespace System.Windows.Forms
                 }
                 finally
                 {
-                    UnsafeNativeMethods.ReleaseDC(new HandleRef(this, Handle), hdc);
+                    User32.ReleaseDC(new HandleRef(this, Handle), hdc);
                 }
                 // we've handled WM_NCPAINT.
                 m.Result = IntPtr.Zero;
@@ -856,7 +836,7 @@ namespace System.Windows.Forms
             }
             protected override void WndProc(ref Message m)
             {
-                if (m.Msg == Interop.WindowMessages.WM_NCPAINT)
+                if (m.Msg == WindowMessages.WM_NCPAINT)
                 {
                     WmNCPaint(ref m);
                     return;

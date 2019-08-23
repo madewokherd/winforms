@@ -19,6 +19,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows.Forms.ComponentModel.Com2Interop;
 using System.Windows.Forms.Design;
+using static Interop;
 
 namespace System.Windows.Forms
 {
@@ -198,9 +199,9 @@ namespace System.Windows.Forms
         private NativeMethods.IPerPropertyBrowsing iPerPropertyBrowsing;
         private NativeMethods.ICategorizeProperties iCategorizeProperties;
         private UnsafeNativeMethods.IPersistPropertyBag iPersistPropBag;
-        private UnsafeNativeMethods.IPersistStream iPersistStream;
-        private UnsafeNativeMethods.IPersistStreamInit iPersistStreamInit;
-        private UnsafeNativeMethods.IPersistStorage iPersistStorage;
+        private Ole32.IPersistStream iPersistStream;
+        private Ole32.IPersistStreamInit iPersistStreamInit;
+        private Ole32.IPersistStorage iPersistStorage;
 
         private AboutBoxDelegate aboutBoxDelegate = null;
         private readonly EventHandler selectionChangeHandler;
@@ -1136,7 +1137,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// Raises the <see cref='Control.LostFocus'/> event.
+        ///  Raises the <see cref='Control.LostFocus'/> event.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         protected override void OnLostFocus(EventArgs e)
@@ -1223,48 +1224,50 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        ///  Creates a handle for this control. This method is called by the .NET framework, this should
-        ///  not be called.
+        ///  Creates a handle for this control. This method is called by the framework, this should
+        ///  not be called directly.
         /// </summary>
         protected override void CreateHandle()
         {
-            if (!IsHandleCreated)
+            if (IsHandleCreated)
             {
+                return;
+            }
 
-                TransitionUpTo(OC_RUNNING);
-                if (!axState[fOwnWindow])
+            TransitionUpTo(OC_RUNNING);
+            if (!axState[fOwnWindow])
+            {
+                if (axState[fNeedOwnWindow])
                 {
-                    if (axState[fNeedOwnWindow])
-                    {
-                        Debug.Assert(!Visible, "if we were visible we would not be needing a fake window...");
-                        axState[fNeedOwnWindow] = false;
-                        axState[fFakingWindow] = true;
-                        base.CreateHandle();
-                        // note that we do not need to attach the handle because the work usually done in there
-                        // will be done in Control's wndProc on WM_CREATE...
-                    }
-                    else
-                    {
-                        TransitionUpTo(OC_INPLACE);
-                        // it is possible that we were hidden while in place activating, in which case we don't
-                        // really have a handle now because the act of hiding could have destroyed it
-                        // so, just call ourselves again recursively, and if we dont't have a handle, we will
-                        // just take the "axState[fNeedOwnWindow]" path above...
-                        if (axState[fNeedOwnWindow])
-                        {
-                            Debug.Assert(!IsHandleCreated, "if we need a fake window, we can't have a real one");
-                            CreateHandle();
-                            return;
-                        }
-                    }
+                    Debug.Assert(!Visible, "if we were visible we would not be needing a fake window...");
+                    axState[fNeedOwnWindow] = false;
+                    axState[fFakingWindow] = true;
+                    base.CreateHandle();
+                    // note that we do not need to attach the handle because the work usually done in there
+                    // will be done in Control's wndProc on WM_CREATE...
                 }
                 else
                 {
-                    SetState(STATE_VISIBLE, false);
-                    base.CreateHandle();
+                    TransitionUpTo(OC_INPLACE);
+                    // it is possible that we were hidden while in place activating, in which case we don't
+                    // really have a handle now because the act of hiding could have destroyed it
+                    // so, just call ourselves again recursively, and if we dont't have a handle, we will
+                    // just take the "axState[fNeedOwnWindow]" path above...
+                    if (axState[fNeedOwnWindow])
+                    {
+                        Debug.Assert(!IsHandleCreated, "if we need a fake window, we can't have a real one");
+                        CreateHandle();
+                        return;
+                    }
                 }
-                GetParentContainer().ControlCreated(this);
             }
+            else
+            {
+                SetState(STATE_VISIBLE, false);
+                base.CreateHandle();
+            }
+
+            GetParentContainer().ControlCreated(this);
         }
 
         private NativeMethods.COMRECT GetClipRect(NativeMethods.COMRECT clipRect)
@@ -1276,49 +1279,40 @@ namespace System.Windows.Forms
             return clipRect;
         }
 
-        private static int SetupLogPixels(bool force)
+        private static HRESULT SetupLogPixels(bool force)
         {
             if (logPixelsX == -1 || force)
             {
-                IntPtr hDC = UnsafeNativeMethods.GetDC(NativeMethods.NullHandleRef);
-                if (hDC == IntPtr.Zero)
+                using ScreenDC dc = ScreenDC.Create();
+                if (dc == IntPtr.Zero)
                 {
-                    return NativeMethods.E_FAIL;
+                    return HRESULT.E_FAIL;
                 }
 
-                logPixelsX = UnsafeNativeMethods.GetDeviceCaps(new HandleRef(null, hDC), NativeMethods.LOGPIXELSX);
-                logPixelsY = UnsafeNativeMethods.GetDeviceCaps(new HandleRef(null, hDC), NativeMethods.LOGPIXELSY);
-                Debug.WriteLineIf(AxHTraceSwitch.TraceVerbose, "log pixels are: " + logPixelsX.ToString(CultureInfo.InvariantCulture) + " " + logPixelsY.ToString(CultureInfo.InvariantCulture));
-                UnsafeNativeMethods.ReleaseDC(NativeMethods.NullHandleRef, new HandleRef(null, hDC));
+                logPixelsX = Gdi32.GetDeviceCaps(dc, Gdi32.DeviceCapability.LOGPIXELSX);
+                logPixelsY = Gdi32.GetDeviceCaps(dc, Gdi32.DeviceCapability.LOGPIXELSY);
+                Debug.WriteLineIf(AxHTraceSwitch.TraceVerbose, $"log pixels are: {logPixelsX} {logPixelsY}");
             }
 
-            return NativeMethods.S_OK;
+            return HRESULT.S_OK;
         }
 
-        private void HiMetric2Pixel(NativeMethods.tagSIZEL sz, NativeMethods.tagSIZEL szout)
+        private unsafe void HiMetric2Pixel(ref Size sz)
         {
-            NativeMethods._POINTL phm = new NativeMethods._POINTL
-            {
-                x = sz.cx,
-                y = sz.cy
-            };
-            NativeMethods.tagPOINTF pcont = new NativeMethods.tagPOINTF();
-            ((UnsafeNativeMethods.IOleControlSite)oleSite).TransformCoords(phm, pcont, NativeMethods.ActiveX.XFORMCOORDS_SIZE | NativeMethods.ActiveX.XFORMCOORDS_HIMETRICTOCONTAINER);
-            szout.cx = (int)pcont.x;
-            szout.cy = (int)pcont.y;
+            var phm = new Point(sz.Width, sz.Height);
+            var pcont = new PointF();
+            ((UnsafeNativeMethods.IOleControlSite)oleSite).TransformCoords(&phm, &pcont, NativeMethods.ActiveX.XFORMCOORDS_SIZE | NativeMethods.ActiveX.XFORMCOORDS_HIMETRICTOCONTAINER);
+            sz.Width = (int)pcont.X;
+            sz.Height = (int)pcont.Y;
         }
 
-        private void Pixel2hiMetric(NativeMethods.tagSIZEL sz, NativeMethods.tagSIZEL szout)
+        private unsafe void Pixel2hiMetric(ref Size sz)
         {
-            NativeMethods.tagPOINTF pcont = new NativeMethods.tagPOINTF
-            {
-                x = (float)sz.cx,
-                y = (float)sz.cy
-            };
-            NativeMethods._POINTL phm = new NativeMethods._POINTL();
-            ((UnsafeNativeMethods.IOleControlSite)oleSite).TransformCoords(phm, pcont, NativeMethods.ActiveX.XFORMCOORDS_SIZE | NativeMethods.ActiveX.XFORMCOORDS_CONTAINERTOHIMETRIC);
-            szout.cx = phm.x;
-            szout.cy = phm.y;
+            var phm = new Point();
+            var pcont = new PointF(sz.Width, sz.Height);
+            ((UnsafeNativeMethods.IOleControlSite)oleSite).TransformCoords(&phm, &pcont, NativeMethods.ActiveX.XFORMCOORDS_SIZE | NativeMethods.ActiveX.XFORMCOORDS_CONTAINERTOHIMETRIC);
+            sz.Width = phm.X;
+            sz.Height = phm.Y;
         }
 
         private static int Pixel2Twip(int v, bool xDirection)
@@ -1342,45 +1336,32 @@ namespace System.Windows.Forms
             return (int)(((((double)v) / 20.0) / 72.0) * logP);
         }
 
-        private Size SetExtent(int width, int height)
+        private unsafe Size SetExtent(int width, int height)
         {
             Debug.WriteLineIf(AxHTraceSwitch.TraceVerbose, "setting extent to " + width.ToString(CultureInfo.InvariantCulture) + " " + height.ToString(CultureInfo.InvariantCulture));
-            NativeMethods.tagSIZEL sz = new NativeMethods.tagSIZEL
-            {
-                cx = width,
-                cy = height
-            };
+            Size sz = new Size(width, height);
             bool resetExtents = !IsUserMode();
-            try
-            {
-                Pixel2hiMetric(sz, sz);
-                GetOleObject().SetExtent(NativeMethods.ActiveX.DVASPECT_CONTENT, sz);
-            }
-            catch (COMException)
+            Pixel2hiMetric(ref sz);
+            Interop.HRESULT hr = GetOleObject().SetExtent(NativeMethods.ActiveX.DVASPECT_CONTENT, &sz);
+            if (hr != Interop.HRESULT.S_OK)
             {
                 resetExtents = true;
             }
             if (resetExtents)
             {
-                GetOleObject().GetExtent(NativeMethods.ActiveX.DVASPECT_CONTENT, sz);
-                try
-                {
-                    GetOleObject().SetExtent(NativeMethods.ActiveX.DVASPECT_CONTENT, sz);
-                }
-                catch (COMException e)
-                {
-                    Debug.Fail(e.ToString());
-                }
+                GetOleObject().GetExtent(NativeMethods.ActiveX.DVASPECT_CONTENT, &sz);
+                GetOleObject().SetExtent(NativeMethods.ActiveX.DVASPECT_CONTENT, &sz);
             }
+
             return GetExtent();
         }
 
-        private Size GetExtent()
+        private unsafe Size GetExtent()
         {
-            NativeMethods.tagSIZEL sz = new NativeMethods.tagSIZEL();
-            GetOleObject().GetExtent(NativeMethods.ActiveX.DVASPECT_CONTENT, sz);
-            HiMetric2Pixel(sz, sz);
-            return new Size(sz.cx, sz.cy);
+            var sz = new Size();
+            GetOleObject().GetExtent(NativeMethods.ActiveX.DVASPECT_CONTENT, &sz);
+            HiMetric2Pixel(ref sz);
+            return sz;
         }
 
         /// <summary>
@@ -1505,8 +1486,8 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// Destroys the handle associated with this control.
-        /// User code should in general not call this function.
+        ///  Destroys the handle associated with this control.
+        ///  User code should in general not call this function.
         /// </summary>
         protected override void DestroyHandle()
         {
@@ -1937,7 +1918,7 @@ namespace System.Windows.Forms
         /// </summary>
         public override bool PreProcessMessage(ref Message msg)
         {
-            Debug.WriteLineIf(ControlKeyboardRouting.TraceVerbose, "AxHost.PreProcessMessage " + msg.ToString());
+            Debug.WriteLineIf(s_controlKeyboardRouting.TraceVerbose, "AxHost.PreProcessMessage " + msg.ToString());
 
             if (IsUserMode())
             {
@@ -1976,7 +1957,7 @@ namespace System.Windows.Forms
 
                         if (hr == NativeMethods.S_OK)
                         {
-                            Debug.WriteLineIf(ControlKeyboardRouting.TraceVerbose, "\t Message translated by control to " + msg);
+                            Debug.WriteLineIf(s_controlKeyboardRouting.TraceVerbose, "\t Message translated by control to " + msg);
                             return true;
                         }
                         else if (hr == NativeMethods.S_FALSE)
@@ -1996,12 +1977,12 @@ namespace System.Windows.Forms
                         }
                         else if (axState[siteProcessedInputKey])
                         {
-                            Debug.WriteLineIf(ControlKeyboardRouting.TraceVerbose, "\t Message processed by site. Calling base.PreProcessMessage() " + msg);
+                            Debug.WriteLineIf(s_controlKeyboardRouting.TraceVerbose, "\t Message processed by site. Calling base.PreProcessMessage() " + msg);
                             return base.PreProcessMessage(ref msg);
                         }
                         else
                         {
-                            Debug.WriteLineIf(ControlKeyboardRouting.TraceVerbose, "\t Message not processed by site. Returning false. " + msg);
+                            Debug.WriteLineIf(s_controlKeyboardRouting.TraceVerbose, "\t Message not processed by site. Returning false. " + msg);
                             return false;
                         }
                     }
@@ -2016,13 +1997,13 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// Process a mnemonic character.
-        /// This is done by manufacturing a WM_SYSKEYDOWN message and passing it to the
-        /// ActiveX control.
+        ///  Process a mnemonic character.
+        ///  This is done by manufacturing a WM_SYSKEYDOWN message and passing it to the
+        ///  ActiveX control.
         /// </summary>
         protected internal override bool ProcessMnemonic(char charCode)
         {
-            Debug.WriteLineIf(ControlKeyboardRouting.TraceVerbose, "In AxHost.ProcessMnemonic: " + (int)charCode);
+            Debug.WriteLineIf(s_controlKeyboardRouting.TraceVerbose, "In AxHost.ProcessMnemonic: " + (int)charCode);
             if (CanSelect)
             {
                 try
@@ -2039,19 +2020,17 @@ namespace System.Windows.Forms
                         // A bit of ugliness here (a bit?  more like a bucket...)
                         // The message we are faking is a WM_SYSKEYDOWN w/ the right alt key setting...
                         hwnd = (ContainingControl == null) ? IntPtr.Zero : ContainingControl.Handle,
-                        message = Interop.WindowMessages.WM_SYSKEYDOWN,
+                        message = WindowMessages.WM_SYSKEYDOWN,
                         wParam = (IntPtr)char.ToUpper(charCode, CultureInfo.CurrentCulture),
                         lParam = (IntPtr)0x20180001,
                         time = SafeNativeMethods.GetTickCount()
                     };
-                    NativeMethods.POINT p = new NativeMethods.POINT();
-                    UnsafeNativeMethods.GetCursorPos(p);
-                    msg.pt_x = p.x;
-                    msg.pt_y = p.y;
+                    UnsafeNativeMethods.GetCursorPos(out Point p);
+                    msg.pt = p;
                     if (SafeNativeMethods.IsAccelerator(new HandleRef(ctlInfo, ctlInfo.hAccel), ctlInfo.cAccel, ref msg, null))
                     {
                         GetOleControl().OnMnemonic(ref msg);
-                        Debug.WriteLineIf(ControlKeyboardRouting.TraceVerbose, "\t Processed mnemonic " + msg);
+                        Debug.WriteLineIf(s_controlKeyboardRouting.TraceVerbose, "\t Processed mnemonic " + msg);
                         Focus();
                         return true;
                     }
@@ -2163,7 +2142,7 @@ namespace System.Windows.Forms
                     if (iPersistPropBag != null)
                     {
                         propBag = new PropertyBagStream();
-                        iPersistPropBag.Save(propBag, true, true);
+                        iPersistPropBag.Save(propBag, BOOL.TRUE, BOOL.TRUE);
                     }
 
                     MemoryStream ms = null;
@@ -2174,11 +2153,11 @@ namespace System.Windows.Forms
                             ms = new MemoryStream();
                             if (storageType == STG_STREAM)
                             {
-                                iPersistStream.Save(new UnsafeNativeMethods.ComStreamFromDataStream(ms), true);
+                                iPersistStream.Save(new Ole32.GPStream(ms), BOOL.TRUE);
                             }
                             else
                             {
-                                iPersistStreamInit.Save(new UnsafeNativeMethods.ComStreamFromDataStream(ms), true);
+                                iPersistStreamInit.Save(new Ole32.GPStream(ms), BOOL.TRUE);
                             }
                             break;
                         case STG_STORAGE:
@@ -2253,7 +2232,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// Determines if the Text property needs to be persisted.
+        ///  Determines if the Text property needs to be persisted.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal override bool ShouldSerializeText()
@@ -2327,7 +2306,7 @@ namespace System.Windows.Forms
                 return true;
             }
 #endif
-            int hr = NativeMethods.E_FAIL;
+            HRESULT hr = HRESULT.E_FAIL;
             switch (storageType)
             {
                 case STG_STREAM:
@@ -2343,23 +2322,16 @@ namespace System.Windows.Forms
                     Debug.Fail("unknown storage type");
                     return true;
             }
-            if (hr == NativeMethods.S_FALSE)
-            {
-                // NOTE: This was a note from the old AxHost codebase. The problem
-                // with doing this is that the some controls that do not run in
-                // unlicensed mode (e.g. ProtoView ScheduleX pvtaskpad.ocx) will
-                // always return S_FALSE to disallow design-time support.
 
-                // Sadly, some controls lie and never say that they are dirty...
-                // SO, we don't believe them unless they told us that they were
-                // dirty at least once...
-                return false;
-            }
-            else if (NativeMethods.Failed(hr))
-            {
-                return true;
-            }
-            return true;
+            // NOTE: This was a note from the old AxHost codebase. The problem
+            // with doing this is that the some controls that do not run in
+            // unlicensed mode (e.g. ProtoView ScheduleX pvtaskpad.ocx) will
+            // always return S_FALSE to disallow design-time support.
+
+            // Sadly, some controls lie and never say that they are dirty...
+            // SO, we don't believe them unless they told us that they were
+            // dirty at least once...
+            return hr != HRESULT.S_FALSE;
         }
 
         internal bool IsUserMode()
@@ -2764,8 +2736,8 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// Retrieves the class name for this object.  If null is returned,
-        /// the type name is used.
+        ///  Retrieves the class name for this object.  If null is returned,
+        ///  the type name is used.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         string ICustomTypeDescriptor.GetClassName()
@@ -2774,8 +2746,8 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// Retrieves the name for this object.  If null is returned,
-        /// the default is used.
+        ///  Retrieves the name for this object.  If null is returned,
+        ///  the default is used.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         string ICustomTypeDescriptor.GetComponentName()
@@ -2784,7 +2756,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// Retrieves the type converter for this object.
+        ///  Retrieves the type converter for this object.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         TypeConverter ICustomTypeDescriptor.GetConverter()
@@ -2805,7 +2777,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// Retrieves the an editor for this object.
+        ///  Retrieves the an editor for this object.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         object ICustomTypeDescriptor.GetEditor(Type editorBaseType)
@@ -3095,19 +3067,19 @@ namespace System.Windows.Forms
             iPersistPropBag.Load(propBag, null);
         }
 
-        private void DepersistFromIStream(UnsafeNativeMethods.IStream istream)
+        private void DepersistFromIStream(Ole32.IStream istream)
         {
             storageType = STG_STREAM;
             iPersistStream.Load(istream);
         }
 
-        private void DepersistFromIStreamInit(UnsafeNativeMethods.IStream istream)
+        private void DepersistFromIStreamInit(Ole32.IStream istream)
         {
             storageType = STG_STREAMINIT;
             iPersistStreamInit.Load(istream);
         }
 
-        private void DepersistFromIStorage(UnsafeNativeMethods.IStorage storage)
+        private void DepersistFromIStorage(Ole32.IStorage storage)
         {
             storageType = STG_STORAGE;
 
@@ -3118,8 +3090,8 @@ namespace System.Windows.Forms
             //
             if (storage != null)
             {
-                int hr = iPersistStorage.Load(storage);
-                if (hr != NativeMethods.S_OK)
+                HRESULT hr =  iPersistStorage.Load(storage);
+                if (hr != HRESULT.S_OK)
                 {
                     Debug.WriteLineIf(AxHTraceSwitch.TraceVerbose, "Error trying load depersist from IStorage: " + hr);
                 }
@@ -3134,9 +3106,9 @@ namespace System.Windows.Forms
             {
                 // must init new:
                 //
-                if (instance is UnsafeNativeMethods.IPersistStreamInit)
+                if (instance is Ole32.IPersistStreamInit)
                 {
-                    iPersistStreamInit = (UnsafeNativeMethods.IPersistStreamInit)instance;
+                    iPersistStreamInit = (Ole32.IPersistStreamInit)instance;
                     try
                     {
                         storageType = STG_STREAMINIT;
@@ -3148,17 +3120,17 @@ namespace System.Windows.Forms
                     }
                     return;
                 }
-                if (instance is UnsafeNativeMethods.IPersistStream)
+                if (instance is Ole32.IPersistStream)
                 {
                     storageType = STG_STREAM;
-                    iPersistStream = (UnsafeNativeMethods.IPersistStream)instance;
+                    iPersistStream = (Ole32.IPersistStream)instance;
                     return;
                 }
-                if (instance is UnsafeNativeMethods.IPersistStorage)
+                if (instance is Ole32.IPersistStorage)
                 {
                     storageType = STG_STORAGE;
                     ocxState = new State(this);
-                    iPersistStorage = (UnsafeNativeMethods.IPersistStorage)instance;
+                    iPersistStorage = (Ole32.IPersistStorage)instance;
                     try
                     {
                         iPersistStorage.InitNew(ocxState.GetStorage());
@@ -3193,7 +3165,7 @@ namespace System.Windows.Forms
                 case STG_STREAM:
                     try
                     {
-                        iPersistStream = (UnsafeNativeMethods.IPersistStream)instance;
+                        iPersistStream = (Ole32.IPersistStream)instance;
                         DepersistFromIStream(ocxState.GetStream());
                     }
                     catch (Exception e)
@@ -3202,11 +3174,11 @@ namespace System.Windows.Forms
                     }
                     break;
                 case STG_STREAMINIT:
-                    if (instance is UnsafeNativeMethods.IPersistStreamInit)
+                    if (instance is Ole32.IPersistStreamInit)
                     {
                         try
                         {
-                            iPersistStreamInit = (UnsafeNativeMethods.IPersistStreamInit)instance;
+                            iPersistStreamInit = (Ole32.IPersistStreamInit)instance;
                             DepersistFromIStreamInit(ocxState.GetStream());
                         }
                         catch (Exception e)
@@ -3225,7 +3197,7 @@ namespace System.Windows.Forms
                 case STG_STORAGE:
                     try
                     {
-                        iPersistStorage = (UnsafeNativeMethods.IPersistStorage)instance;
+                        iPersistStorage = (Ole32.IPersistStorage)instance;
                         DepersistFromIStorage(ocxState.GetStorage());
                     }
                     catch (Exception e)
@@ -3522,31 +3494,31 @@ namespace System.Windows.Forms
             switch (m.Msg)
             {
                 // Things we explicitly ignore and pass to the ocx's windproc
-                case Interop.WindowMessages.WM_ERASEBKGND:
+                case WindowMessages.WM_ERASEBKGND:
 
-                case Interop.WindowMessages.WM_REFLECT + Interop.WindowMessages.WM_NOTIFYFORMAT:
+                case WindowMessages.WM_REFLECT + WindowMessages.WM_NOTIFYFORMAT:
 
-                case Interop.WindowMessages.WM_SETCURSOR:
-                case Interop.WindowMessages.WM_SYSCOLORCHANGE:
+                case WindowMessages.WM_SETCURSOR:
+                case WindowMessages.WM_SYSCOLORCHANGE:
 
                 // Some of the MSComCtl controls respond to this message
                 // to do some custom painting. So, we should just pass this message
                 // through.
                 //
-                case Interop.WindowMessages.WM_DRAWITEM:
+                case WindowMessages.WM_DRAWITEM:
 
-                case Interop.WindowMessages.WM_LBUTTONDBLCLK:
-                case Interop.WindowMessages.WM_LBUTTONUP:
-                case Interop.WindowMessages.WM_MBUTTONDBLCLK:
-                case Interop.WindowMessages.WM_MBUTTONUP:
-                case Interop.WindowMessages.WM_RBUTTONDBLCLK:
-                case Interop.WindowMessages.WM_RBUTTONUP:
+                case WindowMessages.WM_LBUTTONDBLCLK:
+                case WindowMessages.WM_LBUTTONUP:
+                case WindowMessages.WM_MBUTTONDBLCLK:
+                case WindowMessages.WM_MBUTTONUP:
+                case WindowMessages.WM_RBUTTONDBLCLK:
+                case WindowMessages.WM_RBUTTONUP:
                     DefWndProc(ref m);
                     break;
 
-                case Interop.WindowMessages.WM_LBUTTONDOWN:
-                case Interop.WindowMessages.WM_MBUTTONDOWN:
-                case Interop.WindowMessages.WM_RBUTTONDOWN:
+                case WindowMessages.WM_LBUTTONDOWN:
+                case WindowMessages.WM_MBUTTONDOWN:
+                case WindowMessages.WM_RBUTTONDOWN:
                     if (IsUserMode())
                     {
                         Focus();
@@ -3554,7 +3526,7 @@ namespace System.Windows.Forms
                     DefWndProc(ref m);
                     break;
 
-                case Interop.WindowMessages.WM_KILLFOCUS:
+                case WindowMessages.WM_KILLFOCUS:
                     {
                         hwndFocus = m.WParam;
                         try
@@ -3568,18 +3540,18 @@ namespace System.Windows.Forms
                         break;
                     }
 
-                case Interop.WindowMessages.WM_COMMAND:
+                case WindowMessages.WM_COMMAND:
                     if (!ReflectMessage(m.LParam, ref m))
                     {
                         DefWndProc(ref m);
                     }
                     break;
 
-                case Interop.WindowMessages.WM_CONTEXTMENU:
+                case WindowMessages.WM_CONTEXTMENU:
                     DefWndProc(ref m);
                     break;
 
-                case Interop.WindowMessages.WM_DESTROY:
+                case WindowMessages.WM_DESTROY:
 #if DEBUG
                     if (!OwnWindow())
                     {
@@ -3613,13 +3585,13 @@ namespace System.Windows.Forms
                     }
 
                     break;
-                case Interop.WindowMessages.WM_HELP:
+                case WindowMessages.WM_HELP:
                     // We want to both fire the event, and let the ocx have the message...
                     base.WndProc(ref m);
                     DefWndProc(ref m);
                     break;
 
-                case Interop.WindowMessages.WM_KEYUP:
+                case WindowMessages.WM_KEYUP:
                     if (axState[processingKeyUp])
                     {
                         break;
@@ -3640,7 +3612,7 @@ namespace System.Windows.Forms
 
                     break;
 
-                case Interop.WindowMessages.WM_NCDESTROY:
+                case WindowMessages.WM_NCDESTROY:
 #if DEBUG
                     if (!OwnWindow())
                     {
@@ -3816,8 +3788,8 @@ namespace System.Windows.Forms
             private readonly string callStack;
 #endif
             /// <summary>
-            /// Creates a connection point to of the given interface type.
-            /// which will call on a managed code sink that implements that interface.
+            ///  Creates a connection point to of the given interface type.
+            ///  which will call on a managed code sink that implements that interface.
             /// </summary>
             public ConnectionPointCookie(object source, object sink, Type eventInterface)
                 : this(source, sink, eventInterface, true)
@@ -3900,8 +3872,8 @@ namespace System.Windows.Forms
             }
 
             /// <summary>
-            /// Disconnect the current connection point.  If the object is not connected,
-            /// this method will do nothing.
+            ///  Disconnect the current connection point.  If the object is not connected,
+            ///  this method will do nothing.
             /// </summary>
             public void Disconnect()
             {
@@ -4260,10 +4232,15 @@ namespace System.Windows.Forms
                 return NativeMethods.S_OK;
             }
 
-            int UnsafeNativeMethods.IOleControlSite.TransformCoords(NativeMethods._POINTL pPtlHimetric, NativeMethods.tagPOINTF pPtfContainer, int dwFlags)
+            unsafe HRESULT UnsafeNativeMethods.IOleControlSite.TransformCoords(Point *pPtlHimetric, PointF *pPtfContainer, uint dwFlags)
             {
-                int hr = SetupLogPixels(false);
-                if (NativeMethods.Failed(hr))
+                if (pPtlHimetric == null || pPtfContainer == null)
+                {
+                    return HRESULT.E_INVALIDARG;
+                }
+
+                HRESULT hr = SetupLogPixels(false);
+                if (hr < 0)
                 {
                     return hr;
                 }
@@ -4272,45 +4249,45 @@ namespace System.Windows.Forms
                 {
                     if ((dwFlags & NativeMethods.ActiveX.XFORMCOORDS_SIZE) != 0)
                     {
-                        pPtfContainer.x = (float)host.HM2Pix(pPtlHimetric.x, logPixelsX);
-                        pPtfContainer.y = (float)host.HM2Pix(pPtlHimetric.y, logPixelsY);
+                        pPtfContainer->X = (float)host.HM2Pix(pPtlHimetric->X, logPixelsX);
+                        pPtfContainer->Y = (float)host.HM2Pix(pPtlHimetric->Y, logPixelsY);
                     }
                     else if ((dwFlags & NativeMethods.ActiveX.XFORMCOORDS_POSITION) != 0)
                     {
-                        pPtfContainer.x = (float)host.HM2Pix(pPtlHimetric.x, logPixelsX);
-                        pPtfContainer.y = (float)host.HM2Pix(pPtlHimetric.y, logPixelsY);
+                        pPtfContainer->X = (float)host.HM2Pix(pPtlHimetric->X, logPixelsX);
+                        pPtfContainer->Y = (float)host.HM2Pix(pPtlHimetric->Y, logPixelsY);
                     }
                     else
                     {
                         Debug.WriteLineIf(AxHTraceSwitch.TraceVerbose, "\t dwFlags not supported: " + dwFlags);
-                        return NativeMethods.E_INVALIDARG;
+                        return HRESULT.E_INVALIDARG;
                     }
                 }
                 else if ((dwFlags & NativeMethods.ActiveX.XFORMCOORDS_CONTAINERTOHIMETRIC) != 0)
                 {
                     if ((dwFlags & NativeMethods.ActiveX.XFORMCOORDS_SIZE) != 0)
                     {
-                        pPtlHimetric.x = host.Pix2HM((int)pPtfContainer.x, logPixelsX);
-                        pPtlHimetric.y = host.Pix2HM((int)pPtfContainer.y, logPixelsY);
+                        pPtlHimetric->X = host.Pix2HM((int)pPtfContainer->X, logPixelsX);
+                        pPtlHimetric->Y = host.Pix2HM((int)pPtfContainer->Y, logPixelsY);
                     }
                     else if ((dwFlags & NativeMethods.ActiveX.XFORMCOORDS_POSITION) != 0)
                     {
-                        pPtlHimetric.x = host.Pix2HM((int)pPtfContainer.x, logPixelsX);
-                        pPtlHimetric.y = host.Pix2HM((int)pPtfContainer.y, logPixelsY);
+                        pPtlHimetric->X = host.Pix2HM((int)pPtfContainer->X, logPixelsX);
+                        pPtlHimetric->Y = host.Pix2HM((int)pPtfContainer->Y, logPixelsY);
                     }
                     else
                     {
                         Debug.WriteLineIf(AxHTraceSwitch.TraceVerbose, "\t dwFlags not supported: " + dwFlags);
-                        return NativeMethods.E_INVALIDARG;
+                        return HRESULT.E_INVALIDARG;
                     }
                 }
                 else
                 {
                     Debug.WriteLineIf(AxHTraceSwitch.TraceVerbose, "\t dwFlags not supported: " + dwFlags);
-                    return NativeMethods.E_INVALIDARG;
+                    return HRESULT.E_INVALIDARG;
                 }
 
-                return NativeMethods.S_OK;
+                return HRESULT.S_OK;
             }
 
             int UnsafeNativeMethods.IOleControlSite.TranslateAccelerator(ref NativeMethods.MSG pMsg, int grfModifiers)
@@ -4496,18 +4473,9 @@ namespace System.Windows.Forms
                 return NativeMethods.S_OK;
             }
 
-            int UnsafeNativeMethods.IOleInPlaceSite.Scroll(NativeMethods.tagSIZE scrollExtant)
+            Interop.HRESULT UnsafeNativeMethods.IOleInPlaceSite.Scroll(Size scrollExtant)
             {
-                try
-                {
-                    Debug.WriteLineIf(AxHTraceSwitch.TraceVerbose, "in Scroll");
-                }
-                catch (Exception t)
-                {
-                    Debug.Fail(t.ToString());
-                    throw t;
-                }
-                return (NativeMethods.S_FALSE);
+                return Interop.HRESULT.S_FALSE;
             }
 
             int UnsafeNativeMethods.IOleInPlaceSite.OnUIDeactivate(int fUndoable)
@@ -6960,10 +6928,8 @@ namespace System.Windows.Forms
         ///  An instance of this class my be obtained either by calling getOcxState on an
         ///  AxHost object, or by reading in from a stream.
         /// </summary>
-        [
-            TypeConverter(typeof(TypeConverter)),
-            Serializable
-        ]
+        [TypeConverterAttribute(typeof(TypeConverter))]
+        [Serializable] // This exchanges with the native code.
         public class State : ISerializable
         {
             private readonly int VERSION = 1;
@@ -6971,17 +6937,19 @@ namespace System.Windows.Forms
             private byte[] buffer;
             internal int type;
             private MemoryStream ms;
-            private UnsafeNativeMethods.IStorage storage;
-            private UnsafeNativeMethods.ILockBytes iLockBytes;
+            private Ole32.IStorage storage;
+            private Ole32.ILockBytes iLockBytes;
             private bool manualUpdate = false;
             private string licenseKey = null;
-            private readonly PropertyBagStream propBag;
+#pragma warning disable IDE1006
+            private readonly PropertyBagStream PropertyBagBinary; // Do NOT rename (binary serialization).
+#pragma warning restore IDE1006
 
             // create on save from ipersist stream
             internal State(MemoryStream ms, int storageType, AxHost ctl, PropertyBagStream propBag)
             {
                 type = storageType;
-                this.propBag = propBag;
+                PropertyBagBinary = propBag;
                 // dangerous?
                 length = (int)ms.Length;
                 this.ms = ms;
@@ -6991,7 +6959,7 @@ namespace System.Windows.Forms
 
             internal State(PropertyBagStream propBag)
             {
-                this.propBag = propBag;
+                PropertyBagBinary = propBag;
             }
 
             internal State(MemoryStream ms)
@@ -7049,7 +7017,7 @@ namespace System.Windows.Forms
                             Debug.Fail("failure: " + e.ToString());
                         }
                     }
-                    else if (string.Compare(sie.Name, "PropertyBagBinary", true, CultureInfo.InvariantCulture) == 0)
+                    else if (string.Compare(sie.Name, nameof(PropertyBagBinary), true, CultureInfo.InvariantCulture) == 0)
                     {
                         try
                         {
@@ -7057,8 +7025,8 @@ namespace System.Windows.Forms
                             byte[] dat = (byte[])sie.Value;
                             if (dat != null)
                             {
-                                propBag = new PropertyBagStream();
-                                propBag.Read(new MemoryStream(dat));
+                                PropertyBagBinary = new PropertyBagStream();
+                                PropertyBagBinary.Read(new MemoryStream(dat));
                             }
 
                         }
@@ -7115,16 +7083,22 @@ namespace System.Windows.Forms
                 bool failed = false;
                 try
                 {
-                    iLockBytes = UnsafeNativeMethods.CreateILockBytesOnHGlobal(new HandleRef(null, hglobal), true);
+                    iLockBytes = Ole32.CreateILockBytesOnHGlobal(hglobal, true);
                     if (buffer == null)
                     {
-                        storage = UnsafeNativeMethods.StgCreateDocfileOnILockBytes(iLockBytes,
-                                                                                   NativeMethods.STGM_CREATE | NativeMethods.STGM_READWRITE | NativeMethods.STGM_SHARE_EXCLUSIVE, 0);
+                        storage = Ole32.StgCreateDocfileOnILockBytes(
+                            iLockBytes,
+                            Ole32.STGM.STGM_CREATE | Ole32.STGM.STGM_READWRITE | Ole32.STGM.STGM_SHARE_EXCLUSIVE,
+                            0);
                     }
                     else
                     {
-                        storage = UnsafeNativeMethods.StgOpenStorageOnILockBytes(iLockBytes,
-                                                                                 null, NativeMethods.STGM_READWRITE | NativeMethods.STGM_SHARE_EXCLUSIVE, 0, 0);
+                        storage = Ole32.StgOpenStorageOnILockBytes(
+                            iLockBytes,
+                            null,
+                            Ole32.STGM.STGM_READWRITE | Ole32.STGM.STGM_SHARE_EXCLUSIVE,
+                            IntPtr.Zero,
+                            0);
                     }
                 }
                 catch (Exception t)
@@ -7148,10 +7122,10 @@ namespace System.Windows.Forms
 
             internal UnsafeNativeMethods.IPropertyBag GetPropBag()
             {
-                return propBag;
+                return PropertyBagBinary;
             }
 
-            internal UnsafeNativeMethods.IStorage GetStorage()
+            internal Ole32.IStorage GetStorage()
             {
                 if (storage == null)
                 {
@@ -7161,7 +7135,7 @@ namespace System.Windows.Forms
                 return storage;
             }
 
-            internal UnsafeNativeMethods.IStream GetStream()
+            internal Ole32.IStream GetStream()
             {
                 if (ms == null)
                 {
@@ -7177,7 +7151,7 @@ namespace System.Windows.Forms
                 {
                     ms.Seek(0, SeekOrigin.Begin);
                 }
-                return new UnsafeNativeMethods.ComStreamFromDataStream(ms);
+                return new Ole32.GPStream(ms);
             }
 
             private void InitializeFromStream(Stream ids)
@@ -7216,7 +7190,7 @@ namespace System.Windows.Forms
                 }
             }
 
-            internal State RefreshStorage(UnsafeNativeMethods.IPersistStorage iPersistStorage)
+            internal State RefreshStorage(Ole32.IPersistStorage iPersistStorage)
             {
                 Debug.Assert(storage != null, "how can we not have a storage object?");
                 Debug.Assert(iLockBytes != null, "how can we have a storage w/o ILockBytes?");
@@ -7225,18 +7199,17 @@ namespace System.Windows.Forms
                     return null;
                 }
 
-                iPersistStorage.Save(storage, true);
+                iPersistStorage.Save(storage, BOOL.TRUE);
                 storage.Commit(0);
                 iPersistStorage.HandsOffStorage();
                 try
                 {
                     buffer = null;
                     ms = null;
-                    NativeMethods.STATSTG stat = new NativeMethods.STATSTG();
-                    iLockBytes.Stat(stat, NativeMethods.Ole.STATFLAG_NONAME);
+                    iLockBytes.Stat(out Ole32.STATSTG stat, Ole32.STATFLAG.STATFLAG_NONAME);
                     length = (int)stat.cbSize;
                     buffer = new byte[length];
-                    IntPtr hglobal = UnsafeNativeMethods.GetHGlobalFromILockBytes(iLockBytes);
+                    IntPtr hglobal = Ole32.GetHGlobalFromILockBytes(iLockBytes);
                     IntPtr pointer = UnsafeNativeMethods.GlobalLock(new HandleRef(null, hglobal));
                     try
                     {
@@ -7296,7 +7269,7 @@ namespace System.Windows.Forms
             }
 
             /// <summary>
-            /// ISerializable private implementation
+            ///  ISerializable private implementation
             /// </summary>
             void ISerializable.GetObjectData(SerializationInfo si, StreamingContext context)
             {
@@ -7305,13 +7278,13 @@ namespace System.Windows.Forms
 
                 si.AddValue("Data", stream.ToArray());
 
-                if (propBag != null)
+                if (PropertyBagBinary != null)
                 {
                     try
                     {
                         stream = new MemoryStream();
-                        propBag.Write(stream);
-                        si.AddValue("PropertyBagBinary", stream.ToArray());
+                        PropertyBagBinary.Write(stream);
+                        si.AddValue(nameof(PropertyBagBinary), stream.ToArray());
                     }
                     catch (Exception e)
                     {
@@ -7689,9 +7662,9 @@ namespace System.Windows.Forms
             }
 
             /// <summary>
-            /// Called externally to update the editor or type converter.
-            /// This simply sets flags so this will happen, it doesn't actually to the update...
-            /// we wait and do that on-demand for perf.
+            ///  Called externally to update the editor or type converter.
+            ///  This simply sets flags so this will happen, it doesn't actually to the update...
+            ///  we wait and do that on-demand for perf.
             /// </summary>
             internal void UpdateTypeConverterAndTypeEditor(bool force)
             {
@@ -7704,9 +7677,9 @@ namespace System.Windows.Forms
             }
 
             /// <summary>
-            /// Called externally to update the editor or type converter.
-            /// This simply sets flags so this will happen, it doesn't actually to the update...
-            /// we wait and do that on-demand for perf.
+            ///  Called externally to update the editor or type converter.
+            ///  This simply sets flags so this will happen, it doesn't actually to the update...
+            ///  we wait and do that on-demand for perf.
             /// </summary>
             internal void UpdateTypeConverterAndTypeEditorInternal(bool force, int dispid)
             {
@@ -7881,8 +7854,8 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        /// simple derivation of the com2enumconverter that allows us to intercept
-        /// the call to GetStandardValues so we can on-demand update the enum values.
+        ///  simple derivation of the com2enumconverter that allows us to intercept
+        ///  the call to GetStandardValues so we can on-demand update the enum values.
         /// </summary>
         private class AxEnumConverter : Com2EnumConverter
         {
@@ -7928,7 +7901,7 @@ namespace System.Windows.Forms
             }
 
             /// <summary>
-            /// Retrieve a copy of the value array
+            ///  Retrieve a copy of the value array
             /// </summary>
             public override object[] Values
             {
@@ -7940,7 +7913,7 @@ namespace System.Windows.Forms
             }
 
             /// <summary>
-            /// Retrieve a copy of the nme array.
+            ///  Retrieve a copy of the nme array.
             /// </summary>
             public override string[] Names
             {
