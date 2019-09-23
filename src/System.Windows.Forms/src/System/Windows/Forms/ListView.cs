@@ -446,22 +446,15 @@ namespace System.Windows.Forms
         /// <summary>
         ///  Describes the border style of the window.
         /// </summary>
-        [
-        SRCategory(nameof(SR.CatAppearance)),
-        DefaultValue(BorderStyle.Fixed3D),
-        DispId(NativeMethods.ActiveX.DISPID_BORDERSTYLE),
-        SRDescription(nameof(SR.borderStyleDescr))
-        ]
+        [SRCategory(nameof(SR.CatAppearance))]
+        [DefaultValue(BorderStyle.Fixed3D)]
+        [DispId((int)Ole32.DispatchID.BORDERSTYLE)]
+        [SRDescription(nameof(SR.borderStyleDescr))]
         public BorderStyle BorderStyle
         {
-            get
-            {
-                return borderStyle;
-            }
-
+            get => borderStyle;
             set
             {
-                //valid values are 0x0 to 0x2
                 if (!ClientUtils.IsEnumValid(value, (int)value, (int)BorderStyle.None, (int)BorderStyle.Fixed3D))
                 {
                     throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(BorderStyle));
@@ -3786,16 +3779,14 @@ namespace System.Windows.Forms
             }
         }
 
-        private void InvalidateColumnHeaders()
+        private unsafe void InvalidateColumnHeaders()
         {
             if (viewStyle == View.Details && IsHandleCreated)
             {
-                //
-
                 IntPtr hwndHdr = UnsafeNativeMethods.SendMessage(new HandleRef(this, Handle), NativeMethods.LVM_GETHEADER, 0, 0);
                 if (hwndHdr != IntPtr.Zero)
                 {
-                    SafeNativeMethods.InvalidateRect(new HandleRef(this, hwndHdr), null, true);
+                    User32.InvalidateRect(new HandleRef(this, hwndHdr), null, BOOL.TRUE);
                 }
             }
         }
@@ -4830,63 +4821,28 @@ namespace System.Windows.Forms
             IntPtr hdrHWND = UnsafeNativeMethods.GetWindow(new HandleRef(this, Handle), NativeMethods.GW_CHILD);
             if (hdrHWND != IntPtr.Zero)
             {
+                var rc = new RECT();
+                var wpos = new User32.WINDOWPOS();
+                UnsafeNativeMethods.GetClientRect(new HandleRef(this, Handle), ref rc);
 
-                IntPtr prc = IntPtr.Zero;
-                IntPtr pwpos = IntPtr.Zero;
-
-                prc = Marshal.AllocHGlobal(Marshal.SizeOf<RECT>());
-                if (prc == IntPtr.Zero)
+                var hd = new User32.HDLAYOUT
                 {
-                    return;
-                }
+                    prc = &rc,
+                    pwpos = &wpos
+                };
 
-                try
-                {
-                    pwpos = Marshal.AllocHGlobal(Marshal.SizeOf<NativeMethods.WINDOWPOS>());
+                // get the layout information
+                User32.SendMessageW(hdrHWND, User32.WindowMessage.HDM_LAYOUT, IntPtr.Zero, ref hd);
 
-                    if (prc == IntPtr.Zero)
-                    {
-                        // we could not allocate memory.
-                        // return
-                        return;
-                    }
-
-                    UnsafeNativeMethods.GetClientRect(new HandleRef(this, Handle), prc);
-
-                    NativeMethods.HDLAYOUT hd = new NativeMethods.HDLAYOUT
-                    {
-                        prc = prc,
-                        pwpos = pwpos
-                    };
-
-                    // get the layout information
-                    UnsafeNativeMethods.SendMessage(new HandleRef(this, hdrHWND), NativeMethods.HDM_LAYOUT, 0, ref hd);
-
-                    // now take the information from the native wpos struct and put it into a managed WINDOWPOS
-                    NativeMethods.WINDOWPOS wpos = Marshal.PtrToStructure<NativeMethods.WINDOWPOS>(pwpos);
-
-                    // position the header control
-                    SafeNativeMethods.SetWindowPos(new HandleRef(this, hdrHWND),
-                                                   new HandleRef(this, wpos.hwndInsertAfter),
-                                                   wpos.x,
-                                                   wpos.y,
-                                                   wpos.cx,
-                                                   wpos.cy,
-                                                   wpos.flags | NativeMethods.SWP_SHOWWINDOW);
-                }
-                finally
-                {
-
-                    // clean up our memory
-                    if (prc != IntPtr.Zero)
-                    {
-                        Marshal.FreeHGlobal(prc);
-                    }
-                    if (pwpos != IntPtr.Zero)
-                    {
-                        Marshal.FreeHGlobal(pwpos);
-                    }
-                }
+                // position the header control
+                User32.SetWindowPos(
+                    new HandleRef(this, hdrHWND),
+                    new HandleRef(this, wpos.hwndInsertAfter),
+                    wpos.x,
+                    wpos.y,
+                    wpos.cx,
+                    wpos.cy,
+                    wpos.flags | User32.SWP.SHOWWINDOW);
             }
         }
 
@@ -5296,37 +5252,6 @@ namespace System.Windows.Forms
                 Debug.Assert(savedCheckedItems.Contains(item), "somehow we lost track of one item");
                 savedCheckedItems.Remove(item);
             }
-#if FALSE
-            if (savedCheckedItems != null && savedCheckedItems.Length > 0) {
-                ListViewItem[] newSavedCheckedItems;
-                int index = 0;
-                if (!addItem) {
-                    int current = 0;
-                    newSavedCheckedItems = new ListViewItem[savedCheckedItems.Length -1];
-                    for(index = 0 ; index < savedCheckedItems.Length ; index++)
-                    {
-                        if (savedCheckedItems[index] == item) {
-                            current = 1;
-                            continue;
-                        }
-                        newSavedCheckedItems[index - current] = savedCheckedItems[index];
-                    }
-                }
-                else {
-                    newSavedCheckedItems = new ListViewItem[savedCheckedItems.Length +1];
-                    for(index = 0 ; index < savedCheckedItems.Length ; index++)
-                    {
-                        newSavedCheckedItems[index] = savedCheckedItems[index];
-                    }
-                    newSavedCheckedItems[index] = item;
-                }
-                savedCheckedItems = newSavedCheckedItems;
-            }
-            else if (addItem) {
-                savedCheckedItems = new ListViewItem[1];
-                savedCheckedItems[0] = item;
-            }
-#endif // FALSE
         }
 
         /// <summary>
@@ -5335,9 +5260,10 @@ namespace System.Windows.Forms
         internal void SetToolTip(ToolTip toolTip, string toolTipCaption)
         {
             this.toolTipCaption = toolTipCaption;
-            //native ListView expects tooltip HWND as a wParam and ignores lParam
+
+            // native ListView expects tooltip HWND as a wParam and ignores lParam
             IntPtr oldHandle = UnsafeNativeMethods.SendMessage(new HandleRef(this, Handle), NativeMethods.LVM_SETTOOLTIPS, new HandleRef(toolTip, toolTip.Handle), 0);
-            UnsafeNativeMethods.DestroyWindow(new HandleRef(null, oldHandle));
+            User32.DestroyWindow(oldHandle);
         }
 
         internal void SetItemImage(int index, int image)
@@ -5821,7 +5747,7 @@ namespace System.Windows.Forms
 
         private unsafe bool WmNotify(ref Message m)
         {
-            NativeMethods.NMHDR* nmhdr = (NativeMethods.NMHDR*)m.LParam;
+            User32.NMHDR* nmhdr = (User32.NMHDR*)m.LParam;
 
             // column header custom draw message handling
             if (nmhdr->code == NativeMethods.NM_CUSTOMDRAW && OwnerDraw)
@@ -5840,37 +5766,32 @@ namespace System.Windows.Forms
                             }
                         case NativeMethods.CDDS_ITEMPREPAINT:
                             {
-                                Graphics g = Graphics.FromHdcInternal(nmcd->hdc);
-                                Rectangle r = Rectangle.FromLTRB(nmcd->rc.left, nmcd->rc.top, nmcd->rc.right, nmcd->rc.bottom);
-                                DrawListViewColumnHeaderEventArgs e = null;
-
-                                try
+                                using (Graphics g = Graphics.FromHdcInternal(nmcd->hdc))
                                 {
-                                    Color foreColor = ColorTranslator.FromWin32(SafeNativeMethods.GetTextColor(new HandleRef(this, nmcd->hdc)));
-                                    Color backColor = ColorTranslator.FromWin32(SafeNativeMethods.GetBkColor(new HandleRef(this, nmcd->hdc)));
+                                    Color foreColor = ColorTranslator.FromWin32(Gdi32.GetTextColor(nmcd->hdc));
+                                    Color backColor = ColorTranslator.FromWin32(Gdi32.GetBkColor(nmcd->hdc));
                                     Font font = GetListHeaderFont();
-                                    e = new DrawListViewColumnHeaderEventArgs(g, r, (int)(nmcd->dwItemSpec),
-                                                                        columnHeaders[(int)nmcd->dwItemSpec],
-                                                                        (ListViewItemStates)(nmcd->uItemState),
-                                                                        foreColor, backColor, font);
-
+                                    var e = new DrawListViewColumnHeaderEventArgs(
+                                        g,
+                                        nmcd->rc,
+                                        (int)(nmcd->dwItemSpec),
+                                        columnHeaders[(int)nmcd->dwItemSpec],
+                                        (ListViewItemStates)(nmcd->uItemState),
+                                        foreColor,
+                                        backColor,
+                                        font);
                                     OnDrawColumnHeader(e);
-                                }
-                                finally
-                                {
-                                    g.Dispose();
-                                }
+                                    if (e.DrawDefault)
+                                    {
+                                        m.Result = (IntPtr)(NativeMethods.CDRF_DODEFAULT);
+                                        return false;
+                                    }
+                                    else
+                                    {
 
-                                if (e.DrawDefault)
-                                {
-                                    m.Result = (IntPtr)(NativeMethods.CDRF_DODEFAULT);
-                                    return false;
-                                }
-                                else
-                                {
-
-                                    m.Result = (IntPtr)(NativeMethods.CDRF_SKIPDEFAULT);
-                                    return true; // we are done - don't do default handling
+                                        m.Result = (IntPtr)(NativeMethods.CDRF_SKIPDEFAULT);
+                                        return true; // we are done - don't do default handling
+                                    }
                                 }
                             }
 
@@ -6208,7 +6129,7 @@ namespace System.Windows.Forms
 
         private unsafe void WmReflectNotify(ref Message m)
         {
-            NativeMethods.NMHDR* nmhdr = (NativeMethods.NMHDR*)m.LParam;
+            User32.NMHDR* nmhdr = (User32.NMHDR*)m.LParam;
 
             switch (nmhdr->code)
             {
@@ -6540,7 +6461,7 @@ namespace System.Windows.Forms
                             if (lvi != null && !string.IsNullOrEmpty(lvi.ToolTipText))
                             {
                                 // Setting the max width has the added benefit of enabling multiline tool tips
-                                User32.SendMessageW(nmhdr->hwndFrom, WindowMessages.TTM_SETMAXTIPWIDTH, IntPtr.Zero, (IntPtr)SystemInformation.MaxWindowTrackSize.Width);
+                                User32.SendMessageW(nmhdr->hwndFrom, User32.WindowMessage.TTM_SETMAXTIPWIDTH, IntPtr.Zero, (IntPtr)SystemInformation.MaxWindowTrackSize.Width);
 
                                 // UNICODE. Use char.
                                 // we need to copy the null terminator character ourselves

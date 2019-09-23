@@ -38,7 +38,7 @@ dotnet sln add SimpleWinForms
 
 After creating the project, you can run the application:
 ```cmd
-dotnet run
+dotnet run --project SimpleWinForms\SimpleWinForms.csproj
 ```
 
 
@@ -54,8 +54,8 @@ There are few options available to help you to design UI for your .NET Core proj
 2. Open the `SimpleWinForms` project file by double clicking on it in Solution Explorer. Change the ``TargetFramework`` property from:
 
     ```diff
-    -    <TargetFramework>netcoreapp3.0</TargetFramework>
-    +    <TargetFrameworks>net472;netcoreapp3.0</TargetFrameworks>
+    -    <TargetFramework>netcoreapp5.0</TargetFramework>
+    +    <TargetFrameworks>net472;netcoreapp5.0</TargetFrameworks>
     ```
 
 3. Add for any and every form file you have in this ``ItemGroup``:
@@ -68,12 +68,6 @@ There are few options available to help you to design UI for your .NET Core proj
        <Compile Update="Form1.Designer.cs">
          <DependentUpon>Form1.cs</DependentUpon>
        </Compile>
-     </ItemGroup>
-    
-     <ItemGroup>
-       <EmbeddedResource Update="Form1.resx">
-         <DependentUpon>Form1.cs</DependentUpon>
-       </EmbeddedResource>
      </ItemGroup>
     ```
 
