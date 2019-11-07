@@ -318,7 +318,7 @@ namespace System.Windows.Forms
                 CreateParams cp = base.CreateParams;
                 cp.ClassName = "LISTBOX";
 
-                cp.Style |= NativeMethods.WS_VSCROLL | NativeMethods.LBS_NOTIFY | NativeMethods.LBS_HASSTRINGS;
+                cp.Style |= (int)User32.WS.VSCROLL | NativeMethods.LBS_NOTIFY | NativeMethods.LBS_HASSTRINGS;
                 if (scrollAlwaysVisible)
                 {
                     cp.Style |= NativeMethods.LBS_DISABLENOSCROLL;
@@ -337,20 +337,20 @@ namespace System.Windows.Forms
                 switch (borderStyle)
                 {
                     case BorderStyle.Fixed3D:
-                        cp.ExStyle |= NativeMethods.WS_EX_CLIENTEDGE;
+                        cp.ExStyle |= (int)User32.WS_EX.CLIENTEDGE;
                         break;
                     case BorderStyle.FixedSingle:
-                        cp.Style |= NativeMethods.WS_BORDER;
+                        cp.Style |= (int)User32.WS.BORDER;
                         break;
                 }
 
                 if (multiColumn)
                 {
-                    cp.Style |= NativeMethods.LBS_MULTICOLUMN | NativeMethods.WS_HSCROLL;
+                    cp.Style |= NativeMethods.LBS_MULTICOLUMN | (int)User32.WS.HSCROLL;
                 }
                 else if (horizontalScrollbar)
                 {
-                    cp.Style |= NativeMethods.WS_HSCROLL;
+                    cp.Style |= (int)User32.WS.HSCROLL;
                 }
 
                 switch (selectionMode)
@@ -1628,7 +1628,7 @@ namespace System.Windows.Forms
             //call Sendmessage.
             //
             RECT r = new RECT();
-            UnsafeNativeMethods.GetClientRect(new HandleRef(this, Handle), ref r);
+            User32.GetClientRect(new HandleRef(this, Handle), ref r);
             if (r.left <= x && x < r.right && r.top <= y && y < r.bottom)
             {
                 int index = unchecked((int)(long)SendMessage(NativeMethods.LB_ITEMFROMPOINT, 0, unchecked((int)(long)NativeMethods.Util.MAKELPARAM(x, y))));
@@ -1827,12 +1827,12 @@ namespace System.Windows.Forms
             if (item != null)
             {
                 HasKeyboardFocus = false;
-                item.RaiseAutomationEvent(NativeMethods.UIA_AutomationFocusChangedEventId);
+                item.RaiseAutomationEvent(UiaCore.UIA.AutomationFocusChangedEventId);
             }
             else
             {
                 HasKeyboardFocus = true;
-                AccessibilityObject.RaiseAutomationEvent(NativeMethods.UIA_AutomationFocusChangedEventId);
+                AccessibilityObject.RaiseAutomationEvent(UiaCore.UIA.AutomationFocusChangedEventId);
             }
 
             base.OnGotFocus(e);
@@ -1987,13 +1987,13 @@ namespace System.Windows.Forms
                 var focused = AccessibilityObject.GetFocused();
                 if (focused == AccessibilityObject.GetSelected())
                 {
-                    focused?.RaiseAutomationEvent(NativeMethods.UIA_SelectionItem_ElementSelectedEventId);
+                    focused?.RaiseAutomationEvent(UiaCore.UIA.SelectionItem_ElementSelectedEventId);
                 }
-                focused?.RaiseAutomationEvent(NativeMethods.UIA_AutomationFocusChangedEventId);
+                focused?.RaiseAutomationEvent(UiaCore.UIA.AutomationFocusChangedEventId);
             }
             else if (ItemsCountIsChanged())
             {
-                AccessibilityObject?.GetChild(Items.Count - 1)?.RaiseAutomationEvent(NativeMethods.UIA_AutomationFocusChangedEventId);
+                AccessibilityObject?.GetChild(Items.Count - 1)?.RaiseAutomationEvent(UiaCore.UIA.AutomationFocusChangedEventId);
             }
 
             base.OnSelectedIndexChanged(e);

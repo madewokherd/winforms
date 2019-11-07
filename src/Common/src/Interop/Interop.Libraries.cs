@@ -13,7 +13,9 @@ internal static partial class Interop
         public const string NtDll = "ntdll.dll";
         public const string Ole32 = "ole32.dll";
         public const string Oleaut32 = "oleaut32.dll";
+        public const string Powrprof = "Powrprof.dll";
         public const string RichEdit41 = "MsftEdit.DLL";
+        public const string SHCore = "SHCore.dll";
         public const string Shell32 = "shell32.dll";
         public const string Shlwapi = "shlwapi.dll";
         public const string UiaCore = "UIAutomationCore.dll";

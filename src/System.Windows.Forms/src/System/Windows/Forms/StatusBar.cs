@@ -594,11 +594,11 @@ namespace System.Windows.Forms
 
                 try
                 {
-                    NativeMethods.INITCOMMONCONTROLSEX icc = new NativeMethods.INITCOMMONCONTROLSEX
+                    var icc = new ComCtl32.INITCOMMONCONTROLSEX
                     {
-                        dwICC = NativeMethods.ICC_BAR_CLASSES
+                        dwICC = ComCtl32.ICC.BAR_CLASSES
                     };
-                    SafeNativeMethods.InitCommonControlsEx(icc);
+                    ComCtl32.InitCommonControlsEx(ref icc);
                 }
                 finally
                 {
@@ -1058,7 +1058,7 @@ namespace System.Windows.Forms
 
         private void WmNCHitTest(ref Message m)
         {
-            int x = NativeMethods.Util.LOWORD(m.LParam);
+            int x = NativeMethods.Util.SignedLOWORD(m.LParam);
             Rectangle bounds = Bounds;
             bool callSuper = true;
 
@@ -1653,12 +1653,13 @@ namespace System.Windows.Forms
             {
                 get
                 {
-                    NativeMethods.INITCOMMONCONTROLSEX icc = new NativeMethods.INITCOMMONCONTROLSEX
+                    var icc = new ComCtl32.INITCOMMONCONTROLSEX
                     {
-                        dwICC = NativeMethods.ICC_TAB_CLASSES
+                        dwICC = ComCtl32.ICC.TAB_CLASSES
                     };
-                    SafeNativeMethods.InitCommonControlsEx(icc);
-                    CreateParams cp = new CreateParams
+                    ComCtl32.InitCommonControlsEx(ref icc);
+
+                    var cp = new CreateParams
                     {
                         Parent = IntPtr.Zero,
                         ClassName = NativeMethods.TOOLTIPS_CLASS

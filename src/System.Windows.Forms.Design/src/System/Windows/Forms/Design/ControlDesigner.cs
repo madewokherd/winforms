@@ -285,7 +285,7 @@ namespace System.Windows.Forms.Design
         internal Point GetOffsetToClientArea()
         {
             var nativeOffset = new Point();
-            NativeMethods.MapWindowPoints(Control.Handle, Control.Parent.Handle, ref nativeOffset, 1);
+            User32.MapWindowPoints(Control.Handle, Control.Parent.Handle, ref nativeOffset, 1);
             Point offset = Control.Location;
             // If the 2 controls do not have the same orientation, then force one to make sure we calculate the correct offset
             if (Control.IsMirrored != Control.Parent.IsMirrored)
@@ -1727,8 +1727,8 @@ namespace System.Windows.Forms.Design
             // CONSIDER - I really don't like this one bit. We need a
             //          : centralized handler so we can do a global override for the tab order
             //          : UI, but the designer is a natural fit for an object oriented UI.
-            if (m.Msg >= WindowMessages.WM_MOUSEFIRST && m.Msg <= WindowMessages.WM_MOUSELAST
-                || m.Msg >= WindowMessages.WM_NCMOUSEMOVE && m.Msg <= WindowMessages.WM_NCMBUTTONDBLCLK
+            if ((m.Msg >= WindowMessages.WM_MOUSEFIRST && m.Msg <= WindowMessages.WM_MOUSELAST)
+                || (m.Msg >= WindowMessages.WM_NCMOUSEMOVE && m.Msg <= WindowMessages.WM_NCMBUTTONDBLCLK)
                 || m.Msg == WindowMessages.WM_SETCURSOR)
             {
                 if (_eventSvc == null)
@@ -1748,7 +1748,7 @@ namespace System.Windows.Forms.Design
                     X = NativeMethods.Util.SignedLOWORD(unchecked((int)(long)m.LParam)),
                     Y = NativeMethods.Util.SignedHIWORD(unchecked((int)(long)m.LParam))
                 };
-                NativeMethods.MapWindowPoints(m.HWnd, IntPtr.Zero, ref pt, 1);
+                User32.MapWindowPoints(m.HWnd, IntPtr.Zero, ref pt, 1);
                 x = pt.X;
                 y = pt.Y;
             }
@@ -1773,7 +1773,7 @@ namespace System.Windows.Forms.Design
 
                 case WindowMessages.WM_GETOBJECT:
                     // See "How to Handle WM_GETOBJECT" in MSDN
-                    if (NativeMethods.OBJID_CLIENT == unchecked((int)(long)m.LParam))
+                    if (unchecked((int)(long)m.LParam) == User32.OBJID.CLIENT)
                     {
                         Guid IID_IAccessible = new Guid(NativeMethods.uuid_IAccessible);
                         // Get an Lresult for the accessibility Object for this control
@@ -2060,9 +2060,9 @@ namespace System.Windows.Forms.Design
                             {
                                 // Re-map the clip rect we pass to the paint event args to our child coordinates.
                                 var pt = new Point();
-                                NativeMethods.MapWindowPoints(m.HWnd, Control.Handle, ref pt, 1);
+                                User32.MapWindowPoints(m.HWnd, Control.Handle, ref pt, 1);
                                 gr.TranslateTransform(-pt.X, -pt.Y);
-                                NativeMethods.MapWindowPoints(m.HWnd, Control.Handle, ref clip, 2);
+                                User32.MapWindowPoints(m.HWnd, Control.Handle, ref clip, 2);
                             }
                             paintRect = new Rectangle(clip.left, clip.top, clip.right - clip.left, clip.bottom - clip.top);
                             PaintEventArgs pevent = new PaintEventArgs(gr, paintRect);
@@ -2656,9 +2656,9 @@ namespace System.Windows.Forms.Design
                 if (child == null || Control is UserControl)
                 {
                     // Now do the children of this window.
-                    HookChildHandles(UnsafeNativeMethods.GetWindow(hwndChild, NativeMethods.GW_CHILD));
+                    HookChildHandles(User32.GetWindow(hwndChild, User32.GW.CHILD));
                 }
-                hwndChild = UnsafeNativeMethods.GetWindow(hwndChild, NativeMethods.GW_HWNDNEXT);
+                hwndChild = User32.GetWindow(hwndChild, User32.GW.HWNDNEXT);
             }
         }
 
@@ -2687,7 +2687,7 @@ namespace System.Windows.Forms.Design
             // 1.  Child handles that do not have a Control associated  with them.  We must subclass these and prevent them from getting design-time events.
             // 2.   Child handles that do have a Control associated with them, but the control does not have a designer. We must hook the WindowTarget on these controls and prevent them from getting design-time events.
             // 3.   Child handles that do have a Control associated with them, and the control has a designer.  We ignore these and let the designer handle their messages.
-            HookChildHandles(UnsafeNativeMethods.GetWindow(Control.Handle, NativeMethods.GW_CHILD));
+            HookChildHandles(User32.GetWindow(Control.Handle, User32.GW.CHILD));
             HookChildControls(Control);
         }
 

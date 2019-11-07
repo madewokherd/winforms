@@ -6,10 +6,10 @@ using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms.Design.Behavior;
+using static Interop;
 
 namespace System.Windows.Forms.Design
 {
@@ -168,8 +168,8 @@ namespace System.Windows.Forms.Design
                                 {
                                     focusIndex = owner.Items.IndexOf(curDesignerNode);
                                 }
-                                UnsafeNativeMethods.NotifyWinEvent((int)AccessibleEvents.SelectionAdd, new HandleRef(owner, owner.Handle), NativeMethods.OBJID_CLIENT, focusIndex + 1);
-                                UnsafeNativeMethods.NotifyWinEvent((int)AccessibleEvents.Focus, new HandleRef(owner, owner.Handle), NativeMethods.OBJID_CLIENT, focusIndex + 1);
+                                User32.NotifyWinEvent((uint)AccessibleEvents.SelectionAdd, new HandleRef(owner, owner.Handle), User32.OBJID.CLIENT, focusIndex + 1);
+                                User32.NotifyWinEvent((uint)AccessibleEvents.Focus, new HandleRef(owner, owner.Handle), User32.OBJID.CLIENT, focusIndex + 1);
                             }
                         }
                     }
@@ -321,7 +321,7 @@ namespace System.Windows.Forms.Design
                                 if (found == null || found.TabIndex > parentControls[c].TabIndex)
                                 {
                                     // Finally, check to make sure that if this tab index is the same as ctl, that we've already encountered ctl in the z-order.  If it isn't the same, than we're more than happy with it.
-                                    if (parentControls[c].Site != null && parentControls[c].TabIndex != targetIndex || hitCtl)
+                                    if ((parentControls[c].Site != null && parentControls[c].TabIndex != targetIndex) || hitCtl)
                                     {
                                         found = parentControls[c];
                                     }

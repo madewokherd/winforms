@@ -469,16 +469,16 @@ namespace System.Windows.Forms
                     cp.Style |= NativeMethods.ES_READONLY;
                 }
 
-                cp.ExStyle &= (~NativeMethods.WS_EX_CLIENTEDGE);
-                cp.Style &= (~NativeMethods.WS_BORDER);
+                cp.Style &= ~(int)User32.WS.BORDER;
+                cp.ExStyle &= ~(int)User32.WS_EX.CLIENTEDGE;
 
                 switch (borderStyle)
                 {
                     case BorderStyle.Fixed3D:
-                        cp.ExStyle |= NativeMethods.WS_EX_CLIENTEDGE;
+                        cp.ExStyle |= (int)User32.WS_EX.CLIENTEDGE;
                         break;
                     case BorderStyle.FixedSingle:
-                        cp.Style |= NativeMethods.WS_BORDER;
+                        cp.Style |= (int)User32.WS.BORDER;
                         break;
                 }
                 if (textBoxFlags[multiline])

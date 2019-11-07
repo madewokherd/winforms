@@ -22,9 +22,9 @@ using System.Windows.Forms.Internal;
 using System.Windows.Forms.Layout;
 using Accessibility;
 using Microsoft.Win32;
+using static Interop;
 using Encoding = System.Text.Encoding;
 using IComDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
-using static Interop;
 
 namespace System.Windows.Forms
 {
@@ -49,7 +49,7 @@ namespace System.Windows.Forms
         UnsafeNativeMethods.IOleControl,
         UnsafeNativeMethods.IOleObject,
         Ole32.IOleInPlaceObject,
-        UnsafeNativeMethods.IOleInPlaceActiveObject,
+        Ole32.IOleInPlaceActiveObject,
         Ole32.IOleWindow,
         UnsafeNativeMethods.IViewObject,
         UnsafeNativeMethods.IViewObject2,
@@ -525,7 +525,7 @@ namespace System.Windows.Forms
                 AccessibleObject ncAccessibleObject = (AccessibleObject)Properties.GetObject(s_ncAccessibilityProperty);
                 if (ncAccessibleObject == null)
                 {
-                    ncAccessibleObject = new ControlAccessibleObject(this, NativeMethods.OBJID_WINDOW);
+                    ncAccessibleObject = new ControlAccessibleObject(this, User32.OBJID.WINDOW);
                     Properties.SetObject(s_ncAccessibilityProperty, ncAccessibleObject);
                 }
 
@@ -544,10 +544,10 @@ namespace System.Windows.Forms
 
             switch (accObjId)
             {
-                case NativeMethods.OBJID_CLIENT:
+                case User32.OBJID.CLIENT:
                     accessibleObject = AccessibilityObject;
                     break;
-                case NativeMethods.OBJID_WINDOW:
+                case User32.OBJID.WINDOW:
                     accessibleObject = NcAccessibilityObject;
                     break;
                 default:
@@ -1246,24 +1246,18 @@ namespace System.Windows.Forms
         ]
         public bool Capture
         {
-            get => CaptureInternal;
-            set => CaptureInternal = value;
-        }
-
-        internal bool CaptureInternal
-        {
-            get => IsHandleCreated && UnsafeNativeMethods.GetCapture() == Handle;
+            get => IsHandleCreated && User32.GetCapture() == Handle;
             set
             {
-                if (CaptureInternal != value)
+                if (Capture != value)
                 {
                     if (value)
                     {
-                        UnsafeNativeMethods.SetCapture(new HandleRef(this, Handle));
+                        User32.SetCapture(this);
                     }
                     else
                     {
-                        SafeNativeMethods.ReleaseCapture();
+                        User32.ReleaseCapture();
                     }
                 }
             }
@@ -1424,24 +1418,13 @@ namespace System.Windows.Forms
                     return false;
                 }
 
-                IntPtr focusHwnd = UnsafeNativeMethods.GetFocus();
-
+                IntPtr focusHwnd = User32.GetFocus();
                 if (focusHwnd == IntPtr.Zero)
                 {
                     return false;
                 }
 
-                if (focusHwnd == Handle)
-                {
-                    return true;
-                }
-
-                if (UnsafeNativeMethods.IsChild(new HandleRef(this, Handle), new HandleRef(this, focusHwnd)))
-                {
-                    return true;
-                }
-
-                return false;
+                return focusHwnd == Handle || User32.IsChild(new HandleRef(this, Handle), focusHwnd).IsTrue();
             }
         }
 
@@ -1618,12 +1601,12 @@ namespace System.Windows.Forms
                 cp.Width = _width;
                 cp.Height = _height;
 
-                cp.Style = NativeMethods.WS_CLIPCHILDREN;
+                cp.Style = (int)User32.WS.CLIPCHILDREN;
                 if (GetStyle(ControlStyles.ContainerControl))
                 {
-                    cp.ExStyle |= NativeMethods.WS_EX_CONTROLPARENT;
+                    cp.ExStyle |= (int)User32.WS_EX.CONTROLPARENT;
                 }
-                cp.ClassStyle = (int)NativeMethods.ClassStyle.CS_DBLCLKS;
+                cp.ClassStyle = (int)User32.CS.DBLCLKS;
 
                 if ((_state & States.TopLevel) == 0)
                 {
@@ -1631,7 +1614,7 @@ namespace System.Windows.Forms
                     // parking form if cp.parent == 0.
                     //
                     cp.Parent = _parent == null ? IntPtr.Zero : _parent.InternalHandle;
-                    cp.Style |= NativeMethods.WS_CHILD | NativeMethods.WS_CLIPSIBLINGS;
+                    cp.Style |= (int)(User32.WS.CHILD | User32.WS.CLIPSIBLINGS);
                 }
                 else
                 {
@@ -1640,19 +1623,19 @@ namespace System.Windows.Forms
 
                 if ((_state & States.TabStop) != 0)
                 {
-                    cp.Style |= NativeMethods.WS_TABSTOP;
+                    cp.Style |= (int)User32.WS.TABSTOP;
                 }
 
                 if ((_state & States.Visible) != 0)
                 {
-                    cp.Style |= NativeMethods.WS_VISIBLE;
+                    cp.Style |= (int)User32.WS.VISIBLE;
                 }
 
                 // Unlike Visible, Windows doesn't correctly inherit disabledness from its parent -- an enabled child
                 // of a disabled parent will look enabled but not get mouse events
                 if (!Enabled)
                 {
-                    cp.Style |= NativeMethods.WS_DISABLED;
+                    cp.Style |= (int)User32.WS.DISABLED;
                 }
 
                 // If we are being hosted as an Ax control, try to prevent the parking window
@@ -1665,9 +1648,9 @@ namespace System.Windows.Forms
                 // Set Rtl bits
                 if (RightToLeft == RightToLeft.Yes)
                 {
-                    cp.ExStyle |= NativeMethods.WS_EX_RTLREADING;
-                    cp.ExStyle |= NativeMethods.WS_EX_RIGHT;
-                    cp.ExStyle |= NativeMethods.WS_EX_LEFTSCROLLBAR;
+                    cp.ExStyle |= (int)User32.WS_EX.RTLREADING;
+                    cp.ExStyle |= (int)User32.WS_EX.RIGHT;
+                    cp.ExStyle |= (int)User32.WS_EX.LEFTSCROLLBAR;
                 }
 
                 return cp;
@@ -1845,7 +1828,7 @@ namespace System.Windows.Forms
                     User32.GetCursorPos(out Point p);
                     UnsafeNativeMethods.GetWindowRect(new HandleRef(this, Handle), ref r);
 
-                    if ((r.left <= p.X && p.X < r.right && r.top <= p.Y && p.Y < r.bottom) || UnsafeNativeMethods.GetCapture() == Handle)
+                    if ((r.left <= p.X && p.X < r.right && r.top <= p.Y && p.Y < r.bottom) || User32.GetCapture() == Handle)
                     {
                         SendMessage(WindowMessages.WM_SETCURSOR, Handle, (IntPtr)NativeMethods.HTCLIENT);
                     }
@@ -2172,7 +2155,7 @@ namespace System.Windows.Forms
             SRDescription(nameof(SR.ControlFocusedDescr))
         ]
         public virtual bool Focused
-            => IsHandleCreated && UnsafeNativeMethods.GetFocus() == Handle;
+            => IsHandleCreated && User32.GetFocus() == Handle;
 
         /// <summary>
         ///  Retrieves the current font for this control. This will be the font used
@@ -2630,7 +2613,7 @@ namespace System.Windows.Forms
                     }
                     else
                     {
-                        IntPtr parentHandle = UnsafeNativeMethods.GetParent(new HandleRef(this, Handle));
+                        IntPtr parentHandle = User32.GetParent(this);
                         IntPtr lastParentHandle = parentHandle;
 
                         StringBuilder sb = new StringBuilder(32);
@@ -2653,7 +2636,7 @@ namespace System.Windows.Forms
                             }
 
                             lastParentHandle = parentHandle;
-                            parentHandle = UnsafeNativeMethods.GetParent(new HandleRef(null, parentHandle));
+                            parentHandle = User32.GetParent(parentHandle);
                         }
                     }
 
@@ -2719,7 +2702,7 @@ namespace System.Windows.Forms
                     }
 
                     for (prev = start;
-                         (next = UnsafeNativeMethods.GetWindow(new HandleRef(null, prev), NativeMethods.GW_HWNDPREV)) != IntPtr.Zero;
+                         (next = User32.GetWindow(new HandleRef(null, prev), User32.GW.HWNDPREV)) != IntPtr.Zero;
                          prev = next)
                     {
 
@@ -2856,7 +2839,7 @@ namespace System.Windows.Forms
                 if (!IsHandleCreated)
                 {
                     CreateParams cp = CreateParams;
-                    SetState(States.Mirrored, (cp.ExStyle & NativeMethods.WS_EX_LAYOUTRTL) != 0);
+                    SetState(States.Mirrored, (cp.ExStyle & (int)User32.WS_EX.LAYOUTRTL) != 0);
                 }
                 return GetState(States.Mirrored);
             }
@@ -3001,17 +2984,17 @@ namespace System.Windows.Forms
             {
                 Keys modifiers = 0;
 
-                if (UnsafeNativeMethods.GetKeyState((int)Keys.ShiftKey) < 0)
+                if (User32.GetKeyState((int)Keys.ShiftKey) < 0)
                 {
                     modifiers |= Keys.Shift;
                 }
 
-                if (UnsafeNativeMethods.GetKeyState((int)Keys.ControlKey) < 0)
+                if (User32.GetKeyState((int)Keys.ControlKey) < 0)
                 {
                     modifiers |= Keys.Control;
                 }
 
-                if (UnsafeNativeMethods.GetKeyState((int)Keys.Menu) < 0)
+                if (User32.GetKeyState((int)Keys.Menu) < 0)
                 {
                     modifiers |= Keys.Alt;
                 }
@@ -3028,29 +3011,29 @@ namespace System.Windows.Forms
         {
             get
             {
-                MouseButtons buttons = (MouseButtons)0;
+                MouseButtons buttons = default;
 
-                if (UnsafeNativeMethods.GetKeyState((int)Keys.LButton) < 0)
+                if (User32.GetKeyState((int)Keys.LButton) < 0)
                 {
                     buttons |= MouseButtons.Left;
                 }
 
-                if (UnsafeNativeMethods.GetKeyState((int)Keys.RButton) < 0)
+                if (User32.GetKeyState((int)Keys.RButton) < 0)
                 {
                     buttons |= MouseButtons.Right;
                 }
 
-                if (UnsafeNativeMethods.GetKeyState((int)Keys.MButton) < 0)
+                if (User32.GetKeyState((int)Keys.MButton) < 0)
                 {
                     buttons |= MouseButtons.Middle;
                 }
 
-                if (UnsafeNativeMethods.GetKeyState((int)Keys.XButton1) < 0)
+                if (User32.GetKeyState((int)Keys.XButton1) < 0)
                 {
                     buttons |= MouseButtons.XButton1;
                 }
 
-                if (UnsafeNativeMethods.GetKeyState((int)Keys.XButton2) < 0)
+                if (User32.GetKeyState((int)Keys.XButton2) < 0)
                 {
                     buttons |= MouseButtons.XButton2;
                 }
@@ -3587,7 +3570,7 @@ namespace System.Windows.Forms
                     TabStopInternal = value;
                     if (IsHandleCreated)
                     {
-                        SetWindowStyle(NativeMethods.WS_TABSTOP, value);
+                        SetWindowStyle((int)User32.WS.TABSTOP, value);
                     }
 
                     OnTabStopChanged(EventArgs.Empty);
@@ -4602,7 +4585,7 @@ namespace System.Windows.Forms
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         protected internal void AccessibilityNotifyClients(AccessibleEvents accEvent, int childID)
         {
-            AccessibilityNotifyClients(accEvent, NativeMethods.OBJID_CLIENT, childID);
+            AccessibilityNotifyClients(accEvent, User32.OBJID.CLIENT, childID);
         }
 
         [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -4610,7 +4593,7 @@ namespace System.Windows.Forms
         {
             if (IsHandleCreated)
             {
-                UnsafeNativeMethods.NotifyWinEvent((int)accEvent, new HandleRef(this, Handle), objectID, childID + 1);
+                User32.NotifyWinEvent((uint)accEvent, new HandleRef(this, Handle), objectID, childID + 1);
             }
         }
 
@@ -5016,7 +4999,7 @@ namespace System.Windows.Forms
                 }
 
                 CreateParams cp = CreateParams;
-                SetState(States.Mirrored, (cp.ExStyle & NativeMethods.WS_EX_LAYOUTRTL) != 0);
+                SetState(States.Mirrored, (cp.ExStyle & (int)User32.WS_EX.LAYOUTRTL) != 0);
 
                 // Adjust for scrolling of parent...
                 if (_parent != null)
@@ -5037,9 +5020,9 @@ namespace System.Windows.Forms
                 }
 
                 // And if we are WS_CHILD, ensure we have a parent handle.
-                if (cp.Parent == IntPtr.Zero && (cp.Style & NativeMethods.WS_CHILD) != 0)
+                if (cp.Parent == IntPtr.Zero && (cp.Style & (int)User32.WS.CHILD) != 0)
                 {
-                    Debug.Assert((cp.ExStyle & NativeMethods.WS_EX_MDICHILD) == 0, "Can't put MDI child forms on the parking form");
+                    Debug.Assert((cp.ExStyle & (int)User32.WS_EX.MDICHILD) == 0, "Can't put MDI child forms on the parking form");
                     Application.ParkHandle(cp);
                 }
 
@@ -5208,7 +5191,7 @@ namespace System.Windows.Forms
                 }
             }
 
-            if (0 != (NativeMethods.WS_EX_MDICHILD & (int)(long)UnsafeNativeMethods.GetWindowLong(new HandleRef(_window, InternalHandle), NativeMethods.GWL_EXSTYLE)))
+            if (0 != ((int)User32.WS_EX.MDICHILD & (int)(long)UnsafeNativeMethods.GetWindowLong(new HandleRef(_window, InternalHandle), NativeMethods.GWL_EXSTYLE)))
             {
                 UnsafeNativeMethods.DefMDIChildProc(InternalHandle, WindowMessages.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
             }
@@ -5425,9 +5408,23 @@ namespace System.Windows.Forms
                     using (Graphics destGraphics = Graphics.FromImage(bitmap))
                     {
                         IntPtr desthDC = destGraphics.GetHdc();
-                        SafeNativeMethods.BitBlt(new HandleRef(destGraphics, desthDC), targetBounds.X, targetBounds.Y, width, height,
-                                                 new HandleRef(g, hDc), 0, 0, 0xcc0020);
-                        destGraphics.ReleaseHdcInternal(desthDC);
+                        try
+                        {
+                            Gdi32.BitBlt(
+                                new HandleRef(destGraphics, desthDC),
+                                targetBounds.X,
+                                targetBounds.Y,
+                                width,
+                                height,
+                                new HandleRef(g, hDc),
+                                0,
+                                0,
+                                Gdi32.ROP.SRCCOPY);
+                        }
+                        finally
+                        {
+                            destGraphics.ReleaseHdcInternal(desthDC);
+                        }
                     }
 
                     g.ReleaseHdcInternal(hDc);
@@ -5613,7 +5610,7 @@ namespace System.Windows.Forms
             Debug.WriteLineIf(s_focusTracing.TraceVerbose, "Control::FocusInternal - " + Name);
             if (CanFocus)
             {
-                UnsafeNativeMethods.SetFocus(new HandleRef(this, Handle));
+                User32.SetFocus(new HandleRef(this, Handle));
             }
             if (Focused && ParentInternal != null)
             {
@@ -5919,12 +5916,12 @@ namespace System.Windows.Forms
         private MenuItem GetMenuItemFromHandleId(IntPtr hmenu, int item)
         {
             MenuItem mi = null;
-            int id = UnsafeNativeMethods.GetMenuItemID(new HandleRef(null, hmenu), item);
+            int id = User32.GetMenuItemID(hmenu, item);
             if (id == unchecked((int)0xFFFFFFFF))
             {
                 IntPtr childMenu = IntPtr.Zero;
-                childMenu = UnsafeNativeMethods.GetSubMenu(new HandleRef(null, hmenu), item);
-                int count = UnsafeNativeMethods.GetMenuItemCount(new HandleRef(null, childMenu));
+                childMenu = User32.GetSubMenu(hmenu, item);
+                int count = User32.GetMenuItemCount(childMenu);
                 MenuItem found = null;
                 for (int i = 0; i < count; i++)
                 {
@@ -6028,9 +6025,9 @@ namespace System.Windows.Forms
         {
             ArrayList windows = new ArrayList();
 
-            for (IntPtr hWndChild = UnsafeNativeMethods.GetWindow(new HandleRef(null, hWndParent), NativeMethods.GW_CHILD);
+            for (IntPtr hWndChild = User32.GetWindow(new HandleRef(null, hWndParent), User32.GW.CHILD);
                  hWndChild != IntPtr.Zero;
-                 hWndChild = UnsafeNativeMethods.GetWindow(new HandleRef(null, hWndChild), NativeMethods.GW_HWNDNEXT))
+                 hWndChild = User32.GetWindow(new HandleRef(null, hWndChild), User32.GW.HWNDNEXT))
             {
                 windows.Add(hWndChild);
             }
@@ -6803,7 +6800,7 @@ namespace System.Windows.Forms
         {
             if (keyVal == Keys.Insert || keyVal == Keys.NumLock || keyVal == Keys.CapsLock || keyVal == Keys.Scroll)
             {
-                int result = UnsafeNativeMethods.GetKeyState((int)keyVal);
+                int result = User32.GetKeyState((int)keyVal);
 
                 // If the high-order bit is 1, the key is down; otherwise, it is up.
                 // If the low-order bit is 1, the key is toggled. A key, such as the CAPS LOCK key,
@@ -7005,15 +7002,15 @@ namespace System.Windows.Forms
             DpiHelper.ScaleBitmapLogicalToDevice(ref logicalBitmap, DeviceDpi);
         }
 
-        internal void AdjustWindowRectEx(ref RECT rect, int style, bool bMenu, int exStyle)
+        private protected void AdjustWindowRectEx(ref RECT rect, int style, bool bMenu, int exStyle)
         {
             if (DpiHelper.IsPerMonitorV2Awareness)
             {
-                SafeNativeMethods.AdjustWindowRectExForDpi(ref rect, style, bMenu, exStyle, (uint)_deviceDpi);
+                User32.AdjustWindowRectExForDpi(ref rect, style, bMenu.ToBOOL(), exStyle, (uint)_deviceDpi);
             }
             else
             {
-                SafeNativeMethods.AdjustWindowRectEx(ref rect, style, bMenu, exStyle);
+                User32.AdjustWindowRectEx(ref rect, style, bMenu.ToBOOL(), exStyle);
             }
         }
 
@@ -7427,7 +7424,7 @@ namespace System.Windows.Forms
             }
         }
 
-        internal virtual void OnFrameWindowActivate(bool fActivate)
+        private protected virtual void OnFrameWindowActivate(bool fActivate)
         {
         }
 
@@ -7615,7 +7612,7 @@ namespace System.Windows.Forms
             {
                 if (IsHandleCreated)
                 {
-                    UnsafeNativeMethods.SetParent(new HandleRef(this, Handle), new HandleRef(parent, parent.Handle));
+                    User32.SetParent(new HandleRef(this, Handle), new HandleRef(parent, parent.Handle));
                     UpdateZOrder();
                 }
             }
@@ -7996,7 +7993,9 @@ namespace System.Windows.Forms
                 {
                     ListenToUserPreferenceChanged(GetTopLevel());
                 }
-            } ((EventHandler)Events[s_handleCreatedEvent])?.Invoke(this, e);
+            }
+            
+            ((EventHandler)Events[s_handleCreatedEvent])?.Invoke(this, e);
 
             if (IsHandleCreated)
             {
@@ -8021,15 +8020,15 @@ namespace System.Windows.Forms
         {
             if (!(this is ScrollableControl) && !IsMirrored)
             {
-                NativeMethods.SCROLLINFO si = new NativeMethods.SCROLLINFO
+                var si = new User32.SCROLLINFO
                 {
-                    cbSize = Marshal.SizeOf<NativeMethods.SCROLLINFO>(),
-                    fMask = NativeMethods.SIF_RANGE
+                    cbSize = (uint)Marshal.SizeOf<User32.SCROLLINFO>(),
+                    fMask = User32.SIF.RANGE
                 };
-                if (UnsafeNativeMethods.GetScrollInfo(new HandleRef(this, Handle), NativeMethods.SB_HORZ, si) != false)
+                if (User32.GetScrollInfo(this, User32.SB.HORZ, ref si).IsTrue())
                 {
                     si.nPos = (RightToLeft == RightToLeft.Yes) ? si.nMax : si.nMin;
-                    SendMessage(WindowMessages.WM_HSCROLL, NativeMethods.Util.MAKELPARAM(NativeMethods.SB_THUMBPOSITION, si.nPos), 0);
+                    SendMessage(WindowMessages.WM_HSCROLL, NativeMethods.Util.MAKELPARAM((int)User32.SBH.THUMBPOSITION, si.nPos), 0);
                 }
             }
         }
@@ -8203,7 +8202,9 @@ namespace System.Windows.Forms
             if (_parent != null)
             {
                 _parent.ChildGotFocus(this);
-            } ((EventHandler)Events[s_gotFocusEvent])?.Invoke(this, e);
+            }
+            
+            ((EventHandler)Events[s_gotFocusEvent])?.Invoke(this, e);
         }
 
         /// <summary>
@@ -8256,7 +8257,9 @@ namespace System.Windows.Forms
                 {
                     controls[i].OnParentInvalidated(e);
                 }
-            } ((InvalidateEventHandler)Events[s_invalidatedEvent])?.Invoke(this, e);
+            }
+            
+            ((InvalidateEventHandler)Events[s_invalidatedEvent])?.Invoke(this, e);
         }
 
         /// <summary>
@@ -8356,7 +8359,9 @@ namespace System.Windows.Forms
             if (IsActiveX)
             {
                 ActiveXOnFocus(false);
-            } ((EventHandler)Events[s_lostFocusEvent])?.Invoke(this, e);
+            }
+            
+            ((EventHandler)Events[s_lostFocusEvent])?.Invoke(this, e);
         }
 
         protected virtual void OnMarginChanged(EventArgs e)
@@ -8513,7 +8518,9 @@ namespace System.Windows.Forms
             if (GetStyle(ControlStyles.ResizeRedraw))
             {
                 Invalidate();
-            } ((EventHandler)Events[s_paddingChangedEvent])?.Invoke(this, e);
+            }
+            
+            ((EventHandler)Events[s_paddingChangedEvent])?.Invoke(this, e);
         }
 
         /// <summary>
@@ -8528,7 +8535,7 @@ namespace System.Windows.Forms
             // We need the true client rectangle as clip rectangle causes
             // problems on "Windows Classic" theme.
             RECT rect = new RECT();
-            UnsafeNativeMethods.GetClientRect(new HandleRef(_window, InternalHandle), ref rect);
+            User32.GetClientRect(new HandleRef(_window, InternalHandle), ref rect);
 
             PaintBackground(pevent, new Rectangle(rect.left, rect.top, rect.right, rect.bottom));
         }
@@ -9003,6 +9010,7 @@ namespace System.Windows.Forms
 
         internal void PerformLayout(LayoutEventArgs args)
         {
+            Debug.Assert(args != null, "This method should never be called with null args.");
             if (GetAnyDisposingInHierarchy())
             {
                 return;
@@ -9011,7 +9019,7 @@ namespace System.Windows.Forms
             if (_layoutSuspendCount > 0)
             {
                 SetState(States.LayoutDeferred, true);
-                if (_cachedLayoutEventArgs == null || (GetExtendedState(ExtendedStates.ClearLayoutArgs) && args != null))
+                if (_cachedLayoutEventArgs == null || GetExtendedState(ExtendedStates.ClearLayoutArgs))
                 {
                     _cachedLayoutEventArgs = args;
                     if (GetExtendedState(ExtendedStates.ClearLayoutArgs))
@@ -9123,10 +9131,10 @@ namespace System.Windows.Forms
                 }
 
                 // Next, use input flags to decide whether to validate the control itself
-                if ((validationConstraints & ValidationConstraints.Selectable) == ValidationConstraints.Selectable && !c.GetStyle(ControlStyles.Selectable) ||
-                    (validationConstraints & ValidationConstraints.Enabled) == ValidationConstraints.Enabled && !c.Enabled ||
-                    (validationConstraints & ValidationConstraints.Visible) == ValidationConstraints.Visible && !c.Visible ||
-                    (validationConstraints & ValidationConstraints.TabStop) == ValidationConstraints.TabStop && !c.TabStop)
+                if (((validationConstraints & ValidationConstraints.Selectable) == ValidationConstraints.Selectable && !c.GetStyle(ControlStyles.Selectable)) ||
+                    ((validationConstraints & ValidationConstraints.Enabled) == ValidationConstraints.Enabled && !c.Enabled) ||
+                    ((validationConstraints & ValidationConstraints.Visible) == ValidationConstraints.Visible && !c.Visible) ||
+                    ((validationConstraints & ValidationConstraints.TabStop) == ValidationConstraints.TabStop && !c.TabStop))
                 {
                     continue;
                 }
@@ -9146,7 +9154,7 @@ namespace System.Windows.Forms
         /// </summary>
         public Point PointToClient(Point p)
         {
-            UnsafeNativeMethods.MapWindowPoints(NativeMethods.NullHandleRef, new HandleRef(this, Handle), ref p, 1);
+            User32.MapWindowPoints(IntPtr.Zero, new HandleRef(this, Handle), ref p, 1);
             return p;
         }
 
@@ -9155,7 +9163,7 @@ namespace System.Windows.Forms
         /// </summary>
         public Point PointToScreen(Point p)
         {
-            UnsafeNativeMethods.MapWindowPoints(new HandleRef(this, Handle), NativeMethods.NullHandleRef, ref p, 1);
+            User32.MapWindowPoints(new HandleRef(this, Handle), IntPtr.Zero, ref p, 1);
             return p;
         }
 
@@ -9368,7 +9376,7 @@ namespace System.Windows.Forms
             return false;
         }
 
-        private void PrintToMetaFile(HandleRef hDC, IntPtr lParam)
+        private void PrintToMetaFile(IntPtr hDC, IntPtr lParam)
         {
             Debug.Assert(Gdi32.GetObjectType(hDC) == Gdi32.ObjectType.OBJ_ENHMETADC,
                 "PrintToMetaFile() called with a non-Enhanced MetaFile DC.");
@@ -9380,7 +9388,7 @@ namespace System.Windows.Forms
 
             // We're the root contol, so we need to set up our clipping region.  Retrieve the
             // x-coordinates and y-coordinates of the viewport origin for the specified device context.
-            bool success = SafeNativeMethods.GetViewportOrgEx(hDC, out Point viewportOrg);
+            bool success = Gdi32.GetViewportOrgEx(hDC, out Point viewportOrg).IsTrue();
             Debug.Assert(success, "GetViewportOrgEx() failed.");
 
             IntPtr hClippingRegion = Gdi32.CreateRectRgn(viewportOrg.X, viewportOrg.Y, viewportOrg.X + Width, viewportOrg.Y + Height);
@@ -9403,7 +9411,7 @@ namespace System.Windows.Forms
             }
         }
 
-        internal virtual void PrintToMetaFileRecursive(HandleRef hDC, IntPtr lParam, Rectangle bounds)
+        private protected virtual void PrintToMetaFileRecursive(IntPtr hDC, IntPtr lParam, Rectangle bounds)
         {
             // We assume the target does not want us to offset the root control in the metafile.
 
@@ -9439,12 +9447,12 @@ namespace System.Windows.Forms
             }
         }
 
-        private void PrintToMetaFile_SendPrintMessage(HandleRef hDC, IntPtr lParam)
+        private void PrintToMetaFile_SendPrintMessage(IntPtr hDC, IntPtr lParam)
         {
             if (GetStyle(ControlStyles.UserPaint))
             {
                 // We let user paint controls paint directly into the metafile
-                SendMessage(WindowMessages.WM_PRINT, hDC.Handle, lParam);
+                SendMessage(WindowMessages.WM_PRINT, hDC, lParam);
             }
             else
             {
@@ -9460,10 +9468,8 @@ namespace System.Windows.Forms
                 // System controls must be painted into a temporary bitmap
                 // which is then copied into the metafile.  (Old GDI line drawing
                 // is 1px thin, which causes borders to disappear, etc.)
-                using (MetafileDCWrapper dcWrapper = new MetafileDCWrapper(hDC, Size))
-                {
-                    SendMessage(WindowMessages.WM_PRINT, dcWrapper.HDC, lParam);
-                }
+                using MetafileDCWrapper dcWrapper = new MetafileDCWrapper(hDC, Size);
+                SendMessage(WindowMessages.WM_PRINT, dcWrapper.HDC, lParam);
             }
         }
 
@@ -9746,7 +9752,7 @@ namespace System.Windows.Forms
                 //           (we're in charge here, we've got to change the state of the root window)
                 UnsafeNativeMethods.SendMessage(
                     new HandleRef(topMostParent, topMostParent.Handle),
-                    UnsafeNativeMethods.GetParent(new HandleRef(null, topMostParent.Handle)) == IntPtr.Zero ? WindowMessages.WM_CHANGEUISTATE : WindowMessages.WM_UPDATEUISTATE,
+                    User32.GetParent(topMostParent.Handle) == IntPtr.Zero ? WindowMessages.WM_CHANGEUISTATE : WindowMessages.WM_UPDATEUISTATE,
                     (IntPtr)(NativeMethods.UIS_CLEAR | (toClear << 16)),
                     IntPtr.Zero);
             }
@@ -9894,7 +9900,7 @@ namespace System.Windows.Forms
                         UnhookMouseEvent();
                     }
 
-                    HandleRef parentHandle = new HandleRef(this, UnsafeNativeMethods.GetParent(new HandleRef(this, Handle)));
+                    HandleRef parentHandle = new HandleRef(this, User32.GetParent(this));
 
                     try
                     {
@@ -9970,7 +9976,7 @@ namespace System.Windows.Forms
                             // correctly parent back up to where we were before.
                             // if we were parented to a proper windows forms control, CreateControl would have properly parented
                             // us back.
-                            UnsafeNativeMethods.SetParent(new HandleRef(this, Handle), parentHandle);
+                            User32.SetParent(new HandleRef(this, Handle), parentHandle);
                         }
                     }
 
@@ -9989,7 +9995,7 @@ namespace System.Windows.Forms
         public Rectangle RectangleToClient(Rectangle r)
         {
             RECT rect = r;
-            UnsafeNativeMethods.MapWindowPoints(NativeMethods.NullHandleRef, new HandleRef(this, Handle), ref rect, 2);
+            User32.MapWindowPoints(IntPtr.Zero, new HandleRef(this, Handle), ref rect, 2);
             return Rectangle.FromLTRB(rect.left, rect.top, rect.right, rect.bottom);
         }
 
@@ -9999,7 +10005,7 @@ namespace System.Windows.Forms
         public Rectangle RectangleToScreen(Rectangle r)
         {
             RECT rect = r;
-            UnsafeNativeMethods.MapWindowPoints(new HandleRef(this, Handle), NativeMethods.NullHandleRef, ref rect, 2);
+            User32.MapWindowPoints(new HandleRef(this, Handle), IntPtr.Zero, ref rect, 2);
             return Rectangle.FromLTRB(rect.left, rect.top, rect.right, rect.bottom);
         }
 
@@ -10089,10 +10095,8 @@ namespace System.Windows.Forms
                 Debug.WriteLine(GetType().Name + "::ResumeLayout( preformLayout = " + performLayout + ", newCount = " + Math.Max(0, _layoutSuspendCount - 1) + ")");
             }
 #endif
-            Debug.Assert(_layoutSuspendCount > 0, "Unbalanance suspend/resume layout.");
 
             bool performedLayout = false;
-
             if (_layoutSuspendCount > 0)
             {
                 if (_layoutSuspendCount == 1)
@@ -10634,7 +10638,9 @@ namespace System.Windows.Forms
 
         private Control GetNextSelectableControl(Control ctl, bool forward, bool tabStopOnly, bool nested, bool wrap)
         {
+#pragma warning disable SA1408 // Conditional expressions should declare precedence
             if (!Contains(ctl) || !nested && ctl._parent != this)
+#pragma warning restore SA1408 // Conditional expressions should declare precedence
             {
                 ctl = null;
             }
@@ -10994,7 +11000,7 @@ namespace System.Windows.Forms
 
             if (IsHandleCreated)
             {
-                IntPtr parentHandle = UnsafeNativeMethods.GetParent(new HandleRef(_window, Handle));
+                IntPtr parentHandle = User32.GetParent(this);
                 bool topLevel = GetTopLevel();
                 if (parentHandle != value || (parentHandle == IntPtr.Zero && !topLevel))
                 {
@@ -11032,7 +11038,7 @@ namespace System.Windows.Forms
                         }
                         else
                         {
-                            UnsafeNativeMethods.SetParent(new HandleRef(_window, Handle), new HandleRef(null, value));
+                            User32.SetParent(new HandleRef(_window, Handle), value);
                             if (_parent != null)
                             {
                                 _parent.UpdateChildZOrder(this);
@@ -11046,7 +11052,7 @@ namespace System.Windows.Forms
                     // The handle was previously parented to the parking window. Its TopLevel property was
                     // then changed to true so the above call to GetParent returns null even though the parent of the control is
                     // not null. We need to explicitly set the parent to null.
-                    UnsafeNativeMethods.SetParent(new HandleRef(_window, Handle), new HandleRef(null, IntPtr.Zero));
+                    User32.SetParent(new HandleRef(_window, Handle), IntPtr.Zero);
                     Application.UnparkHandle(new HandleRef(_window, Handle), _window.DpiAwarenessContext);
                 }
             }
@@ -11147,7 +11153,7 @@ namespace System.Windows.Forms
                         User32.ShowWindow(Handle, value ? ShowParams : User32.SW.HIDE);
                     }
                 }
-                else if (IsHandleCreated || value && _parent != null && _parent.Created)
+                else if (IsHandleCreated || (value && _parent?.Created == true))
                 {
                     // We want to mark the control as visible so that CreateControl
                     // knows that we are going to be displayed... however in case
@@ -11535,13 +11541,13 @@ namespace System.Windows.Forms
         protected internal void UpdateBounds()
         {
             RECT rect = new RECT();
-            UnsafeNativeMethods.GetClientRect(new HandleRef(_window, InternalHandle), ref rect);
+            User32.GetClientRect(new HandleRef(_window, InternalHandle), ref rect);
             int clientWidth = rect.right;
             int clientHeight = rect.bottom;
             UnsafeNativeMethods.GetWindowRect(new HandleRef(_window, InternalHandle), ref rect);
             if (!GetTopLevel())
             {
-                UnsafeNativeMethods.MapWindowPoints(NativeMethods.NullHandleRef, new HandleRef(null, UnsafeNativeMethods.GetParent(new HandleRef(_window, InternalHandle))), ref rect, 2);
+                User32.MapWindowPoints(IntPtr.Zero, User32.GetParent(new HandleRef(_window, InternalHandle)), ref rect, 2);
             }
 
             UpdateBounds(rect.left, rect.top, rect.right - rect.left,
@@ -11554,8 +11560,6 @@ namespace System.Windows.Forms
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         protected void UpdateBounds(int x, int y, int width, int height)
         {
-            Debug.Assert(!IsHandleCreated, "Don't call this method when handle is created!!");
-
             // reverse-engineer the AdjustWindowRectEx call to figure out
             // the appropriate clientWidth and clientHeight
             RECT rect = new RECT();
@@ -11668,7 +11672,7 @@ namespace System.Windows.Forms
             int newIndex = 0;
             int curIndex = Controls.GetChildIndex(ctl);
             IntPtr hWnd = ctl.InternalHandle;
-            while ((hWnd = UnsafeNativeMethods.GetWindow(new HandleRef(null, hWnd), NativeMethods.GW_HWNDPREV)) != IntPtr.Zero)
+            while ((hWnd = User32.GetWindow(new HandleRef(null, hWnd), User32.GW.HWNDPREV)) != IntPtr.Zero)
             {
                 Control c = FromHandle(hWnd);
                 if (c != null)
@@ -11698,7 +11702,7 @@ namespace System.Windows.Forms
         {
             if (!Disposing && findNewParent && IsHandleCreated)
             {
-                IntPtr parentHandle = UnsafeNativeMethods.GetParent(new HandleRef(this, Handle));
+                IntPtr parentHandle = User32.GetParent(this);
                 if (parentHandle != IntPtr.Zero)
                 {
                     ReflectParent = FromHandle(parentHandle);
@@ -11740,7 +11744,7 @@ namespace System.Windows.Forms
                     break;
                 }
             }
-            if (UnsafeNativeMethods.GetWindow(new HandleRef(ctl._window, ctl.Handle), NativeMethods.GW_HWNDPREV) != prevHandle)
+            if (User32.GetWindow(new HandleRef(ctl._window, ctl.Handle), User32.GW.HWNDPREV) != prevHandle)
             {
                 _state |= States.NoZOrder;
                 try
@@ -11789,7 +11793,7 @@ namespace System.Windows.Forms
                 // resolve the Form's lazy visibility.
                 if ((_state & States.Visible) != 0)
                 {
-                    cp.Style |= NativeMethods.WS_VISIBLE;
+                    cp.Style |= (int)User32.WS.VISIBLE;
                 }
                 if (winStyle != cp.Style)
                 {
@@ -11798,7 +11802,7 @@ namespace System.Windows.Forms
                 if (exStyle != cp.ExStyle)
                 {
                     WindowExStyle = cp.ExStyle;
-                    SetState(States.Mirrored, (cp.ExStyle & NativeMethods.WS_EX_LAYOUTRTL) != 0);
+                    SetState(States.Mirrored, (cp.ExStyle & (int)User32.WS_EX.LAYOUTRTL) != 0);
                 }
 
                 User32.SetWindowPos(
@@ -11851,11 +11855,11 @@ namespace System.Windows.Forms
                 while (parentHandle != IntPtr.Zero)
                 {
                     lastParentHandle = parentHandle;
-                    parentHandle = UnsafeNativeMethods.GetParent(new HandleRef(null, parentHandle));
+                    parentHandle = User32.GetParent(parentHandle);
 
                     int style = unchecked((int)((long)UnsafeNativeMethods.GetWindowLong(new HandleRef(null, lastParentHandle), NativeMethods.GWL_STYLE)));
 
-                    if ((style & NativeMethods.WS_CHILD) == 0)
+                    if ((style & (int)User32.WS.CHILD) == 0)
                     {
                         break;
                     }
@@ -12039,7 +12043,7 @@ namespace System.Windows.Forms
                         return;
                     }
                     RECT rc = new RECT();
-                    UnsafeNativeMethods.GetClientRect(new HandleRef(this, Handle), ref rc);
+                    User32.GetClientRect(new HandleRef(this, Handle), ref rc);
                     using (PaintEventArgs pevent = new PaintEventArgs(dc, Rectangle.FromLTRB(rc.left, rc.top, rc.right, rc.bottom)))
                     {
                         PaintWithErrorHandling(pevent, PaintLayerBackground);
@@ -12297,15 +12301,15 @@ namespace System.Windows.Forms
         private void WmMenuSelect(ref Message m)
         {
             int item = NativeMethods.Util.LOWORD(m.WParam);
-            int flags = NativeMethods.Util.HIWORD(m.WParam);
+            User32.MF flags = (User32.MF)NativeMethods.Util.HIWORD(m.WParam);
             IntPtr hmenu = m.LParam;
             MenuItem mi = null;
 
-            if ((flags & NativeMethods.MF_SYSMENU) != 0)
+            if ((flags & User32.MF.SYSMENU) != 0)
             {
                 // nothing
             }
-            else if ((flags & NativeMethods.MF_POPUP) == 0)
+            else if ((flags & User32.MF.POPUP) == 0)
             {
                 Command cmd = Command.GetCommandFromID(item);
                 if (cmd != null)
@@ -12461,8 +12465,8 @@ namespace System.Windows.Forms
 
             if (!GetExtendedState(ExtendedStates.MaintainsOwnCaptureMode))
             {
-                //CaptureInternal is set usually in MouseDown (ToolStrip main exception)
-                CaptureInternal = true;
+                // Capture is set usually in MouseDown (ToolStrip main exception)
+                Capture = true;
             }
 
             if (realState != MouseButtons)
@@ -12470,8 +12474,8 @@ namespace System.Windows.Forms
                 return;
             }
 
-            // control should be enabled when this method is entered, but may have become
-            // disabled during its lifetime (e.g. through a Click or Focus listener)
+            // Control should be enabled when this method is entered, but may have become
+            // disabled during its lifetime (e.g. through a Click or Focus listener).
             if (Enabled)
             {
                 OnMouseDown(new MouseEventArgs(button, clicks, NativeMethods.Util.SignedLOWORD(m.LParam), NativeMethods.Util.SignedHIWORD(m.LParam), 0));
@@ -12627,13 +12631,14 @@ namespace System.Windows.Forms
             }
             finally
             {
-                //Always Reset the States.DOUBLECLICKFIRED in UP.. Since we get UP - DOWN - DBLCLK - UP sequqnce
-                //The Flag is set in L_BUTTONDBLCLK in the controls WndProc() ...
+                // Always reset the States.DoubleClickFired in UP.. Since we get UP - DOWN - DBLCLK - UP sequence
+                // The flag is set in L_BUTTONDBLCLK in the controls WndProc() ...
                 SetState(States.DoubleClickFired, false);
                 SetState(States.MousePressed, false);
                 SetState(States.ValidationCancelled, false);
-                //CaptureInternal is Resetted while exiting the MouseUp
-                CaptureInternal = false;
+
+                // Capture is reset while exiting MouseUp
+                Capture = false;
             }
         }
 
@@ -12858,7 +12863,9 @@ namespace System.Windows.Forms
                         {
                             try
                             {
+#pragma warning disable SA1408 // Conditional expressions should declare precedence
                                 if ((m.WParam == IntPtr.Zero) && GetStyle(ControlStyles.AllPaintingInWmPaint) || doubleBuffered)
+#pragma warning restore SA1408 // Conditional expressions should declare precedence
                                 {
                                     PaintWithErrorHandling(pevent, PaintLayerBackground);
                                     // Consider: This condition could be elimiated,
@@ -13218,7 +13225,7 @@ namespace System.Windows.Forms
             DefWndProc(ref m);
             // Update new size / position
             UpdateBounds();
-            if (_parent != null && UnsafeNativeMethods.GetParent(new HandleRef(_window, InternalHandle)) == _parent.InternalHandle &&
+            if (_parent != null && User32.GetParent(new HandleRef(_window, InternalHandle)) == _parent.InternalHandle &&
                 (_state & States.NoZOrder) == 0)
             {
 
@@ -13322,7 +13329,7 @@ namespace System.Windows.Forms
                     break;
 
                 case WindowMessages.WM_SYSCOMMAND:
-                    if ((unchecked((int)(long)m.WParam) & 0xFFF0) == NativeMethods.SC_KEYMENU)
+                    if ((User32.SC)(unchecked((int)(long)m.WParam) & 0xFFF0) == User32.SC.KEYMENU)
                     {
                         Debug.WriteLineIf(s_controlKeyboardRouting.TraceVerbose, "Control.WndProc processing " + m.ToString());
 
@@ -13764,32 +13771,41 @@ namespace System.Windows.Forms
             OnQueryContinueDrag(queryContinueDragEventArgs);
         }
 
-        HRESULT UnsafeNativeMethods.IOleControl.GetControlInfo(NativeMethods.tagCONTROLINFO pCI)
+        unsafe HRESULT UnsafeNativeMethods.IOleControl.GetControlInfo(Ole32.CONTROLINFO* pCI)
         {
-            Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetControlInfo");
+            if (pCI == null)
+            {
+                return HRESULT.E_POINTER;
+            }
 
-            pCI.cb = Marshal.SizeOf<NativeMethods.tagCONTROLINFO>();
-            pCI.hAccel = IntPtr.Zero;
-            pCI.cAccel = 0;
-            pCI.dwFlags = 0;
+            Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetControlInfo");
+            pCI->cb = (uint)Marshal.SizeOf<Ole32.CONTROLINFO>();
+            pCI->hAccel = IntPtr.Zero;
+            pCI->cAccel = 0;
+            pCI->dwFlags = 0;
 
             if (IsInputKey(Keys.Return))
             {
-                pCI.dwFlags |= NativeMethods.CTRLINFO_EATS_RETURN;
+                pCI->dwFlags |= Ole32.CTRLINFO.EATS_RETURN;
             }
             if (IsInputKey(Keys.Escape))
             {
-                pCI.dwFlags |= NativeMethods.CTRLINFO_EATS_ESCAPE;
+                pCI->dwFlags |= Ole32.CTRLINFO.EATS_ESCAPE;
             }
 
             return ActiveXInstance.GetControlInfo(pCI);
         }
 
-        HRESULT UnsafeNativeMethods.IOleControl.OnMnemonic(ref User32.MSG pMsg)
+        unsafe HRESULT UnsafeNativeMethods.IOleControl.OnMnemonic(User32.MSG* pMsg)
         {
+            if (pMsg == null)
+            {
+                return HRESULT.E_INVALIDARG;
+            }
+
             // If we got a mnemonic here, then the appropriate control will focus itself which
             // will cause us to become UI active.
-            bool processed = ProcessMnemonic((char)pMsg.wParam);
+            bool processed = ProcessMnemonic((char)pMsg->wParam);
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:OnMnemonic processed: " + processed.ToString());
             return HRESULT.S_OK;
         }
@@ -13803,52 +13819,55 @@ namespace System.Windows.Forms
             return HRESULT.S_OK;
         }
 
-        int UnsafeNativeMethods.IOleControl.FreezeEvents(int bFreeze)
+        HRESULT UnsafeNativeMethods.IOleControl.FreezeEvents(BOOL bFreeze)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:FreezeEvents.  Freeze: " + bFreeze);
-            ActiveXInstance.EventsFrozen = (bFreeze != 0);
-            Debug.Assert(ActiveXInstance.EventsFrozen == (bFreeze != 0), "Failed to set EventsFrozen correctly");
-            return NativeMethods.S_OK;
+            ActiveXInstance.EventsFrozen = bFreeze.IsTrue();
+            Debug.Assert(ActiveXInstance.EventsFrozen == bFreeze.IsTrue(), "Failed to set EventsFrozen correctly");
+            return HRESULT.S_OK;
         }
 
-        unsafe HRESULT UnsafeNativeMethods.IOleInPlaceActiveObject.GetWindow(IntPtr* phwnd)
+        unsafe HRESULT Ole32.IOleInPlaceActiveObject.GetWindow(IntPtr* phwnd)
         {
             return ((Ole32.IOleInPlaceObject)this).GetWindow(phwnd);
         }
 
-        HRESULT UnsafeNativeMethods.IOleInPlaceActiveObject.ContextSensitiveHelp(BOOL fEnterMode)
+        HRESULT Ole32.IOleInPlaceActiveObject.ContextSensitiveHelp(BOOL fEnterMode)
         {
             return ((Ole32.IOleInPlaceObject)this).ContextSensitiveHelp(fEnterMode);
         }
 
-        unsafe HRESULT UnsafeNativeMethods.IOleInPlaceActiveObject.TranslateAccelerator(User32.MSG* lpmsg)
+        unsafe HRESULT Ole32.IOleInPlaceActiveObject.TranslateAccelerator(User32.MSG* lpmsg)
         {
             return ActiveXInstance.TranslateAccelerator(lpmsg);
         }
 
-        void UnsafeNativeMethods.IOleInPlaceActiveObject.OnFrameWindowActivate(bool fActivate)
+        HRESULT Ole32.IOleInPlaceActiveObject.OnFrameWindowActivate(BOOL fActivate)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:OnFrameWindowActivate");
-            OnFrameWindowActivate(fActivate);
+            OnFrameWindowActivate(fActivate.IsTrue());
+            return HRESULT.S_OK;
         }
 
-        void UnsafeNativeMethods.IOleInPlaceActiveObject.OnDocWindowActivate(int fActivate)
+        HRESULT Ole32.IOleInPlaceActiveObject.OnDocWindowActivate(BOOL fActivate)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:OnDocWindowActivate.  Activate: " + fActivate.ToString(CultureInfo.InvariantCulture));
             Debug.Indent();
             ActiveXInstance.OnDocWindowActivate(fActivate);
             Debug.Unindent();
+            return HRESULT.S_OK;
         }
 
-        void UnsafeNativeMethods.IOleInPlaceActiveObject.ResizeBorder(NativeMethods.COMRECT prcBorder, UnsafeNativeMethods.IOleInPlaceUIWindow pUIWindow, bool fFrameWindow)
+        unsafe HRESULT Ole32.IOleInPlaceActiveObject.ResizeBorder(RECT* prcBorder, Ole32.IOleInPlaceUIWindow pUIWindow, BOOL fFrameWindow)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:ResizesBorder");
-            // return NativeMethods.S_OK;
+            return HRESULT.S_OK;
         }
 
-        void UnsafeNativeMethods.IOleInPlaceActiveObject.EnableModeless(int fEnable)
+        HRESULT Ole32.IOleInPlaceActiveObject.EnableModeless(BOOL fEnable)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:EnableModeless");
+            return HRESULT.E_NOTIMPL;
         }
 
         unsafe HRESULT Ole32.IOleInPlaceObject.GetWindow(IntPtr* phwnd)
@@ -13904,17 +13923,18 @@ namespace System.Windows.Forms
             return HRESULT.S_OK;
         }
 
-        int UnsafeNativeMethods.IOleObject.SetClientSite(UnsafeNativeMethods.IOleClientSite pClientSite)
+        HRESULT UnsafeNativeMethods.IOleObject.SetClientSite(Ole32.IOleClientSite pClientSite)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:SetClientSite");
             ActiveXInstance.SetClientSite(pClientSite);
-            return NativeMethods.S_OK;
+            return HRESULT.S_OK;
         }
 
-        UnsafeNativeMethods.IOleClientSite UnsafeNativeMethods.IOleObject.GetClientSite()
+        HRESULT UnsafeNativeMethods.IOleObject.GetClientSite(out Ole32.IOleClientSite ppClientSite)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetClientSite");
-            return ActiveXInstance.GetClientSite();
+            ppClientSite = ActiveXInstance.GetClientSite();
+            return HRESULT.S_OK;
         }
 
         int UnsafeNativeMethods.IOleObject.SetHostNames(string szContainerApp, string szContainerObj)
@@ -13925,24 +13945,29 @@ namespace System.Windows.Forms
             return NativeMethods.S_OK;
         }
 
-        int UnsafeNativeMethods.IOleObject.Close(int dwSaveOption)
+        HRESULT UnsafeNativeMethods.IOleObject.Close(Ole32.OLECLOSE dwSaveOption)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:Close. Save option: " + dwSaveOption);
             ActiveXInstance.Close(dwSaveOption);
-            return NativeMethods.S_OK;
+            return HRESULT.S_OK;
         }
 
-        int UnsafeNativeMethods.IOleObject.SetMoniker(int dwWhichMoniker, object pmk)
+        HRESULT UnsafeNativeMethods.IOleObject.SetMoniker(Ole32.OLEWHICHMK dwWhichMoniker, object pmk)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:SetMoniker");
-            return NativeMethods.E_NOTIMPL;
+            return HRESULT.E_NOTIMPL;
         }
 
-        int UnsafeNativeMethods.IOleObject.GetMoniker(int dwAssign, int dwWhichMoniker, out object moniker)
+        unsafe HRESULT UnsafeNativeMethods.IOleObject.GetMoniker(Ole32.OLEGETMONIKER dwAssign, Ole32.OLEWHICHMK dwWhichMoniker, IntPtr* ppmk)
         {
+            if (ppmk == null)
+            {
+                return HRESULT.E_POINTER;
+            }
+
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetMoniker");
-            moniker = null;
-            return NativeMethods.E_NOTIMPL;
+            *ppmk = IntPtr.Zero;
+            return HRESULT.E_NOTIMPL;
         }
 
         int UnsafeNativeMethods.IOleObject.InitFromData(IComDataObject pDataObject, int fCreation, int dwReserved)
@@ -13959,9 +13984,9 @@ namespace System.Windows.Forms
         }
 
         unsafe HRESULT UnsafeNativeMethods.IOleObject.DoVerb(
-            int iVerb,
+            Ole32.OLEIVERB iVerb,
             User32.MSG* lpmsg,
-            UnsafeNativeMethods.IOleClientSite pActiveSite,
+            Ole32.IOleClientSite pActiveSite,
             int lindex,
             IntPtr hwndParent,
             RECT* lprcPosRect)
@@ -13970,7 +13995,7 @@ namespace System.Windows.Forms
             // doing the proper sign extension.  So, we do it here.
             //
             short sVerb = unchecked((short)iVerb);
-            iVerb = (int)sVerb;
+            iVerb = (Ole32.OLEIVERB)sVerb;
 
 #if DEBUG
             if (CompModSwitches.ActiveX.TraceInfo)
@@ -13988,11 +14013,6 @@ namespace System.Windows.Forms
             try
             {
                 return ActiveXInstance.DoVerb(iVerb, lpmsg, pActiveSite, lindex, hwndParent, lprcPosRect);
-            }
-            catch (Exception e)
-            {
-                Debug.Fail("Exception occurred during DoVerb(" + iVerb + ") " + e.ToString());
-                throw;
             }
             finally
             {
@@ -14040,7 +14060,7 @@ namespace System.Windows.Forms
             return NativeMethods.S_OK;
         }
 
-        unsafe Interop.HRESULT UnsafeNativeMethods.IOleObject.SetExtent(uint dwDrawAspect, Size* pSizel)
+        unsafe Interop.HRESULT UnsafeNativeMethods.IOleObject.SetExtent(Ole32.DVASPECT dwDrawAspect, Size* pSizel)
         {
             if (pSizel == null)
             {
@@ -14054,7 +14074,7 @@ namespace System.Windows.Forms
             return Interop.HRESULT.S_OK;
         }
 
-        unsafe Interop.HRESULT UnsafeNativeMethods.IOleObject.GetExtent(uint dwDrawAspect, Size* pSizel)
+        unsafe Interop.HRESULT UnsafeNativeMethods.IOleObject.GetExtent(Ole32.DVASPECT dwDrawAspect, Size* pSizel)
         {
             if (pSizel == null)
             {
@@ -14092,38 +14112,40 @@ namespace System.Windows.Forms
             return NativeMethods.E_NOTIMPL;
         }
 
-        int UnsafeNativeMethods.IOleObject.GetMiscStatus(int dwAspect, out int cookie)
+        unsafe HRESULT UnsafeNativeMethods.IOleObject.GetMiscStatus(Ole32.DVASPECT dwAspect, Ole32.OLEMISC* pdwStatus)
         {
-            if ((dwAspect & NativeMethods.DVASPECT_CONTENT) != 0)
+            if (pdwStatus == null)
             {
-                int status = NativeMethods.OLEMISC_ACTIVATEWHENVISIBLE | NativeMethods.OLEMISC_INSIDEOUT | NativeMethods.OLEMISC_SETCLIENTSITEFIRST;
-
-                if (GetStyle(ControlStyles.ResizeRedraw))
-                {
-                    status |= NativeMethods.OLEMISC_RECOMPOSEONRESIZE;
-                }
-
-                if (this is IButtonControl)
-                {
-                    status |= NativeMethods.OLEMISC_ACTSLIKEBUTTON;
-                }
-
-                Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetMiscStatus. Status: " + status.ToString(CultureInfo.InvariantCulture));
-                cookie = status;
+                return HRESULT.E_POINTER;
             }
-            else
+
+            if ((dwAspect & Ole32.DVASPECT.CONTENT) != 0)
             {
                 Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetMiscStatus.  Status: ERROR, wrong aspect.");
-                cookie = 0;
-                return NativeMethods.DV_E_DVASPECT;
+                *pdwStatus = 0;
+                return HRESULT.DV_E_DVASPECT;
             }
-            return NativeMethods.S_OK;
+
+            Ole32.OLEMISC status = Ole32.OLEMISC.ACTIVATEWHENVISIBLE | Ole32.OLEMISC.INSIDEOUT | Ole32.OLEMISC.SETCLIENTSITEFIRST;
+            if (GetStyle(ControlStyles.ResizeRedraw))
+            {
+                status |= Ole32.OLEMISC.RECOMPOSEONRESIZE;
+            }
+
+            if (this is IButtonControl)
+            {
+                status |= Ole32.OLEMISC.ACTSLIKEBUTTON;
+            }
+
+            Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetMiscStatus. Status: " + status.ToString(CultureInfo.InvariantCulture));
+            *pdwStatus = status;
+            return HRESULT.S_OK;
         }
 
-        int UnsafeNativeMethods.IOleObject.SetColorScheme(NativeMethods.tagLOGPALETTE pLogpal)
+        unsafe HRESULT UnsafeNativeMethods.IOleObject.SetColorScheme(Gdi32.LOGPALETTE* pLogpal)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:SetColorScheme");
-            return NativeMethods.S_OK;
+            return HRESULT.S_OK;
         }
 
         unsafe HRESULT Ole32.IOleWindow.GetWindow(IntPtr* phwnd)
@@ -14268,7 +14290,7 @@ namespace System.Windows.Forms
 
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:SetContentExtent");
             Debug.Indent();
-            ActiveXInstance.SetExtent(NativeMethods.DVASPECT_CONTENT, pSizel);
+            ActiveXInstance.SetExtent(Ole32.DVASPECT.CONTENT, pSizel);
             Debug.Unindent();
             return Interop.HRESULT.S_OK;
         }
@@ -14282,12 +14304,12 @@ namespace System.Windows.Forms
 
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetContentExtent");
             Debug.Indent();
-            ActiveXInstance.GetExtent(NativeMethods.DVASPECT_CONTENT, pSizel);
+            ActiveXInstance.GetExtent(Ole32.DVASPECT.CONTENT, pSizel);
             Debug.Unindent();
             return Interop.HRESULT.S_OK;
         }
 
-        int UnsafeNativeMethods.IViewObject.Draw(int dwDrawAspect, int lindex, IntPtr pvAspect, NativeMethods.tagDVTARGETDEVICE ptd,
+        int UnsafeNativeMethods.IViewObject.Draw(Ole32.DVASPECT dwDrawAspect, int lindex, IntPtr pvAspect, NativeMethods.tagDVTARGETDEVICE ptd,
                                             IntPtr hdcTargetDev, IntPtr hdcDraw, NativeMethods.COMRECT lprcBounds, NativeMethods.COMRECT lprcWBounds,
                                             IntPtr pfnContinue, int dwContinue)
         {
@@ -14311,17 +14333,21 @@ namespace System.Windows.Forms
             return NativeMethods.S_OK;
         }
 
-        int UnsafeNativeMethods.IViewObject.GetColorSet(int dwDrawAspect, int lindex, IntPtr pvAspect, NativeMethods.tagDVTARGETDEVICE ptd,
-                                                   IntPtr hicTargetDev, NativeMethods.tagLOGPALETTE ppColorSet)
+        unsafe HRESULT UnsafeNativeMethods.IViewObject.GetColorSet(
+            Ole32.DVASPECT dwDrawAspect,
+            int lindex,
+            IntPtr pvAspect,
+            NativeMethods.tagDVTARGETDEVICE ptd,
+            IntPtr hicTargetDev,
+            Gdi32.LOGPALETTE* ppColorSet)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetColorSet");
 
             // GDI+ doesn't do palettes.
-            //
-            return NativeMethods.E_NOTIMPL;
+            return HRESULT.E_NOTIMPL;
         }
 
-        int UnsafeNativeMethods.IViewObject.Freeze(int dwDrawAspect, int lindex, IntPtr pvAspect, IntPtr pdwFreeze)
+        int UnsafeNativeMethods.IViewObject.Freeze(Ole32.DVASPECT dwDrawAspect, int lindex, IntPtr pvAspect, IntPtr pdwFreeze)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:Freezes");
             return NativeMethods.E_NOTIMPL;
@@ -14333,19 +14359,19 @@ namespace System.Windows.Forms
             return NativeMethods.E_NOTIMPL;
         }
 
-        void UnsafeNativeMethods.IViewObject.SetAdvise(int aspects, int advf, IAdviseSink pAdvSink)
+        HRESULT UnsafeNativeMethods.IViewObject.SetAdvise(Ole32.DVASPECT aspects, Ole32.ADVF advf, IAdviseSink pAdvSink)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:SetAdvise");
-            ActiveXInstance.SetAdvise(aspects, advf, pAdvSink);
+            return ActiveXInstance.SetAdvise(aspects, advf, pAdvSink);
         }
 
-        void UnsafeNativeMethods.IViewObject.GetAdvise(int[] paspects, int[] padvf, IAdviseSink[] pAdvSink)
+        unsafe HRESULT UnsafeNativeMethods.IViewObject.GetAdvise(Ole32.DVASPECT* pAspects, Ole32.ADVF* pAdvf, IAdviseSink[] ppAdvSink)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetAdvise");
-            ActiveXInstance.GetAdvise(paspects, padvf, pAdvSink);
+            return ActiveXInstance.GetAdvise(pAspects, pAdvf, ppAdvSink);
         }
 
-        void UnsafeNativeMethods.IViewObject2.Draw(int dwDrawAspect, int lindex, IntPtr pvAspect, NativeMethods.tagDVTARGETDEVICE ptd,
+        void UnsafeNativeMethods.IViewObject2.Draw(Ole32.DVASPECT dwDrawAspect, int lindex, IntPtr pvAspect, NativeMethods.tagDVTARGETDEVICE ptd,
                                              IntPtr hdcTargetDev, IntPtr hdcDraw, NativeMethods.COMRECT lprcBounds, NativeMethods.COMRECT lprcWBounds,
                                              IntPtr pfnContinue, int dwContinue)
         {
@@ -14356,17 +14382,21 @@ namespace System.Windows.Forms
             Debug.Unindent();
         }
 
-        int UnsafeNativeMethods.IViewObject2.GetColorSet(int dwDrawAspect, int lindex, IntPtr pvAspect, NativeMethods.tagDVTARGETDEVICE ptd,
-                                                    IntPtr hicTargetDev, NativeMethods.tagLOGPALETTE ppColorSet)
+        unsafe HRESULT UnsafeNativeMethods.IViewObject2.GetColorSet(
+            Ole32.DVASPECT dwDrawAspect,
+            int lindex,
+            IntPtr pvAspect,
+            NativeMethods.tagDVTARGETDEVICE ptd,
+            IntPtr hicTargetDev,
+            Gdi32.LOGPALETTE* ppColorSet)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetColorSet");
 
             // GDI+ doesn't do palettes.
-            //
-            return NativeMethods.E_NOTIMPL;
+            return HRESULT.E_NOTIMPL;
         }
 
-        int UnsafeNativeMethods.IViewObject2.Freeze(int dwDrawAspect, int lindex, IntPtr pvAspect, IntPtr pdwFreeze)
+        int UnsafeNativeMethods.IViewObject2.Freeze(Ole32.DVASPECT dwDrawAspect, int lindex, IntPtr pvAspect, IntPtr pdwFreeze)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:Freezes");
             return NativeMethods.E_NOTIMPL;
@@ -14378,19 +14408,19 @@ namespace System.Windows.Forms
             return NativeMethods.E_NOTIMPL;
         }
 
-        void UnsafeNativeMethods.IViewObject2.SetAdvise(int aspects, int advf, IAdviseSink pAdvSink)
+        HRESULT UnsafeNativeMethods.IViewObject2.SetAdvise(Ole32.DVASPECT aspects, Ole32.ADVF advf, IAdviseSink pAdvSink)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:SetAdvise");
-            ActiveXInstance.SetAdvise(aspects, advf, pAdvSink);
+            return ActiveXInstance.SetAdvise(aspects, advf, pAdvSink);
         }
 
-        void UnsafeNativeMethods.IViewObject2.GetAdvise(int[] paspects, int[] padvf, IAdviseSink[] pAdvSink)
+        unsafe HRESULT UnsafeNativeMethods.IViewObject2.GetAdvise(Ole32.DVASPECT* pAspects, Ole32.ADVF* pAdvf, IAdviseSink[] ppAdvSink)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetAdvise");
-            ActiveXInstance.GetAdvise(paspects, padvf, pAdvSink);
+            return ActiveXInstance.GetAdvise(pAspects, pAdvf, ppAdvSink);
         }
 
-        unsafe Interop.HRESULT UnsafeNativeMethods.IViewObject2.GetExtent(uint dwDrawAspect, int lindex, NativeMethods.tagDVTARGETDEVICE ptd, Size *lpsizel)
+        unsafe Interop.HRESULT UnsafeNativeMethods.IViewObject2.GetExtent(Ole32.DVASPECT dwDrawAspect, int lindex, NativeMethods.tagDVTARGETDEVICE ptd, Size *lpsizel)
         {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetExtent (IViewObject2)");
             // we already have an implementation of this [from IOleObject]
@@ -14557,7 +14587,7 @@ namespace System.Windows.Forms
             {
                 t_tempKeyboardStateArray = new byte[256];
             }
-            UnsafeNativeMethods.GetKeyboardState(t_tempKeyboardStateArray);
+            User32.GetKeyboardState(t_tempKeyboardStateArray);
             return IsKeyDown(Keys.Tab)
                 || IsKeyDown(Keys.Up)
                 || IsKeyDown(Keys.Down)

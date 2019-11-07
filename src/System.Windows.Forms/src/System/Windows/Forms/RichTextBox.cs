@@ -45,12 +45,6 @@ namespace System.Windows.Forms
         /// <summary>
         ///  Paste special flags.
         /// </summary>
-        private const int DV_E_DVASPECT = unchecked((int)0x8004006B);
-        private const int DVASPECT_CONTENT = 1;
-        private const int DVASPECT_THUMBNAIL = 2;
-        private const int DVASPECT_ICON = 4;
-        private const int DVASPECT_DOCPRINT = 8;
-
         internal const int INPUT = 0x0001;
         internal const int OUTPUT = 0x0002;
         internal const int DIRECTIONMASK = INPUT | OUTPUT;
@@ -369,7 +363,7 @@ namespace System.Windows.Forms
                     if (((int)ScrollBars & RichTextBoxConstants.RTB_HORIZ) != 0 && !WordWrap)
                     {
                         // RichEd infers word wrap from the absence of horizontal scroll bars
-                        cp.Style |= NativeMethods.WS_HSCROLL;
+                        cp.Style |= (int)User32.WS.HSCROLL;
                         if (((int)ScrollBars & RichTextBoxConstants.RTB_FORCE) != 0)
                         {
                             cp.Style |= RichTextBoxConstants.ES_DISABLENOSCROLL;
@@ -378,7 +372,7 @@ namespace System.Windows.Forms
 
                     if (((int)ScrollBars & RichTextBoxConstants.RTB_VERT) != 0)
                     {
-                        cp.Style |= NativeMethods.WS_VSCROLL;
+                        cp.Style |= (int)User32.WS.VSCROLL;
                         if (((int)ScrollBars & RichTextBoxConstants.RTB_FORCE) != 0)
                         {
                             cp.Style |= RichTextBoxConstants.ES_DISABLENOSCROLL;
@@ -388,10 +382,10 @@ namespace System.Windows.Forms
 
                 // Remove the WS_BORDER style from the control, if we're trying to set it,
                 // to prevent the control from displaying the single point rectangle around the 3D border
-                if (BorderStyle.FixedSingle == BorderStyle && ((cp.Style & NativeMethods.WS_BORDER) != 0))
+                if (BorderStyle.FixedSingle == BorderStyle && ((cp.Style & (int)User32.WS.BORDER) != 0))
                 {
-                    cp.Style &= (~NativeMethods.WS_BORDER);
-                    cp.ExStyle |= NativeMethods.WS_EX_CLIENTEDGE;
+                    cp.Style &= ~(int)User32.WS.BORDER;
+                    cp.ExStyle |= (int)User32.WS_EX.CLIENTEDGE;
                 }
 
                 return cp;
@@ -2216,7 +2210,7 @@ namespace System.Windows.Forms
 
             // Use the TEXTRANGE to move our text buffer forward
             // or backwards within the main text
-            NativeMethods.TEXTRANGE txrg = new NativeMethods.TEXTRANGE
+            var txrg = new Richedit.TEXTRANGE
             {
                 chrg = new Richedit.CHARRANGE
                 {
@@ -2272,7 +2266,7 @@ namespace System.Windows.Forms
 
                     // go get the text in this range, if we didn't get any text then punt
                     int len;
-                    len = (int)UnsafeNativeMethods.SendMessage(new HandleRef(this, Handle), RichEditMessages.EM_GETTEXTRANGE, 0, txrg);
+                    len = (int)User32.SendMessageW(this, (User32.WindowMessage)RichEditMessages.EM_GETTEXTRANGE, IntPtr.Zero, ref txrg);
                     if (len == 0)
                     {
                         chrg.cpMax = chrg.cpMin = -1; // Hit end of control without finding what we wanted
@@ -3023,7 +3017,7 @@ namespace System.Windows.Forms
                 dwEffects |= RichTextBoxConstants.CFE_UNDERLINE;
             }
 
-            NativeMethods.LOGFONTW logFont = NativeMethods.LOGFONTW.FromFont(value);
+            User32.LOGFONTW logFont = User32.LOGFONTW.FromFont(value);
             NativeMethods.CHARFORMATW charFormat = new NativeMethods.CHARFORMATW
             {
                 cbSize = sizeof(NativeMethods.CHARFORMATW),
@@ -3490,7 +3484,7 @@ namespace System.Windows.Forms
         /// </remarks>
         private string CharRangeToString(Richedit.CHARRANGE c)
         {
-            NativeMethods.TEXTRANGE txrg = new NativeMethods.TEXTRANGE
+            var txrg = new Richedit.TEXTRANGE
             {
                 chrg = c
             };
@@ -3510,7 +3504,7 @@ namespace System.Windows.Forms
             }
 
             txrg.lpstrText = unmanagedBuffer;
-            int len = (int)UnsafeNativeMethods.SendMessage(new HandleRef(this, Handle), RichEditMessages.EM_GETTEXTRANGE, 0, txrg);
+            int len = (int)User32.SendMessageW(this, (User32.WindowMessage)RichEditMessages.EM_GETTEXTRANGE, IntPtr.Zero, ref txrg);
             Debug.Assert(len != 0, "CHARRANGE from RichTextBox was bad! - impossible?");
             charBuffer.PutCoTaskMem(unmanagedBuffer);
             if (txrg.lpstrText != IntPtr.Zero)
@@ -3600,18 +3594,18 @@ namespace System.Windows.Forms
                     case RichTextBoxConstants.EN_REQUESTRESIZE:
                         if (!CallOnContentsResized)
                         {
-                            NativeMethods.REQRESIZE reqResize = (NativeMethods.REQRESIZE)m.GetLParam(typeof(NativeMethods.REQRESIZE));
+                            Richedit.REQRESIZE* reqResize = (Richedit.REQRESIZE*)m.LParam;
                             if (BorderStyle == System.Windows.Forms.BorderStyle.Fixed3D)
                             {
-                                reqResize.rc.bottom++;
+                                reqResize->rc.bottom++;
                             }
-                            OnContentsResized(new ContentsResizedEventArgs(Rectangle.FromLTRB(reqResize.rc.left, reqResize.rc.top, reqResize.rc.right, reqResize.rc.bottom)));
+                            OnContentsResized(new ContentsResizedEventArgs(reqResize->rc));
                         }
                         break;
 
                     case RichTextBoxConstants.EN_SELCHANGE:
-                        NativeMethods.SELCHANGE selChange = (NativeMethods.SELCHANGE)m.GetLParam(typeof(NativeMethods.SELCHANGE));
-                        WmSelectionChange(selChange);
+                        Richedit.SELCHANGE* selChange = (Richedit.SELCHANGE*)m.LParam;
+                        WmSelectionChange(*selChange);
                         break;
 
                     case RichTextBoxConstants.EN_PROTECTED:
@@ -3734,7 +3728,7 @@ namespace System.Windows.Forms
             return es;
         }
 
-        private void WmSelectionChange(NativeMethods.SELCHANGE selChange)
+        private void WmSelectionChange(Richedit.SELCHANGE selChange)
         {
             int selStart = selChange.chrg.cpMin;
             int selEnd = selChange.chrg.cpMax;
@@ -3861,7 +3855,7 @@ namespace System.Windows.Forms
                     // classes. Usually this doesn't matter, because system controls always identify their window class explicitly through
                     // the WM_GETOBJECT+OBJID_QUERYCLASSNAMEIDX message. But RICHEDIT20 doesn't do that - so we must do it ourselves.
                     // Otherwise OLEACC will treat rich edit controls as custom controls, so the accessible Role and Value will be wrong.
-                    if (unchecked((int)(long)m.LParam) == NativeMethods.OBJID_QUERYCLASSNAMEIDX)
+                    if (unchecked((int)(long)m.LParam) == User32.OBJID.QUERYCLASSNAMEIDX)
                     {
                         m.Result = (IntPtr)(65536 + 30);
                     }
@@ -3879,32 +3873,33 @@ namespace System.Windows.Forms
                     break;
 
                 case WindowMessages.WM_VSCROLL:
+                {
                     base.WndProc(ref m);
-                    int loWord = Util.LOWORD(m.WParam);
-                    if (loWord == NativeMethods.SB_THUMBTRACK)
+                    User32.SBV loWord = (User32.SBV)Util.LOWORD(m.WParam);
+                    if (loWord == User32.SBV.THUMBTRACK)
                     {
                         OnVScroll(EventArgs.Empty);
                     }
-                    else
-                        if (loWord == NativeMethods.SB_THUMBPOSITION)
+                    else if (loWord == User32.SBV.THUMBPOSITION)
                     {
                         OnVScroll(EventArgs.Empty);
                     }
                     break;
-
+                }
                 case WindowMessages.WM_HSCROLL:
+                {
                     base.WndProc(ref m);
-                    loWord = Util.LOWORD(m.WParam);
-                    if (loWord == NativeMethods.SB_THUMBTRACK)
+                    User32.SBH loWord = (User32.SBH)Util.LOWORD(m.WParam);
+                    if (loWord == User32.SBH.THUMBTRACK)
                     {
                         OnHScroll(EventArgs.Empty);
                     }
-                    if (loWord == NativeMethods.SB_THUMBPOSITION)
+                    else if (loWord == User32.SBH.THUMBPOSITION)
                     {
                         OnHScroll(EventArgs.Empty);
                     }
                     break;
-
+                }
                 default:
                     base.WndProc(ref m);
                     break;

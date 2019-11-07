@@ -947,7 +947,7 @@ namespace System.Windows.Forms
 #if DEBUG
                     _justEnteredMenuMode = true;
 #endif
-                    IntPtr hwndActive = UnsafeNativeMethods.GetActiveWindow();
+                    IntPtr hwndActive = User32.GetActiveWindow();
                     if (hwndActive != IntPtr.Zero)
                     {
                         ActiveHwndInternal = new HandleRef(this, hwndActive);
@@ -1033,7 +1033,7 @@ namespace System.Windows.Forms
                         if (_caretHidden)
                         {
                             _caretHidden = false;
-                            SafeNativeMethods.ShowCaret(NativeMethods.NullHandleRef);
+                            User32.ShowCaret(IntPtr.Zero);
                         }
 
                         if (lastFocusedTool.TryGetTarget(out IKeyboardToolTip tool) && tool != null)
@@ -1168,7 +1168,7 @@ namespace System.Windows.Forms
                     if (activeToolStrip != null)
                     {
                         var pt = new Point(x, y);
-                        UnsafeNativeMethods.MapWindowPoints(new HandleRef(activeToolStrip, hwndMouseMessageIsFrom), new HandleRef(activeToolStrip, activeToolStrip.Handle), ref pt, 1);
+                        User32.MapWindowPoints(new HandleRef(activeToolStrip, hwndMouseMessageIsFrom), new HandleRef(activeToolStrip, activeToolStrip.Handle), ref pt, 1);
                         if (!activeToolStrip.ClientRectangle.Contains(pt.X, pt.Y))
                         {
                             if (activeToolStrip is ToolStripDropDown activeToolStripDropDown)
@@ -1256,7 +1256,7 @@ namespace System.Windows.Forms
                     if (dropDown.AutoClose == false)
                     {
                         // store off the current active hwnd
-                        IntPtr hwndActive = UnsafeNativeMethods.GetActiveWindow();
+                        IntPtr hwndActive = User32.GetActiveWindow();
                         if (hwndActive != IntPtr.Zero)
                         {
                             ActiveHwndInternal = new HandleRef(this, hwndActive);
@@ -1309,16 +1309,15 @@ namespace System.Windows.Forms
                 if (!InMenuMode && _inputFilterQueue.Count > 0)
                 {
                     Debug.WriteLineIf(ToolStrip.SnapFocusDebug.TraceVerbose, "[ModalMenuFilter.SetActiveToolStripCore] Setting " + WindowsFormsUtils.GetControlInformation(toolStrip.Handle) + " active.");
-
                     EnterMenuModeCore();
                 }
-                // hide the caret if we're showing a toolstrip dropdown
+
+                // Hide the caret if we're showing a toolstrip dropdown
                 if (!_caretHidden && toolStrip.IsDropDown && InMenuMode)
                 {
                     _caretHidden = true;
-                    SafeNativeMethods.HideCaret(NativeMethods.NullHandleRef);
+                    User32.HideCaret(IntPtr.Zero);
                 }
-
             }
 
             internal static void SuspendMenuMode()
@@ -1351,15 +1350,7 @@ namespace System.Windows.Forms
 
             private static bool IsChildOrSameWindow(HandleRef hwndParent, HandleRef hwndChild)
             {
-                if (hwndParent.Handle == hwndChild.Handle)
-                {
-                    return true;
-                }
-                if (UnsafeNativeMethods.IsChild(hwndParent, hwndChild))
-                {
-                    return true;
-                }
-                return false;
+                return hwndParent.Handle == hwndChild.Handle || User32.IsChild(hwndParent, hwndChild).IsTrue();
             }
 
             private static bool IsKeyOrMouseMessage(Message m)
@@ -1403,7 +1394,7 @@ namespace System.Windows.Forms
                     return false;
                 }
                 HandleRef hwndActiveToolStrip = new HandleRef(activeToolStrip, activeToolStrip.Handle);
-                HandleRef hwndCurrentActiveWindow = new HandleRef(null, UnsafeNativeMethods.GetActiveWindow());
+                HandleRef hwndCurrentActiveWindow = new HandleRef(null, User32.GetActiveWindow());
 
                 // if the active window has changed...
                 if (hwndCurrentActiveWindow.Handle != _lastActiveWindow.Handle)
@@ -1536,7 +1527,7 @@ namespace System.Windows.Forms
             {
                 private IntPtr messageHookHandle = IntPtr.Zero;
                 private bool isHooked = false;
-                private NativeMethods.HookProc hookProc;
+                private User32.HOOKPROC _hookProc;
 
                 public HostedWindowsFormsMessageHook()
                 {
@@ -1588,11 +1579,10 @@ namespace System.Windows.Forms
                             return;
                         }
 
-                        hookProc = new NativeMethods.HookProc(MessageHookProc);
-
-                        messageHookHandle = UnsafeNativeMethods.SetWindowsHookEx(
-                            NativeMethods.WH_GETMESSAGE,
-                            hookProc,
+                        _hookProc = new User32.HOOKPROC(MessageHookProc);
+                        messageHookHandle = User32.SetWindowsHookExW(
+                            User32.WH.GETMESSAGE,
+                            _hookProc,
                             IntPtr.Zero,
                             Kernel32.GetCurrentThreadId());
 
@@ -1604,9 +1594,9 @@ namespace System.Windows.Forms
                     }
                 }
 
-                private unsafe IntPtr MessageHookProc(int nCode, IntPtr wparam, IntPtr lparam)
+                private unsafe IntPtr MessageHookProc(User32.HC nCode, IntPtr wparam, IntPtr lparam)
                 {
-                    if (nCode == NativeMethods.HC_ACTION)
+                    if (nCode == User32.HC.ACTION)
                     {
                         if (isHooked && (User32.PM)wparam == User32.PM.REMOVE)
                         {
@@ -1624,7 +1614,7 @@ namespace System.Windows.Forms
                         }
                     }
 
-                    return UnsafeNativeMethods.CallNextHookEx(new HandleRef(this, messageHookHandle), nCode, wparam, lparam);
+                    return User32.CallNextHookEx(new HandleRef(this, messageHookHandle), nCode, wparam, lparam);
                 }
 
                 private void UninstallMessageHook()
@@ -1633,8 +1623,8 @@ namespace System.Windows.Forms
                     {
                         if (messageHookHandle != IntPtr.Zero)
                         {
-                            UnsafeNativeMethods.UnhookWindowsHookEx(new HandleRef(this, messageHookHandle));
-                            hookProc = null;
+                            User32.UnhookWindowsHookEx(new HandleRef(this, messageHookHandle));
+                            _hookProc = null;
                             messageHookHandle = IntPtr.Zero;
                             isHooked = false;
                         }
@@ -1924,7 +1914,7 @@ namespace System.Windows.Forms
                 toplevelControl = intendedControl.TopLevelControlInternal;
                 if (toplevelControl != null)
                 {
-                    IntPtr hMenu = UnsafeNativeMethods.GetMenu(new HandleRef(toplevelControl, toplevelControl.Handle));
+                    IntPtr hMenu = User32.GetMenu(toplevelControl);
                     if (hMenu == IntPtr.Zero)
                     {
                         // only activate the menu if there's no win32 menu.  Win32 menus trump menustrips.
@@ -1954,7 +1944,7 @@ namespace System.Windows.Forms
             else
             {
                 // this is the same as Control.ModifierKeys - but we save two p/invokes.
-                if (UnsafeNativeMethods.GetKeyState((int)Keys.ShiftKey) < 0 && (keyData == Keys.None))
+                if (User32.GetKeyState((int)Keys.ShiftKey) < 0 && (keyData == Keys.None))
                 {
                     // If it's Shift+F10 and we're already InMenuMode, then we
                     // need to cancel this message, otherwise we'll enter the native modal menu loop.

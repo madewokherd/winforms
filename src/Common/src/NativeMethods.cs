@@ -19,64 +19,11 @@ namespace System.Windows.Forms
 
         public const int STATUS_PENDING = 0x103; //259 = STILL_ALIVE
 
-        public const int
-            DESKTOP_SWITCHDESKTOP = 0x0100,
-            ERROR_ACCESS_DENIED = 0x0005;
-
-        public const int SHGFI_ICON = 0x000000100,   // get icon
-        SHGFI_DISPLAYNAME = 0x000000200,     // get display name
-        SHGFI_TYPENAME = 0x000000400,     // get type name
-        SHGFI_ATTRIBUTES = 0x000000800,     // get attributes
-        SHGFI_ICONLOCATION = 0x000001000,     // get icon location
-        SHGFI_EXETYPE = 0x000002000,     // return exe type
-        SHGFI_SYSICONINDEX = 0x000004000,     // get system icon index
-        SHGFI_LINKOVERLAY = 0x000008000,     // put a link overlay on icon
-        SHGFI_SELECTED = 0x000010000,     // show icon in selected state
-        SHGFI_ATTR_SPECIFIED = 0x000020000,     // get only specified attributes
-        SHGFI_LARGEICON = 0x000000000,     // get large icon
-        SHGFI_SMALLICON = 0x000000001,     // get small icon
-        SHGFI_OPENICON = 0x000000002,     // get open icon
-        SHGFI_SHELLICONSIZE = 0x000000004,     // get shell size icon
-        SHGFI_PIDL = 0x000000008,     // pszPath is a pidl
-        SHGFI_USEFILEATTRIBUTES = 0x000000010,     // use passed dwFileAttribute
-        SHGFI_ADDOVERLAYS = 0x000000020,     // apply the appropriate overlays
-        SHGFI_OVERLAYINDEX = 0x000000040;     // Get the index of the overlay
-
-        public const int DM_DISPLAYORIENTATION = 0x00000080;
-
-        public const int ARW_BOTTOMLEFT = 0x0000,
-        ARW_BOTTOMRIGHT = 0x0001,
-        ARW_TOPLEFT = 0x0002,
-        ARW_TOPRIGHT = 0x0003,
-        ARW_LEFT = 0x0000,
-        ARW_RIGHT = 0x0000,
-        ARW_UP = 0x0004,
-        ARW_DOWN = 0x0004,
-        ARW_HIDE = 0x0008,
-        ACM_OPENA = (0x0400 + 100),
-        ACM_OPENW = (0x0400 + 103),
-        ADVF_NODATA = 1,
-        ADVF_ONLYONCE = 4,
-        ADVF_PRIMEFIRST = 2;
-        // Note: ADVF_ONLYONCE and ADVF_PRIMEFIRST values now conform with objidl.dll but are backwards from
-        // Platform SDK documentation as of 07/21/2003.
-        // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/com/htm/oen_a2z_8jxi.asp.
+        public const int ACM_OPENA = (0x0400 + 100);
+        public const int ACM_OPENW = (0x0400 + 103);
 
         public const int BCM_GETIDEALSIZE = 0x1601,
         BI_RGB = 0,
-        BDR_RAISEDOUTER = 0x0001,
-        BDR_SUNKENOUTER = 0x0002,
-        BDR_RAISEDINNER = 0x0004,
-        BDR_SUNKENINNER = 0x0008,
-        BDR_RAISED = 0x0005,
-        BDR_SUNKEN = 0x000a,
-        BF_LEFT = 0x0001,
-        BF_TOP = 0x0002,
-        BF_RIGHT = 0x0004,
-        BF_BOTTOM = 0x0008,
-        BF_ADJUST = 0x2000,
-        BF_FLAT = 0x4000,
-        BF_MIDDLE = 0x0800,
         BFFM_INITIALIZED = 1,
         BFFM_SELCHANGED = 2,
         BFFM_SETSELECTION = 0x400 + 103,
@@ -116,13 +63,6 @@ namespace System.Windows.Forms
         CDERR_REGISTERMSGFAIL = 0x000C,
         CFERR_NOFONTS = 0x2001,
         CFERR_MAXLESSTHANMIN = 0x2002,
-        CC_RGBINIT = 0x00000001,
-        CC_FULLOPEN = 0x00000002,
-        CC_PREVENTFULLOPEN = 0x00000004,
-        CC_SHOWHELP = 0x00000008,
-        CC_ENABLEHOOK = 0x00000010,
-        CC_SOLIDCOLOR = 0x00000080,
-        CC_ANYCOLOR = 0x00000100,
         CF_SCREENFONTS = 0x00000001,
         CF_SHOWHELP = 0x00000004,
         CF_ENABLEHOOK = 0x00000008,
@@ -142,30 +82,7 @@ namespace System.Windows.Forms
 
         public const int cmb4 = 0x0473;
 
-        public enum ClassStyle : uint
-        {
-            CS_DBLCLKS = 0x0008,
-            CS_DROPSHADOW = 0x00020000,
-            CS_SAVEBITS = 0x0800
-        }
-
-        public const int CF_TEXT = 1,
-        CF_BITMAP = 2,
-        CF_METAFILEPICT = 3,
-        CF_SYLK = 4,
-        CF_DIF = 5,
-        CF_TIFF = 6,
-        CF_OEMTEXT = 7,
-        CF_DIB = 8,
-        CF_PALETTE = 9,
-        CF_PENDATA = 10,
-        CF_RIFF = 11,
-        CF_WAVE = 12,
-        CF_UNICODETEXT = 13,
-        CF_ENHMETAFILE = 14,
-        CF_HDROP = 15,
-        CF_LOCALE = 16,
-        CW_USEDEFAULT = (unchecked((int)0x80000000)),
+        public const int CW_USEDEFAULT = (unchecked((int)0x80000000)),
         CWP_SKIPINVISIBLE = 0x0001,
         COLOR_WINDOW = 5,
         CB_ERR = (-1),
@@ -204,30 +121,6 @@ namespace System.Windows.Forms
         CB_FINDSTRINGEXACT = 0x0158,
         CB_GETDROPPEDWIDTH = 0x015F,
         CB_SETDROPPEDWIDTH = 0x0160,
-        CDRF_DODEFAULT = 0x00000000,
-        CDRF_NEWFONT = 0x00000002,
-        CDRF_SKIPDEFAULT = 0x00000004,
-        CDRF_NOTIFYPOSTPAINT = 0x00000010,
-        CDRF_NOTIFYITEMDRAW = 0x00000020,
-        CDRF_NOTIFYSUBITEMDRAW = CDRF_NOTIFYITEMDRAW,
-        CDDS_PREPAINT = 0x00000001,
-        CDDS_POSTPAINT = 0x00000002,
-        CDDS_ITEM = 0x00010000,
-        CDDS_SUBITEM = 0x00020000,
-        CDDS_ITEMPREPAINT = (0x00010000 | 0x00000001),
-        CDDS_ITEMPOSTPAINT = (0x00010000 | 0x00000002),
-        CDIS_SELECTED = 0x0001,
-        CDIS_GRAYED = 0x0002,
-        CDIS_DISABLED = 0x0004,
-        CDIS_CHECKED = 0x0008,
-        CDIS_FOCUS = 0x0010,
-        CDIS_DEFAULT = 0x0020,
-        CDIS_HOT = 0x0040,
-        CDIS_MARKED = 0x0080,
-        CDIS_INDETERMINATE = 0x0100,
-        CDIS_SHOWKEYBOARDCUES = 0x0200,
-        CLR_NONE = unchecked((int)0xFFFFFFFF),
-        CLR_DEFAULT = unchecked((int)0xFF000000),
         CCM_SETVERSION = (0x2000 + 0x7),
         CCM_GETVERSION = (0x2000 + 0x8),
         CCS_NORESIZE = 0x00000004,
@@ -238,46 +131,15 @@ namespace System.Windows.Forms
         CBEM_GETITEM = (0x0400 + 13),
         CBEN_ENDEDIT = ((0 - 800) - 6),
         CONNECT_E_NOCONNECTION = unchecked((int)0x80040200),
-        CONNECT_E_CANNOTCONNECT = unchecked((int)0x80040202),
-        CTRLINFO_EATS_RETURN = 1,
-        CTRLINFO_EATS_ESCAPE = 2;
+        CONNECT_E_CANNOTCONNECT = unchecked((int)0x80040202);
 
         public const uint DISPATCH_METHOD = 0x1;
         public const uint DISPATCH_PROPERTYGET = 0x2;
         public const uint DISPATCH_PROPERTYPUT = 0x4;
-        public const int DV_E_DVASPECT = unchecked((int)0x8004006B),
+        public const int
         DISP_E_MEMBERNOTFOUND = unchecked((int)0x80020003),
         DISP_E_PARAMNOTFOUND = unchecked((int)0x80020004),
         DIB_RGB_COLORS = 0,
-        DFC_CAPTION = 1,
-        DFC_MENU = 2,
-        DFC_SCROLL = 3,
-        DFC_BUTTON = 4,
-        DFCS_CAPTIONCLOSE = 0x0000,
-        DFCS_CAPTIONMIN = 0x0001,
-        DFCS_CAPTIONMAX = 0x0002,
-        DFCS_CAPTIONRESTORE = 0x0003,
-        DFCS_CAPTIONHELP = 0x0004,
-        DFCS_MENUARROW = 0x0000,
-        DFCS_MENUCHECK = 0x0001,
-        DFCS_MENUBULLET = 0x0002,
-        DFCS_SCROLLUP = 0x0000,
-        DFCS_SCROLLDOWN = 0x0001,
-        DFCS_SCROLLLEFT = 0x0002,
-        DFCS_SCROLLRIGHT = 0x0003,
-        DFCS_SCROLLCOMBOBOX = 0x0005,
-        DFCS_BUTTONCHECK = 0x0000,
-        DFCS_BUTTONRADIO = 0x0004,
-        DFCS_BUTTON3STATE = 0x0008,
-        DFCS_BUTTONPUSH = 0x0010,
-        DFCS_INACTIVE = 0x0100,
-        DFCS_PUSHED = 0x0200,
-        DFCS_CHECKED = 0x0400,
-        DFCS_FLAT = 0x4000,
-        DCX_WINDOW = 0x00000001,
-        DCX_CACHE = 0x00000002,
-        DCX_LOCKWINDOWUPDATE = 0x00000400,
-        DCX_INTERSECTRGN = 0x00000080,
         DI_NORMAL = 0x0003,
         DLGC_WANTARROWS = 0x0001,
         DLGC_WANTTAB = 0x0002,
@@ -285,8 +147,6 @@ namespace System.Windows.Forms
         DLGC_WANTCHARS = 0x0080,
         DLGC_WANTMESSAGE = 0x0004,      /* Pass message to control          */
         DLGC_HASSETSEL = 0x0008,      /* Understands EM_SETSEL message    */
-        DTM_GETSYSTEMTIME = (0x1000 + 1),
-        DTM_SETSYSTEMTIME = (0x1000 + 2),
         DTM_SETRANGE = (0x1000 + 4),
         DTM_SETFORMAT = (0x1000 + 50),
         DTM_SETMCCOLOR = (0x1000 + 6),
@@ -303,10 +163,7 @@ namespace System.Windows.Forms
         DTN_FORMAT = ((0 - 760) + 17),
         DTN_FORMATQUERY = ((0 - 760) + 18),
         DTN_DROPDOWN = ((0 - 760) + 6),
-        DTN_CLOSEUP = ((0 - 760) + 7),
-        DVASPECT_CONTENT = 1,
-        DVASPECT_TRANSPARENT = 32,
-        DVASPECT_OPAQUE = 16;
+        DTN_CLOSEUP = ((0 - 760) + 7);
 
         public const int E_NOTIMPL = unchecked((int)0x80004001),
         E_OUTOFMEMORY = unchecked((int)0x8007000E),
@@ -316,13 +173,7 @@ namespace System.Windows.Forms
         E_FAIL = unchecked((int)0x80004005),
         E_UNEXPECTED = unchecked((int)0x8000FFFF),
         INET_E_DEFAULT_ACTION = unchecked((int)0x800C0011),
-        ETO_OPAQUE = 0x0002,
-        ETO_CLIPPED = 0x0004,
         EMR_POLYTEXTOUT = 97,
-        EDGE_RAISED = (0x0001 | 0x0004),
-        EDGE_SUNKEN = (0x0002 | 0x0008),
-        EDGE_ETCHED = (0x0002 | 0x0004),
-        EDGE_BUMP = (0x0001 | 0x0008),
         ES_LEFT = 0x0000,
         ES_CENTER = 0x0001,
         ES_RIGHT = 0x0002,
@@ -355,50 +206,23 @@ namespace System.Windows.Forms
         public const int FADF_DISPATCH = (0x400);
         public const int FADF_VARIANT = (unchecked((int)0x800));
 
-        public const int GMEM_FIXED = 0x0000,
-        GMEM_MOVEABLE = 0x0002,
-        GMEM_NOCOMPACT = 0x0010,
-        GMEM_NODISCARD = 0x0020,
-        GMEM_ZEROINIT = 0x0040,
-        GMEM_MODIFY = 0x0080,
-        GMEM_DISCARDABLE = 0x0100,
-        GMEM_NOT_BANKED = 0x1000,
-        GMEM_SHARE = 0x2000,
-        GMEM_DDESHARE = 0x2000,
-        GMEM_NOTIFY = 0x4000,
-        GMEM_LOWER = GMEM_NOT_BANKED,
-        GMEM_VALID_FLAGS = 0x7F72,
-        GMEM_INVALID_HANDLE = 0x8000,
-        GHND = (GMEM_MOVEABLE | GMEM_ZEROINIT),
-        GPTR = (GMEM_FIXED | GMEM_ZEROINIT),
+        public const int
         GCL_WNDPROC = (-24),
         GWL_WNDPROC = (-4),
         GWL_HWNDPARENT = (-8),
         GWL_STYLE = (-16),
         GWL_EXSTYLE = (-20),
         GWL_ID = (-12),
-        GW_HWNDFIRST = 0,
-        GW_HWNDLAST = 1,
-        GW_HWNDNEXT = 2,
-        GW_HWNDPREV = 3,
-        GW_CHILD = 5,
         GMR_VISIBLE = 0,
         GMR_DAYSTATE = 1,
         GDI_ERROR = (unchecked((int)0xFFFFFFFF)),
         GDTR_MIN = 0x0001,
         GDTR_MAX = 0x0002,
-        GDT_VALID = 0,
-        GDT_NONE = 1,
         GA_PARENT = 1,
         GA_ROOT = 2;
 
-        // ImmGetCompostionString index.
-        public const int
-        GCS_COMPSTR = 0x0008,
-        GCS_COMPATTR = 0x0010,
-        GCS_RESULTSTR = 0x0800,
-
         // attribute for COMPOSITIONSTRING Structure
+        public const int
         ATTR_INPUT = 0x00,
         ATTR_TARGET_CONVERTED = 0x01,
         ATTR_CONVERTED = 0x02,
@@ -414,9 +238,6 @@ namespace System.Windows.Forms
         CPS_CANCEL = 0x04;
 
         public const int
-        HC_ACTION = 0,
-        HC_GETNEXT = 1,
-        HC_SKIP = 2,
         HTTRANSPARENT = (-1),
         HTNOWHERE = 0,
         HTCLIENT = 1,
@@ -463,54 +284,16 @@ namespace System.Windows.Forms
         public const int IME_CMODE_NATIVE = 0x0001,
         IME_CMODE_KATAKANA = 0x0002,
         IME_CMODE_FULLSHAPE = 0x0008,
-        INPLACE_E_NOTOOLSPACE = unchecked((int)0x800401A1),
         ICON_SMALL = 0,
         ICON_BIG = 1,
         IMAGE_ICON = 1,
-        IMAGE_CURSOR = 2,
-        ICC_LISTVIEW_CLASSES = 0x00000001,
-        ICC_TREEVIEW_CLASSES = 0x00000002,
-        ICC_BAR_CLASSES = 0x00000004,
-        ICC_TAB_CLASSES = 0x00000008,
-        ICC_PROGRESS_CLASS = 0x00000020,
-        ICC_DATE_CLASSES = 0x00000100,
-        ILC_MASK = 0x0001,
-        ILC_COLOR = 0x0000,
-        ILC_COLOR4 = 0x0004,
-        ILC_COLOR8 = 0x0008,
-        ILC_COLOR16 = 0x0010,
-        ILC_COLOR24 = 0x0018,
-        ILC_COLOR32 = 0x0020,
-        ILC_MIRROR = 0x00002000,
-        ILD_NORMAL = 0x0000,
-        ILD_TRANSPARENT = 0x0001,
-        ILD_MASK = 0x0010,
-        ILD_ROP = 0x0040,
-
-        // ImageList
-        //
-        ILP_NORMAL = 0,
-        ILP_DOWNLEVEL = 1,
-        ILS_NORMAL = 0x0,
-        ILS_GLOW = 0x1,
-        ILS_SHADOW = 0x2,
-        ILS_SATURATE = 0x4,
-        ILS_ALPHA = 0x8;
+        IMAGE_CURSOR = 2;
 
         public const int IDM_PRINT = 27,
         IDM_PAGESETUP = 2004,
         IDM_PRINTPREVIEW = 2003,
         IDM_PROPERTIES = 28,
         IDM_SAVEAS = 71;
-
-        public const int CSC_NAVIGATEFORWARD = 0x00000001,
-        CSC_NAVIGATEBACK = 0x00000002;
-
-        public const int INPUT_KEYBOARD = 1;
-
-        public const int KEYEVENTF_EXTENDEDKEY = 0x0001;
-        public const int KEYEVENTF_KEYUP = 0x0002;
-        public const int KEYEVENTF_UNICODE = 0x0004;
 
         public const int LB_ERR = (-1),
         LB_ERRSPACE = (-2),
@@ -582,61 +365,19 @@ namespace System.Windows.Forms
         LVS_NOCOLUMNHEADER = 0x4000,
         LVS_NOSORTHEADER = unchecked((int)0x8000),
         LVS_OWNERDATA = 0x1000,
+
         LVSCW_AUTOSIZE = -1,
         LVSCW_AUTOSIZE_USEHEADER = -2,
-        LVM_REDRAWITEMS = (0x1000 + 21),
-        LVM_SCROLL = (0x1000 + 20),
-        LVM_SETBKCOLOR = (0x1000 + 1),
-        LVM_SETBKIMAGE = (0x1000 + 138),
-        LVM_SETCALLBACKMASK = (0x1000 + 11),
-        LVM_GETCALLBACKMASK = (0x1000 + 10),
-        LVM_GETCOLUMNORDERARRAY = (0x1000 + 59),
-        LVM_GETITEMCOUNT = (0x1000 + 4),
-        LVM_SETCOLUMNORDERARRAY = (0x1000 + 58),
-        LVM_SETINFOTIP = (0x1000 + 173),
+
         LVSIL_NORMAL = 0,
         LVSIL_SMALL = 1,
         LVSIL_STATE = 2,
-        LVM_SETIMAGELIST = (0x1000 + 3),
-        LVM_SETSELECTIONMARK = (0x1000 + 67),
-        LVM_SETTOOLTIPS = (0x1000 + 74),
-        LVIF_TEXT = 0x0001,
-        LVIF_IMAGE = 0x0002,
-        LVIF_INDENT = 0x0010,
-        LVIF_PARAM = 0x0004,
-        LVIF_STATE = 0x0008,
-        LVIF_GROUPID = 0x0100,
-        LVIF_COLUMNS = 0x0200,
-        LVIS_FOCUSED = 0x0001,
-        LVIS_SELECTED = 0x0002,
-        LVIS_CUT = 0x0004,
-        LVIS_DROPHILITED = 0x0008,
-        LVIS_OVERLAYMASK = 0x0F00,
-        LVIS_STATEIMAGEMASK = 0xF000,
-        LVM_GETITEM = (0x1000 + 75),
-        LVM_SETITEM = (0x1000 + 76),
-        LVM_SETITEMPOSITION32 = (0x01000 + 49),
-        LVM_INSERTITEM = (0x1000 + 77),
-        LVM_DELETEITEM = (0x1000 + 8),
-        LVM_DELETECOLUMN = (0x1000 + 28),
-        LVM_DELETEALLITEMS = (0x1000 + 9),
-        LVM_UPDATE = (0x1000 + 42),
         LVNI_FOCUSED = 0x0001,
         LVNI_SELECTED = 0x0002,
-        LVM_GETNEXTITEM = (0x1000 + 12),
-        LVFI_PARAM = 0x0001,
-        LVFI_NEARESTXY = 0x0040,
-        LVFI_PARTIAL = 0x0008,
-        LVFI_STRING = 0x0002,
-        LVM_FINDITEM = (0x1000 + 83),
         LVIR_BOUNDS = 0,
         LVIR_ICON = 1,
         LVIR_LABEL = 2,
         LVIR_SELECTBOUNDS = 3,
-        LVM_GETITEMPOSITION = (0x1000 + 16),
-        LVM_GETITEMRECT = (0x1000 + 14),
-        LVM_GETSUBITEMRECT = (0x1000 + 56),
-        LVM_GETSTRINGWIDTH = (0x1000 + 87),
         LVHT_NOWHERE = 0x0001,
         LVHT_ONITEMICON = 0x0002,
         LVHT_ONITEMLABEL = 0x0004,
@@ -646,17 +387,10 @@ namespace System.Windows.Forms
         LVHT_LEFT = 0x0040,
         LVHT_ONITEM = (0x0002 | 0x0004 | 0x0008),
         LVHT_ONITEMSTATEICON = 0x0008,
-        LVM_SUBITEMHITTEST = (0x1000 + 57),
-        LVM_HITTEST = (0x1000 + 18),
-        LVM_ENSUREVISIBLE = (0x1000 + 19),
         LVA_DEFAULT = 0x0000,
         LVA_ALIGNLEFT = 0x0001,
         LVA_ALIGNTOP = 0x0002,
         LVA_SNAPTOGRID = 0x0005,
-        LVM_ARRANGE = (0x1000 + 22),
-        LVM_EDITLABEL = (0x1000 + 118),
-        LVCDI_ITEM = 0x0000,
-        LVCDI_GROUP = 0x00000001,
         LVCF_FMT = 0x0001,
         LVCF_WIDTH = 0x0002,
         LVCF_TEXT = 0x0004,
@@ -664,63 +398,10 @@ namespace System.Windows.Forms
         LVCF_IMAGE = 0x0010,
         LVCF_ORDER = 0x0020,
         LVCFMT_IMAGE = 0x0800,
-        LVGA_HEADER_LEFT = 0x00000001,
-        LVGA_HEADER_CENTER = 0x00000002,
-        LVGA_HEADER_RIGHT = 0x00000004,
-        LVGA_FOOTER_LEFT = 0x00000008,
-        LVGA_FOOTER_CENTER = 0x00000010,
-        LVGA_FOOTER_RIGHT = 0x00000020,
-        LVGF_NONE = 0x00000000,
-        LVGF_HEADER = 0x00000001,
-        LVGF_FOOTER = 0x00000002,
-        LVGF_STATE = 0x00000004,
-        LVGF_ALIGN = 0x00000008,
-        LVGF_GROUPID = 0x00000010,
-        LVGS_NORMAL = 0x00000000,
-        LVGS_COLLAPSED = 0x00000001,
-        LVGS_HIDDEN = 0x00000002,
         LVIM_AFTER = 0x00000001,
         LVTVIF_FIXEDSIZE = 0x00000003,
         LVTVIM_TILESIZE = 0x00000001,
         LVTVIM_COLUMNS = 0x00000002,
-        LVM_ENABLEGROUPVIEW = (0x1000 + 157),
-        LVM_MOVEITEMTOGROUP = (0x1000 + 154),
-        LVM_GETCOLUMN = (0x1000 + 95),
-        LVM_SETCOLUMN = (0x1000 + 96),
-        LVM_INSERTCOLUMN = (0x1000 + 97),
-        LVM_INSERTGROUP = (0x1000 + 145),
-        LVM_REMOVEGROUP = (0x1000 + 150),
-        LVM_INSERTMARKHITTEST = (0x1000 + 168),
-        LVM_REMOVEALLGROUPS = (0x1000 + 160),
-        LVM_GETCOLUMNWIDTH = (0x1000 + 29),
-        LVM_SETCOLUMNWIDTH = (0x1000 + 30),
-        LVM_SETINSERTMARK = (0x1000 + 166),
-        LVM_GETHEADER = (0x1000 + 31),
-        LVM_SETTEXTCOLOR = (0x1000 + 36),
-        LVM_SETTEXTBKCOLOR = (0x1000 + 38),
-        LVM_GETTOPINDEX = (0x1000 + 39),
-        LVM_SETITEMPOSITION = (0x1000 + 15),
-        LVM_SETITEMSTATE = (0x1000 + 43),
-        LVM_GETITEMSTATE = (0x1000 + 44),
-        LVM_GETITEMTEXT = (0x1000 + 115),
-        LVM_GETHOTITEM = (0x1000 + 61),
-        LVM_SETITEMTEXT = (0x1000 + 116),
-        LVM_SETITEMCOUNT = (0x1000 + 47),
-        LVM_SORTITEMS = (0x1000 + 48),
-        LVM_GETSELECTEDCOUNT = (0x1000 + 50),
-        LVM_GETISEARCHSTRING = (0x1000 + 117),
-        LVM_SETEXTENDEDLISTVIEWSTYLE = (0x1000 + 54),
-        LVM_SETVIEW = (0x1000 + 142),
-        LVM_GETGROUPINFO = (0x1000 + 149),
-        LVM_SETGROUPINFO = (0x1000 + 147),
-        LVM_HASGROUP = (0x1000 + 161),
-        LVM_SETTILEVIEWINFO = (0x1000 + 162),
-        LVM_GETTILEVIEWINFO = (0x1000 + 163),
-        LVM_GETINSERTMARK = (0x1000 + 167),
-        LVM_GETINSERTMARKRECT = (0x1000 + 169),
-        LVM_SETINSERTMARKCOLOR = (0x1000 + 170),
-        LVM_GETINSERTMARKCOLOR = (0x1000 + 171),
-        LVM_ISGROUPVIEWENABLED = (0x1000 + 175),
         LVS_EX_GRIDLINES = 0x00000001,
         LVS_EX_CHECKBOXES = 0x00000004,
         LVS_EX_TRACKSELECT = 0x00000008,
@@ -791,8 +472,6 @@ namespace System.Windows.Forms
         MA_ACTIVATEANDEAT = 0x0002,
         MA_NOACTIVATE = 0x0003,
         MA_NOACTIVATEANDEAT = 0x0004,
-        MM_TEXT = 1,
-        MM_ANISOTROPIC = 8,
         MNC_EXECUTE = 2,
         MNC_SELECT = 3,
         MIIM_STATE = 0x00000001,
@@ -804,12 +483,6 @@ namespace System.Windows.Forms
         MIIM_BITMAP = 0x00000080,
         MIIM_FTYPE = 0x00000100,
         MB_OK = 0x00000000,
-        MF_BYCOMMAND = 0x00000000,
-        MF_BYPOSITION = 0x00000400,
-        MF_ENABLED = 0x00000000,
-        MF_GRAYED = 0x00000001,
-        MF_POPUP = 0x00000010,
-        MF_SYSMENU = 0x00002000,
         MFS_DISABLED = 0x00000003,
         MFT_MENUBREAK = 0x00000040,
         MFT_SEPARATOR = 0x00000800,
@@ -824,8 +497,6 @@ namespace System.Windows.Forms
         MCM_GETMONTHRANGE = (0x1000 + 7),
         MCM_GETMINREQRECT = (0x1000 + 9),
         MCM_SETCOLOR = (0x1000 + 10),
-        MCM_SETTODAY = (0x1000 + 12),
-        MCM_GETTODAY = (0x1000 + 13),
         MCM_HITTEST = (0x1000 + 14),
         MCM_SETFIRSTDAYOFWEEK = (0x1000 + 15),
         MCM_SETRANGE = (0x1000 + 18),
@@ -900,23 +571,7 @@ namespace System.Windows.Forms
         OFN_EXPLORER = 0x00080000,
         OFN_NODEREFERENCELINKS = 0x00100000,
         OFN_ENABLESIZING = 0x00800000,
-        OFN_USESHELLITEM = 0x01000000,
-        OLEIVERB_PRIMARY = 0,
-        OLEIVERB_SHOW = -1,
-        OLEIVERB_HIDE = -3,
-        OLEIVERB_UIACTIVATE = -4,
-        OLEIVERB_INPLACEACTIVATE = -5,
-        OLEIVERB_DISCARDUNDOSTATE = -6,
-        OLEIVERB_PROPERTIES = -7,
-        OLE_E_INVALIDRECT = unchecked((int)0x8004000D),
-        OLE_E_NOCONNECTION = unchecked((int)0x80040004),
-        OLEMISC_RECOMPOSEONRESIZE = 0x00000001,
-        OLEMISC_INSIDEOUT = 0x00000080,
-        OLEMISC_ACTIVATEWHENVISIBLE = 0x0000100,
-        OLEMISC_ACTSLIKEBUTTON = 0x00001000,
-        OLEMISC_SETCLIENTSITEFIRST = 0x00020000,
-        OLECLOSE_SAVEIFDIRTY = 0,
-        OLECLOSE_PROMPTSAVE = 2;
+        OFN_USESHELLITEM = 0x01000000;
 
         public const int PDERR_SETUPFAILURE = 0x1001,
         PDERR_PARSEFAILURE = 0x1002,
@@ -980,22 +635,6 @@ namespace System.Windows.Forms
         public const int PBS_SMOOTH = 0x01,
         PBS_MARQUEE = 0x08;
 
-        public const int QS_KEY = 0x0001,
-        QS_MOUSEMOVE = 0x0002,
-        QS_MOUSEBUTTON = 0x0004,
-        QS_POSTMESSAGE = 0x0008,
-        QS_TIMER = 0x0010,
-        QS_PAINT = 0x0020,
-        QS_SENDMESSAGE = 0x0040,
-        QS_HOTKEY = 0x0080,
-        QS_ALLPOSTMESSAGE = 0x0100,
-        QS_MOUSE = QS_MOUSEMOVE | QS_MOUSEBUTTON,
-        QS_INPUT = QS_MOUSE | QS_KEY,
-        QS_ALLEVENTS = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY,
-        QS_ALLINPUT = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE;
-
-        public const int MWMO_INPUTAVAILABLE = 0x0004;  // don't use MWMO_WAITALL, see ddb#176342
-
         //public const int RECO_PASTE = 0x00000000;   // paste from clipboard
         public const int RECO_DROP = 0x00000001;    // drop
                                                     //public const int RECO_COPY  = 0x00000002;    // copy to the clipboard
@@ -1004,28 +643,8 @@ namespace System.Windows.Forms
 
         public const int stc4 = 0x0443,
         STARTF_USESHOWWINDOW = 0x00000001,
-        SB_HORZ = 0,
-        SB_VERT = 1,
-        SB_CTL = 2,
-        SB_LINEUP = 0,
-        SB_LINELEFT = 0,
-        SB_LINEDOWN = 1,
-        SB_LINERIGHT = 1,
-        SB_PAGEUP = 2,
-        SB_PAGELEFT = 2,
-        SB_PAGEDOWN = 3,
-        SB_PAGERIGHT = 3,
-        SB_THUMBPOSITION = 4,
-        SB_THUMBTRACK = 5,
-        SB_LEFT = 6,
-        SB_RIGHT = 7,
-        SB_ENDSCROLL = 8,
-        SB_TOP = 6,
-        SB_BOTTOM = 7,
         SIZE_RESTORED = 0,
         SIZE_MAXIMIZED = 2,
-        ESB_ENABLE_BOTH = 0x0000,
-        ESB_DISABLE_BOTH = 0x0003,
         SORT_DEFAULT = 0x0,
         SUBLANG_DEFAULT = 0x01;
 
@@ -1034,18 +653,7 @@ namespace System.Windows.Forms
         HLP_NAVIGATOR = 3,
         HLP_OBJECT = 4;
 
-        public const int SW_SCROLLCHILDREN = 0x0001,
-        SW_INVALIDATE = 0x0002,
-        SW_ERASE = 0x0004,
-        SW_SMOOTHSCROLL = 0x0010,
-        SC_SIZE = 0xF000,
-        SC_MINIMIZE = 0xF020,
-        SC_MAXIMIZE = 0xF030,
-        SC_CLOSE = 0xF060,
-        SC_KEYMENU = 0xF100,
-        SC_RESTORE = 0xF120,
-        SC_MOVE = 0xF010,
-        SC_CONTEXTHELP = 0xF180,
+        public const int
         SS_LEFT = 0x00000000,
         SS_CENTER = 0x00000001,
         SS_RIGHT = 0x00000002,
@@ -1054,51 +662,6 @@ namespace System.Windows.Forms
         SS_SUNKEN = 0x00001000,
         SBS_HORZ = 0x0000,
         SBS_VERT = 0x0001,
-        SIF_RANGE = 0x0001,
-        SIF_PAGE = 0x0002,
-        SIF_POS = 0x0004,
-        SIF_TRACKPOS = 0x0010,
-        SIF_ALL = (0x0001 | 0x0002 | 0x0004 | 0x0010),
-        SPI_GETFONTSMOOTHING = 0x004A,
-        SPI_GETDROPSHADOW = 0x1024,
-        SPI_GETFLATMENU = 0x1022,
-        SPI_GETFONTSMOOTHINGTYPE = 0x200A,
-        SPI_GETFONTSMOOTHINGCONTRAST = 0x200C,
-        SPI_ICONHORIZONTALSPACING = 0x000D,
-        SPI_ICONVERTICALSPACING = 0x0018,
-        // SPI_GETICONMETRICS =        0x002D,
-        SPI_GETICONTITLEWRAP = 0x0019,
-        SPI_GETKEYBOARDCUES = 0x100A,
-        SPI_GETKEYBOARDDELAY = 0x0016,
-        SPI_GETKEYBOARDPREF = 0x0044,
-        SPI_GETKEYBOARDSPEED = 0x000A,
-        SPI_GETMOUSEHOVERWIDTH = 0x0062,
-        SPI_GETMOUSEHOVERHEIGHT = 0x0064,
-        SPI_GETMOUSEHOVERTIME = 0x0066,
-        SPI_GETMOUSESPEED = 0x0070,
-        SPI_GETMENUDROPALIGNMENT = 0x001B,
-        SPI_GETMENUFADE = 0x1012,
-        SPI_GETMENUSHOWDELAY = 0x006A,
-        SPI_GETCOMBOBOXANIMATION = 0x1004,
-        SPI_GETGRADIENTCAPTIONS = 0x1008,
-        SPI_GETHOTTRACKING = 0x100E,
-        SPI_GETLISTBOXSMOOTHSCROLLING = 0x1006,
-        SPI_GETMENUANIMATION = 0x1002,
-        SPI_GETSELECTIONFADE = 0x1014,
-        SPI_GETTOOLTIPANIMATION = 0x1016,
-        SPI_GETUIEFFECTS = 0x103E,
-        SPI_GETACTIVEWINDOWTRACKING = 0x1000,
-        SPI_GETACTIVEWNDTRKTIMEOUT = 0x2002,
-        SPI_GETANIMATION = 0x0048,
-        SPI_GETBORDER = 0x0005,
-        SPI_GETCARETWIDTH = 0x2006,
-        SPI_GETDRAGFULLWINDOWS = 38,
-        SPI_GETNONCLIENTMETRICS = 41,
-        SPI_GETWORKAREA = 48,
-        SPI_GETHIGHCONTRAST = 66,
-        SPI_GETDEFAULTINPUTLANG = 89,
-        SPI_GETSNAPTODEFBUTTON = 95,
-        SPI_GETWHEELSCROLLLINES = 104,
         SBARS_SIZEGRIP = 0x0100,
         SB_SETTEXT = (0x0400 + 11),
         SB_GETTEXT = (0x0400 + 13),
@@ -1135,23 +698,10 @@ namespace System.Windows.Forms
         TPM_RIGHTALIGN = 0x0008,
         TPM_VERTICAL = 0x0040,
         TV_FIRST = 0x1100,
-        TBSTATE_CHECKED = 0x01,
-        TBSTATE_ENABLED = 0x04,
-        TBSTATE_HIDDEN = 0x08,
-        TBSTATE_INDETERMINATE = 0x10,
-        TBSTYLE_BUTTON = 0x00,
-        TBSTYLE_SEP = 0x01,
-        TBSTYLE_CHECK = 0x02,
-        TBSTYLE_DROPDOWN = 0x08,
-        TBSTYLE_TOOLTIPS = 0x0100,
-        TBSTYLE_FLAT = 0x0800,
-        TBSTYLE_LIST = 0x1000,
-        TBSTYLE_EX_DRAWDDARROWS = 0x00000001,
         TB_ENABLEBUTTON = (0x0400 + 1),
         TB_ISBUTTONCHECKED = (0x0400 + 10),
         TB_ISBUTTONINDETERMINATE = (0x0400 + 13),
         TB_ADDBUTTONS = (0x0400 + 68),
-        TB_INSERTBUTTON = (0x0400 + 67),
         TB_DELETEBUTTON = (0x0400 + 22),
         TB_GETBUTTON = (0x0400 + 23),
         TB_SAVERESTORE = (0x0400 + 76),
@@ -1164,18 +714,10 @@ namespace System.Windows.Forms
         TB_SETIMAGELIST = (0x0400 + 48),
         TB_GETRECT = (0x0400 + 51),
         TB_GETBUTTONSIZE = (0x0400 + 58),
-        TB_GETBUTTONINFO = (0x0400 + 63),
-        TB_SETBUTTONINFO = (0x0400 + 64),
         TB_SETEXTENDEDSTYLE = (0x0400 + 84),
         TB_MAPACCELERATOR = (0x0400 + 90),
         TB_GETTOOLTIPS = (0x0400 + 35),
         TB_SETTOOLTIPS = (0x0400 + 36),
-        TBIF_IMAGE = 0x00000001,
-        TBIF_TEXT = 0x00000002,
-        TBIF_STATE = 0x00000004,
-        TBIF_STYLE = 0x00000008,
-        TBIF_COMMAND = 0x00000020,
-        TBIF_SIZE = 0x00000040,
         TBN_GETBUTTONINFO = ((0 - 700) - 20),
         TBN_QUERYINSERT = ((0 - 700) - 6),
         TBN_DROPDOWN = ((0 - 700) - 10),
@@ -1272,19 +814,6 @@ namespace System.Windows.Forms
         TVN_BEGINRDRAG = ((0 - 400) - 57),
         TVN_BEGINLABELEDIT = ((0 - 400) - 59),
         TVN_ENDLABELEDIT = ((0 - 400) - 60),
-        TCS_BOTTOM = 0x0002,
-        TCS_RIGHT = 0x0002,
-        TCS_FLATBUTTONS = 0x0008,
-        TCS_HOTTRACK = 0x0040,
-        TCS_VERTICAL = 0x0080,
-        TCS_TABS = 0x0000,
-        TCS_BUTTONS = 0x0100,
-        TCS_MULTILINE = 0x0200,
-        TCS_RIGHTJUSTIFY = 0x0000,
-        TCS_FIXEDWIDTH = 0x0400,
-        TCS_RAGGEDRIGHT = 0x0800,
-        TCS_OWNERDRAWFIXED = 0x2000,
-        TCS_TOOLTIPS = 0x4000,
         TCM_SETIMAGELIST = (0x1300 + 3),
         TCIF_TEXT = 0x0001,
         TCIF_IMAGE = 0x0002,
@@ -1304,7 +833,6 @@ namespace System.Windows.Forms
         TCM_SETTOOLTIPS = (0x1300 + 46),
         TCN_SELCHANGE = ((0 - 550) - 1),
         TCN_SELCHANGING = ((0 - 550) - 2),
-        TBSTYLE_WRAPPABLE = 0x0200,
         TVM_SETBKCOLOR = (TV_FIRST + 29),
         TVM_SETTEXTCOLOR = (TV_FIRST + 30),
         TYMED_NULL = 0,
@@ -1313,19 +841,6 @@ namespace System.Windows.Forms
         TVM_SETTOOLTIPS = (TV_FIRST + 24),
         TVSIL_STATE = 2,
         TVM_SORTCHILDRENCB = (TV_FIRST + 21);
-
-        public const int TVHT_NOWHERE = 0x0001,
-        TVHT_ONITEMICON = 0x0002,
-        TVHT_ONITEMLABEL = 0x0004,
-        TVHT_ONITEM = (TVHT_ONITEMICON | TVHT_ONITEMLABEL | TVHT_ONITEMSTATEICON),
-        TVHT_ONITEMINDENT = 0x0008,
-        TVHT_ONITEMBUTTON = 0x0010,
-        TVHT_ONITEMRIGHT = 0x0020,
-        TVHT_ONITEMSTATEICON = 0x0040,
-        TVHT_ABOVE = 0x0100,
-        TVHT_BELOW = 0x0200,
-        TVHT_TORIGHT = 0x0400,
-        TVHT_TOLEFT = 0x0800;
 
         public const int UIS_SET = 1,
         UIS_CLEAR = 2,
@@ -1337,71 +852,11 @@ namespace System.Windows.Forms
         USERCLASSTYPE_APPNAME = 3,
         UOI_FLAGS = 1;
 
-        public const int VIEW_E_DRAW = unchecked((int)0x80040140),
-        VK_PRIOR = 0x21,
-        VK_NEXT = 0x22,
-        VK_LEFT = 0x25,
-        VK_UP = 0x26,
-        VK_RIGHT = 0x27,
-        VK_DOWN = 0x28,
-        VK_TAB = 0x09,
-        VK_SHIFT = 0x10,
-        VK_CONTROL = 0x11,
-        VK_MENU = 0x12,
-        VK_CAPITAL = 0x14,
-        VK_KANA = 0x15,
-        VK_ESCAPE = 0x1B,
-        VK_END = 0x23,
-        VK_HOME = 0x24,
-        VK_NUMLOCK = 0x90,
-        VK_SCROLL = 0x91,
-        VK_INSERT = 0x002D,
-        VK_DELETE = 0x002E;
-
-        public const int WH_JOURNALPLAYBACK = 1;
-        public const int WH_GETMESSAGE = 3;
-        public const int WH_MOUSE = 7;
         public const int WSF_VISIBLE = 0x0001;
 
         public const int WA_INACTIVE = 0;
         public const int WA_ACTIVE = 1;
         public const int WA_CLICKACTIVE = 2;
-
-        public const int WS_OVERLAPPED = 0x00000000;
-        public const int WS_POPUP = unchecked((int)0x80000000);
-        public const int WS_CHILD = 0x40000000;
-        public const int WS_MINIMIZE = 0x20000000;
-        public const int WS_VISIBLE = 0x10000000;
-        public const int WS_DISABLED = 0x08000000;
-        public const int WS_CLIPSIBLINGS = 0x04000000;
-        public const int WS_CLIPCHILDREN = 0x02000000;
-        public const int WS_MAXIMIZE = 0x01000000;
-        public const int WS_CAPTION = 0x00C00000;
-        public const int WS_BORDER = 0x00800000;
-        public const int WS_DLGFRAME = 0x00400000;
-        public const int WS_VSCROLL = 0x00200000;
-        public const int WS_HSCROLL = 0x00100000;
-        public const int WS_SYSMENU = 0x00080000;
-        public const int WS_THICKFRAME = 0x00040000;
-        public const int WS_TABSTOP = 0x00010000;
-        public const int WS_MINIMIZEBOX = 0x00020000;
-        public const int WS_MAXIMIZEBOX = 0x00010000;
-        public const int WS_EX_DLGMODALFRAME = 0x00000001;
-        public const int WS_EX_MDICHILD = 0x00000040;
-        public const int WS_EX_TOOLWINDOW = 0x00000080;
-        public const int WS_EX_CLIENTEDGE = 0x00000200;
-        public const int WS_EX_CONTEXTHELP = 0x00000400;
-        public const int WS_EX_RIGHT = 0x00001000;
-        public const int WS_EX_LEFT = 0x00000000;
-        public const int WS_EX_RTLREADING = 0x00002000;
-        public const int WS_EX_LEFTSCROLLBAR = 0x00004000;
-        public const int WS_EX_CONTROLPARENT = 0x00010000;
-        public const int WS_EX_STATICEDGE = 0x00020000;
-        public const int WS_EX_APPWINDOW = 0x00040000;
-        public const int WS_EX_LAYERED = 0x00080000;
-        public const int WS_EX_TOPMOST = 0x00000008;
-        public const int WS_EX_LAYOUTRTL = 0x00400000;
-        public const int WS_EX_NOINHERITLAYOUT = 0x00100000;
 
         public const int WHEEL_DELTA = 120;
 
@@ -1477,71 +932,12 @@ namespace System.Windows.Forms
 
         public const int CHILDID_SELF = 0;
 
-        public const int OBJID_QUERYCLASSNAMEIDX = unchecked(unchecked((int)0xFFFFFFF4));
-        public const int OBJID_CLIENT = unchecked(unchecked((int)0xFFFFFFFC));
-        public const int OBJID_WINDOW = unchecked(unchecked((int)0x00000000));
-
         public const int UiaRootObjectId = -25;
         public const int UiaAppendRuntimeId = 3;
 
         public const string uuid_IAccessible = "{618736E0-3C3D-11CF-810C-00AA00389B71}";
 
         public const string WinFormFrameworkId = "WinForm";
-
-        /*
-        * MISCELLANEOUS
-        */
-
-        [StructLayout(LayoutKind.Sequential)]
-        public class OLECMD
-        {
-            [MarshalAs(UnmanagedType.U4)]
-            public int cmdID = 0;
-            [MarshalAs(UnmanagedType.U4)]
-            public int cmdf = 0;
-
-        }
-
-        [ComVisible(true)]
-        [ComImport]
-        [Guid("B722BCCB-4E68-101B-A2BC-00AA00404770")]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        public interface IOleCommandTarget
-        {
-            [return: MarshalAs(UnmanagedType.I4)]
-            [PreserveSig]
-            int QueryStatus(
-                ref Guid pguidCmdGroup,
-                int cCmds,
-                [In, Out]
-                OLECMD prgCmds,
-                [In, Out]
-                IntPtr pCmdText);
-
-            [return: MarshalAs(UnmanagedType.I4)]
-            [PreserveSig]
-            int Exec(
-                ref Guid pguidCmdGroup,
-                int nCmdID,
-                int nCmdexecopt,
-                // we need to have this an array because callers need to be able to specify NULL or VT_NULL
-                [In, MarshalAs(UnmanagedType.LPArray)]
-                object[] pvaIn,
-                int pvaOut);
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public class FONTDESC
-        {
-            public int cbSizeOfStruct = Marshal.SizeOf<FONTDESC>();
-            public string lpstrName;
-            public long cySize;
-            public short sWeight;
-            public short sCharset;
-            public bool fItalic;
-            public bool fUnderline;
-            public bool fStrikethrough;
-        }
 
         public struct USEROBJECTFLAGS
         {
@@ -1652,46 +1048,6 @@ namespace System.Windows.Forms
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
             public byte[] contents = new byte[20];
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct DEVMODE
-        {
-            private const int CCHDEVICENAME = 32;
-            private const int CCHFORMNAME = 32;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHDEVICENAME)]
-            public string dmDeviceName;
-            public short dmSpecVersion;
-            public short dmDriverVersion;
-            public short dmSize;
-            public short dmDriverExtra;
-            public int dmFields;
-            public int dmPositionX;
-            public int dmPositionY;
-            public ScreenOrientation dmDisplayOrientation;
-            public int dmDisplayFixedOutput;
-            public short dmColor;
-            public short dmDuplex;
-            public short dmYResolution;
-            public short dmTTOption;
-            public short dmCollate;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHFORMNAME)]
-            public string dmFormName;
-            public short dmLogPixels;
-            public int dmBitsPerPel;
-            public int dmPelsWidth;
-            public int dmPelsHeight;
-            public int dmDisplayFlags;
-            public int dmDisplayFrequency;
-            public int dmICMMethod;
-            public int dmICMIntent;
-            public int dmMediaType;
-            public int dmDitherType;
-            public int dmReserved1;
-            public int dmReserved2;
-            public int dmPanningWidth;
-            public int dmPanningHeight;
         }
 
         [ComImport]
@@ -1808,13 +1164,6 @@ namespace System.Windows.Forms
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public class INITCOMMONCONTROLSEX
-        {
-            public int dwSize = 8; //ndirect.DllLib.sizeOf(this);
-            public int dwICC;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
         public class IMAGELISTDRAWPARAMS
         {
             public int cbSize = Marshal.SizeOf<IMAGELISTDRAWPARAMS>();
@@ -1836,73 +1185,11 @@ namespace System.Windows.Forms
             public int crEffect = 0;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public class IMAGEINFO
-        {
-            public IntPtr hbmImage = IntPtr.Zero;
-            public IntPtr hbmMask = IntPtr.Zero;
-            public int Unused1 = 0;
-            public int Unused2 = 0;
-            // rcImage was a by-value RECT structure
-            public int rcImage_left = 0;
-            public int rcImage_top = 0;
-            public int rcImage_right = 0;
-            public int rcImage_bottom = 0;
-        }
-
         public delegate IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MARGINS
-        {
-            public int cxLeftWidth;
-            public int cxRightWidth;
-            public int cyTopHeight;
-            public int cyBottomHeight;
-        }
 
         public delegate int ListViewCompareCallback(IntPtr lParam1, IntPtr lParam2, IntPtr lParamSort);
 
         public delegate int TreeViewCompareCallback(IntPtr lParam1, IntPtr lParam2, IntPtr lParamSort);
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct NONCLIENTMETRICSW
-        {
-            public uint cbSize;
-            public int iBorderWidth;
-            public int iScrollWidth;
-            public int iScrollHeight;
-            public int iCaptionWidth;
-            public int iCaptionHeight;
-            public LOGFONTW lfCaptionFont;
-            public int iSmCaptionWidth;
-            public int iSmCaptionHeight;
-            public LOGFONTW lfSmCaptionFont;
-            public int iMenuWidth;
-            public int iMenuHeight;
-            public LOGFONTW lfMenuFont;
-            public LOGFONTW lfStatusFont;
-            public LOGFONTW lfMessageFont;
-
-            // This is supported on Windows vista and later
-            public int iPaddedBorderWidth;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public class SCROLLINFO
-        {
-            public int cbSize = Marshal.SizeOf<SCROLLINFO>();
-            public int fMask;
-            public int nMin;
-            public int nMax;
-            public int nPage;
-            public int nPos;
-            public int nTrackPos;
-
-            public SCROLLINFO()
-            {
-            }
-        }
 
         [StructLayout(LayoutKind.Sequential)]
         public class TPMPARAMS
@@ -2136,97 +1423,6 @@ namespace System.Windows.Forms
             public int nToPage = 0;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public sealed class tagFONTDESC
-        {
-            public int cbSizeofstruct = Marshal.SizeOf<tagFONTDESC>();
-
-            [MarshalAs(UnmanagedType.LPWStr)]
-            public string lpstrName;
-
-            [MarshalAs(UnmanagedType.U8)]
-            public long cySize;
-
-            [MarshalAs(UnmanagedType.U2)]
-            public short sWeight;
-
-            [MarshalAs(UnmanagedType.U2)]
-            public short sCharset;
-
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fItalic;
-
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fUnderline;
-
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fStrikethrough;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class CHOOSECOLOR
-        {
-            public int lStructSize = Marshal.SizeOf<CHOOSECOLOR>(); //ndirect.DllLib.sizeOf(this);
-            public IntPtr hwndOwner;
-            public IntPtr hInstance;
-            public int rgbResult;
-            public IntPtr lpCustColors;
-            public int Flags;
-            public IntPtr lCustData = IntPtr.Zero;
-            public WndProc lpfnHook;
-            public string lpTemplateName = null;
-        }
-
-        public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public unsafe struct LOGFONTW
-        {
-            private const int LF_FACESIZE = 32;
-
-            public int lfHeight;
-            public int lfWidth;
-            public int lfEscapement;
-            public int lfOrientation;
-            public int lfWeight;
-            public byte lfItalic;
-            public byte lfUnderline;
-            public byte lfStrikeOut;
-            public byte lfCharSet;
-            public byte lfOutPrecision;
-            public byte lfClipPrecision;
-            public byte lfQuality;
-            public byte lfPitchAndFamily;
-            private fixed char _lfFaceName[LF_FACESIZE];
-            private Span<char> lfFaceName
-            {
-                get { fixed (char* c = _lfFaceName) { return new Span<char>(c, LF_FACESIZE); } }
-            }
-
-            public ReadOnlySpan<char> FaceName
-            {
-                get => lfFaceName.SliceAtFirstNull();
-                set => SpanHelpers.CopyAndTerminate(value, lfFaceName);
-            }
-
-            // Font.ToLogFont will copy LOGFONT into a blittable struct,
-            // but we need to box it upfront so we can unbox.
-
-            public static LOGFONTW FromFont(Font font)
-            {
-                object logFont = new LOGFONTW();
-                font.ToLogFont(logFont);
-                return (LOGFONTW)logFont;
-            }
-
-            public static LOGFONTW FromFont(Font font, Graphics graphics)
-            {
-                object logFont = new LOGFONTW();
-                font.ToLogFont(logFont, graphics);
-                return (LOGFONTW)logFont;
-            }
-        }
-
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class NOTIFYICONDATA
         {
@@ -2365,27 +1561,6 @@ namespace System.Windows.Forms
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public class SYSTEMTIME
-        {
-            public short wYear;
-            public short wMonth;
-            public short wDayOfWeek;
-            public short wDay;
-            public short wHour;
-            public short wMinute;
-            public short wSecond;
-            public short wMilliseconds;
-
-            public override string ToString()
-            {
-                return "[SYSTEMTIME: "
-                + wDay.ToString(CultureInfo.InvariantCulture) + "/" + wMonth.ToString(CultureInfo.InvariantCulture) + "/" + wYear.ToString(CultureInfo.InvariantCulture)
-                + " " + wHour.ToString(CultureInfo.InvariantCulture) + ":" + wMinute.ToString(CultureInfo.InvariantCulture) + ":" + wSecond.ToString(CultureInfo.InvariantCulture)
-                + "]";
-            }
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
         public class COMRECT
         {
             public int left;
@@ -2412,69 +1587,9 @@ namespace System.Windows.Forms
         }
 
         [StructLayout(LayoutKind.Sequential)/*leftover(noAutoOffset)*/]
-        public sealed class tagOleMenuGroupWidths
-        {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)/*leftover(offset=0, widths)*/]
-            public int[] widths = new int[6];
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct NMLISTVIEW
-        {
-            public User32.NMHDR hdr;
-            public int iItem;
-            public int iSubItem;
-            public int uNewState;
-            public int uOldState;
-            public int uChanged;
-            public IntPtr lParam;
-        }
-
-        [StructLayout(LayoutKind.Sequential)/*leftover(noAutoOffset)*/]
-        public sealed class tagOIFI
-        {
-            [MarshalAs(UnmanagedType.U4)/*leftover(offset=0, cb)*/]
-            public int cb;
-
-            public bool fMDIApp;
-            public IntPtr hwndFrame;
-            public IntPtr hAccel;
-
-            [MarshalAs(UnmanagedType.U4)/*leftover(offset=16, cAccelEntries)*/]
-            public int cAccelEntries;
-
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct NMLVFINDITEM
-        {
-            public User32.NMHDR hdr;
-            public int iStart;
-            public LVFINDINFO lvfi;
-        }
-
-        [ComImport]
-        [Guid("4D07FC10-F931-11CE-B001-00AA006884E5")]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        public interface ICategorizeProperties
-        {
-            [PreserveSig]
-            HRESULT MapPropertyToCategory(
-                Ole32.DispatchID dispID,
-                ref int categoryID);
-
-            [PreserveSig]
-            int GetCategoryName(
-                int propcat,
-                [In, MarshalAs(UnmanagedType.U4)]
-                int lcid,
-                out string categoryName);
-        }
-
-        [StructLayout(LayoutKind.Sequential)/*leftover(noAutoOffset)*/]
         public sealed class tagOLEVERB
         {
-            public int lVerb;
+            public Ole32.OLEIVERB lVerb;
 
             [MarshalAs(UnmanagedType.LPWStr)/*leftover(offset=4, customMarshal="UniStringMarshaller", lpszVerbName)*/]
             public string lpszVerbName;
@@ -2484,84 +1599,6 @@ namespace System.Windows.Forms
 
             [MarshalAs(UnmanagedType.U4)/*leftover(offset=12, grfAttribs)*/]
             public int grfAttribs;
-        }
-
-        [StructLayout(LayoutKind.Sequential)/*leftover(noAutoOffset)*/]
-        public sealed class tagLOGPALETTE
-        {
-            [MarshalAs(UnmanagedType.U2)/*leftover(offset=0, palVersion)*/]
-            public short palVersion = 0;
-
-            [MarshalAs(UnmanagedType.U2)/*leftover(offset=2, palNumEntries)*/]
-            public short palNumEntries = 0;
-        }
-
-        [StructLayout(LayoutKind.Sequential)/*leftover(noAutoOffset)*/]
-        public sealed class tagCONTROLINFO
-        {
-            [MarshalAs(UnmanagedType.U4)/*leftover(offset=0, cb)*/]
-            public int cb = Marshal.SizeOf<tagCONTROLINFO>();
-
-            public IntPtr hAccel;
-
-            [MarshalAs(UnmanagedType.U2)/*leftover(offset=8, cAccel)*/]
-            public short cAccel;
-
-            [MarshalAs(UnmanagedType.U4)/*leftover(offset=10, dwFlags)*/]
-            public int dwFlags;
-        }
-
-        public enum tagVT
-        {
-            VT_EMPTY = 0,
-            VT_NULL = 1,
-            VT_I2 = 2,
-            VT_I4 = 3,
-            VT_R4 = 4,
-            VT_R8 = 5,
-            VT_CY = 6,
-            VT_DATE = 7,
-            VT_BSTR = 8,
-            VT_DISPATCH = 9,
-            VT_ERROR = 10,
-            VT_BOOL = 11,
-            VT_VARIANT = 12,
-            VT_UNKNOWN = 13,
-            VT_DECIMAL = 14,
-            VT_I1 = 16,
-            VT_UI1 = 17,
-            VT_UI2 = 18,
-            VT_UI4 = 19,
-            VT_I8 = 20,
-            VT_UI8 = 21,
-            VT_INT = 22,
-            VT_UINT = 23,
-            VT_VOID = 24,
-            VT_HRESULT = 25,
-            VT_PTR = 26,
-            VT_SAFEARRAY = 27,
-            VT_CARRAY = 28,
-            VT_USERDEFINED = 29,
-            VT_LPSTR = 30,
-            VT_LPWSTR = 31,
-            VT_RECORD = 36,
-            VT_FILETIME = 64,
-            VT_BLOB = 65,
-            VT_STREAM = 66,
-            VT_STORAGE = 67,
-            VT_STREAMED_OBJECT = 68,
-            VT_STORED_OBJECT = 69,
-            VT_BLOB_OBJECT = 70,
-            VT_CF = 71,
-            VT_CLSID = 72,
-            VT_BSTR_BLOB = 4095,
-            VT_VECTOR = 4096,
-            VT_ARRAY = 8192,
-            VT_BYREF = 16384,
-            VT_RESERVED = 32768,
-            VT_ILLEGAL = 65535,
-            VT_ILLEGALMASKED = 4095,
-            VT_TYPEMASK = 4095
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -2579,21 +1616,6 @@ namespace System.Windows.Forms
             public short tdExtDevmodeOffset = 0;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public class NMTVDISPINFO
-        {
-            public User32.NMHDR hdr;
-            public ComCtl32.TVITEMW item;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct HIGHCONTRASTW
-        {
-            public uint cbSize;
-            public uint dwFlags;
-            public IntPtr lpszDefaultScheme;
-        }
-
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class TCITEM_T
         {
@@ -2604,25 +1626,6 @@ namespace System.Windows.Forms
             public int cchTextMax;
             public int iImage;
             public IntPtr lParam;
-        }
-
-        [StructLayout(LayoutKind.Sequential)/*leftover(noAutoOffset)*/]
-        public sealed class tagDISPPARAMS
-        {
-            public IntPtr rgvarg;
-            public IntPtr rgdispidNamedArgs;
-            [MarshalAs(UnmanagedType.U4)/*leftover(offset=8, cArgs)*/]
-            public int cArgs;
-            [MarshalAs(UnmanagedType.U4)/*leftover(offset=12, cNamedArgs)*/]
-            public int cNamedArgs;
-        }
-
-        public enum tagINVOKEKIND
-        {
-            INVOKE_FUNC = 1,
-            INVOKE_PROPERTYGET = 2,
-            INVOKE_PROPERTYPUT = 4,
-            INVOKE_PROPERTYPUTREF = 8
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -2648,104 +1651,6 @@ namespace System.Windows.Forms
             public int scode = 0;
         }
 
-        public enum tagDESCKIND
-        {
-            DESCKIND_NONE = 0,
-            DESCKIND_FUNCDESC = 1,
-            DESCKIND_VARDESC = 2,
-            DESCKIND_TYPECOMP = 3,
-            DESCKIND_IMPLICITAPPOBJ = 4,
-            DESCKIND_MAX = 5
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct tagFUNCDESC
-        {
-            public Ole32.DispatchID memid;
-
-            public IntPtr lprgscode;
-
-            // This is marked as NATIVE_TYPE_PTR,
-            // but the EE doesn't look for that, tries to handle it as
-            // a ELEMENT_TYPE_VALUECLASS and fails because it
-            // isn't a NATIVE_TYPE_NESTEDSTRUCT
-            /*[MarshalAs(UnmanagedType.PTR)]*/
-
-            public    /*NativeMethods.tagELEMDESC*/ IntPtr lprgelemdescParam;
-
-            // cpb, Microsoft, the EE chokes on Enums in structs
-
-            public    /*NativeMethods.tagFUNCKIND*/ int funckind;
-
-            public    /*NativeMethods.tagINVOKEKIND*/ int invkind;
-
-            public    /*NativeMethods.tagCALLCONV*/ int callconv;
-            [MarshalAs(UnmanagedType.I2)]
-            public short cParams;
-            [MarshalAs(UnmanagedType.I2)]
-            public short cParamsOpt;
-            [MarshalAs(UnmanagedType.I2)]
-            public short oVft;
-            [MarshalAs(UnmanagedType.I2)]
-            public short cScodesi;
-            public tagELEMDESC elemdescFunc;
-            [MarshalAs(UnmanagedType.U2)]
-            public short wFuncFlags;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct tagVARDESC
-        {
-            public Ole32.DispatchID memid;
-            public IntPtr lpstrSchema;
-            public IntPtr unionMember;
-            public tagELEMDESC elemdescVar;
-            [MarshalAs(UnmanagedType.U2)]
-            public short wVarFlags;
-            public    /*NativeMethods.tagVARKIND*/ int varkind;
-        }
-
-        [ComImport]
-        [Guid("B196B28B-BAB4-101A-B69C-00AA00341D07")]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        public interface ISpecifyPropertyPages
-        {
-            void GetPages(
-               [Out]
-                tagCAUUID pPages);
-        }
-
-        [StructLayout(LayoutKind.Sequential)/*leftover(noAutoOffset)*/]
-        public sealed class tagCAUUID
-        {
-            [MarshalAs(UnmanagedType.U4)/*leftover(offset=0, cElems)*/]
-            public int cElems = 0;
-            public IntPtr pElems = IntPtr.Zero;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct NMTOOLBAR
-        {
-            public User32.NMHDR hdr;
-            public int iItem;
-            public TBBUTTON tbButton;
-            public int cchText;
-            public IntPtr pszText;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct TBBUTTON
-        {
-            public int iBitmap;
-            public int idCommand;
-            public byte fsState;
-            public byte fsStyle;
-            public byte bReserved0;
-            public byte bReserved1;
-            public IntPtr dwData;
-            public IntPtr iString;
-        }
-
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class TOOLTIPTEXT
         {
@@ -2758,26 +1663,6 @@ namespace System.Windows.Forms
             public IntPtr hinst;
             public int uFlags;
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct NMTBHOTITEM
-        {
-            public User32.NMHDR hdr;
-            public int idOld;
-            public int idNew;
-            public int dwFlags;
-        }
-
-        public const int HICF_OTHER = 0x00000000;
-        public const int HICF_MOUSE = 0x00000001;          // Triggered by mouse
-        public const int HICF_ARROWKEYS = 0x00000002;          // Triggered by arrow keys
-        public const int HICF_ACCELERATOR = 0x00000004;          // Triggered by accelerator
-        public const int HICF_DUPACCEL = 0x00000008;          // This accelerator is not unique
-        public const int HICF_ENTERING = 0x00000010;          // idOld is invalid
-        public const int HICF_LEAVING = 0x00000020;          // idNew is invalid
-        public const int HICF_RESELECT = 0x00000040;          // hot item reselected
-        public const int HICF_LMOUSE = 0x00000080;          // left mouse button selected
-        public const int HICF_TOGGLEDROPDOWN = 0x00000100;          // Toggle button's dropdown state
 
         // HDN_ITEMCHANGING will send us an HDITEM w/ pszText set to some random pointer.
         // Marshal.PtrToStructure chokes when it has to convert a random pointer to a string.
@@ -2799,48 +1684,12 @@ namespace System.Windows.Forms
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct TBBUTTONINFO
-        {
-            public int cbSize;
-            public int dwMask;
-            public int idCommand;
-            public int iImage;
-            public byte fsState;
-            public byte fsStyle;
-            public short cx;
-            public IntPtr lParam;
-            public IntPtr pszText;
-            public int cchTest;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class TV_HITTESTINFO
         {
             public int pt_x;
             public int pt_y;
-            public int flags = 0;
+            public ComCtl32.TVHT flags = 0;
             public IntPtr hItem = IntPtr.Zero;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public class NMTVCUSTOMDRAW
-        {
-            public NMCUSTOMDRAW nmcd;
-            public int clrText;
-            public int clrTextBk;
-            public int iLevel = 0;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct NMCUSTOMDRAW
-        {
-            public User32.NMHDR nmcd;
-            public int dwDrawStage;
-            public IntPtr hdc;
-            public RECT rc;
-            public IntPtr dwItemSpec;
-            public int uItemState;
-            public IntPtr lItemlParam;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
@@ -2858,70 +1707,6 @@ namespace System.Windows.Forms
             public short st_wMinute = 0;
             public short st_wSecond = 0;
             public short st_wMilliseconds = 0;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class NMSELCHANGE
-        {
-            public User32.NMHDR nmhdr;
-            public SYSTEMTIME stSelStart = null;
-            public SYSTEMTIME stSelEnd = null;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class NMDAYSTATE
-        {
-            public User32.NMHDR nmhdr;
-            public SYSTEMTIME stStart = null;
-            public int cDayState = 0;
-            public IntPtr prgDayState;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class NMVIEWCHANGE
-        {
-            public User32.NMHDR nmhdr;
-            public uint uOldView;
-            public uint uNewView;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct NMLVCUSTOMDRAW
-        {
-            public NMCUSTOMDRAW nmcd;
-            public int clrText;
-            public int clrTextBk;
-            public int iSubItem;
-            public int dwItemType;
-            // Item Custom Draw
-            public int clrFace;
-            public int iIconEffect;
-            public int iIconPhase;
-            public int iPartId;
-            public int iStateId;
-            // Group Custom Draw
-            public RECT rcText;
-            public uint uAlign;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class NMLVGETINFOTIP
-        {
-            public User32.NMHDR nmhdr;
-            public int flags = 0;
-            public IntPtr lpszText = IntPtr.Zero;
-            public int cchTextMax = 0;
-            public int item = 0;
-            public int subItem = 0;
-            public IntPtr lParam = IntPtr.Zero;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public class NMLVKEYDOWN
-        {
-            public User32.NMHDR hdr;
-            public short wVKey = 0;
-            public uint flags = 0;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
@@ -2959,23 +1744,13 @@ namespace System.Windows.Forms
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct LVFINDINFO
-        {
-            public int flags;
-            public string psz;
-            public IntPtr lParam;
-            public Point pt;
-            public int vkDirection;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public struct LVITEM
         {
-            public int mask;
+            public ComCtl32.LVIF mask;
             public int iItem;
             public int iSubItem;
-            public int state;
-            public int stateMask;
+            public ComCtl32.LVIS state;
+            public ComCtl32.LVIS stateMask;
             public string pszText;
             public int cchTextMax;
             public int iImage;
@@ -2984,23 +1759,6 @@ namespace System.Windows.Forms
             public int iGroupId;
             public int cColumns; // tile view columns
             public IntPtr puColumns;
-
-            public unsafe void Reset()
-            {
-                pszText = null;
-                mask = 0;
-                iItem = 0;
-                iSubItem = 0;
-                stateMask = 0;
-                state = 0;
-                cchTextMax = 0;
-                iImage = 0;
-                lParam = IntPtr.Zero;
-                iIndent = 0;
-                iGroupId = 0;
-                cColumns = 0;
-                puColumns = IntPtr.Zero;
-            }
 
             public override string ToString()
             {
@@ -3016,11 +1774,11 @@ namespace System.Windows.Forms
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public struct LVITEM_NOTEXT
         {
-            public int mask;
+            public ComCtl32.LVIF mask;
             public int iItem;
             public int iSubItem;
-            public int state;
-            public int stateMask;
+            public ComCtl32.LVIS state;
+            public ComCtl32.LVIS stateMask;
             public IntPtr /*string*/   pszText;
             public int cchTextMax;
             public int iImage;
@@ -3039,26 +1797,6 @@ namespace System.Windows.Forms
             public int iSubItem = 0;
             public int iImage;
             public int iOrder = 0;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public class LVGROUP
-        {
-            public uint cbSize = (uint)Marshal.SizeOf<LVGROUP>();
-            public uint mask;
-            public IntPtr pszHeader;
-            public int cchHeader;
-            public IntPtr pszFooter = IntPtr.Zero;
-            public int cchFooter = 0;
-            public int iGroupId;
-            public uint stateMask = 0;
-            public uint state = 0;
-            public uint uAlign;
-
-            public override string ToString()
-            {
-                return "LVGROUP: header = " + pszHeader.ToString() + ", iGroupId = " + iGroupId.ToString(CultureInfo.InvariantCulture);
-            }
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
@@ -3082,14 +1820,6 @@ namespace System.Windows.Forms
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class NMLVCACHEHINT
-        {
-            public User32.NMHDR hdr;
-            public int iFrom = 0;
-            public int iTo = 0;
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class NMLVDISPINFO
         {
             public User32.NMHDR hdr;
@@ -3104,16 +1834,6 @@ namespace System.Windows.Forms
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public class NMLVODSTATECHANGE
-        {
-            public User32.NMHDR hdr;
-            public int iFrom = 0;
-            public int iTo = 0;
-            public int uNewState = 0;
-            public int uOldState = 0;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
         public class CLIENTCREATESTRUCT
         {
             public IntPtr hWindowMenu;
@@ -3124,14 +1844,6 @@ namespace System.Windows.Forms
                 hWindowMenu = hmenu;
                 idFirstChild = idFirst;
             }
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class NMDATETIMECHANGE
-        {
-            public User32.NMHDR nmhdr;
-            public int dwFlags = 0;
-            public SYSTEMTIME st = null;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -3159,59 +1871,6 @@ namespace System.Windows.Forms
             public int wHitTestCode = 0;
             public int dwExtraInfo = 0;
         }
-
-        #region SendKeys SendInput functionality
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MOUSEINPUT
-        {
-            public int dx;
-            public int dy;
-            public int mouseData;
-            public int dwFlags;
-            public int time;
-            public IntPtr dwExtraInfo;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct KEYBDINPUT
-        {
-            public short wVk;
-            public short wScan;
-            public int dwFlags;
-            public int time;
-            public IntPtr dwExtraInfo;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct HARDWAREINPUT
-        {
-            public int uMsg;
-            public short wParamL;
-            public short wParamH;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct INPUT
-        {
-            public int type;
-            public INPUTUNION inputUnion;
-        }
-
-        // We need to split the field offset out into a union struct to avoid
-        // silent problems in 64 bit
-        [StructLayout(LayoutKind.Explicit)]
-        public struct INPUTUNION
-        {
-            [FieldOffset(0)]
-            public MOUSEINPUT mi;
-            [FieldOffset(0)]
-            public KEYBDINPUT ki;
-            [FieldOffset(0)]
-            public HARDWAREINPUT hi;
-        }
-
-        #endregion
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public unsafe struct CHARFORMATW
@@ -3281,25 +1940,10 @@ namespace System.Windows.Forms
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public class TEXTRANGE
-        {
-            public Richedit.CHARRANGE chrg;
-            public IntPtr lpstrText; /* allocated by caller, zero terminated by RichEdit */
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
         public class GETTEXTLENGTHEX
         {                               // Taken from richedit.h:
             public uint flags;          // Flags (see GTL_XXX defines)
             public uint codepage;       // Code page for translation (CP_ACP for default, 1200 for Unicode)
-        }
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
-        public class SELCHANGE
-        {
-            public User32.NMHDR nmhdr;
-            public Interop.Richedit.CHARRANGE chrg;
-            public int seltyp = 0;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -3354,90 +1998,20 @@ namespace System.Windows.Forms
             // public RECT rcBound; // Note that we don't define this field as part of the marshaling
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public class OCPFIPARAMS
-        {
-            public int cbSizeOfStruct = Marshal.SizeOf<OCPFIPARAMS>();
-            public IntPtr hwndOwner;
-            public int x = 0;
-            public int y = 0;
-            public string lpszCaption;
-            public int cObjects = 1;
-            public IntPtr ppUnk;
-            public int pageCount = 1;
-            public IntPtr uuid;
-            public int lcid = Application.CurrentCulture.LCID;
-            public Ole32.DispatchID dispidInitial;
-        }
-
         [ComVisible(true), StructLayout(LayoutKind.Sequential)]
         public class DOCHOSTUIINFO
         {
             [MarshalAs(UnmanagedType.U4)]
             public int cbSize = Marshal.SizeOf<DOCHOSTUIINFO>();
             [MarshalAs(UnmanagedType.I4)]
-            public int dwFlags;
+            public Mshtml.DOCHOSTUIFLAG dwFlags;
             [MarshalAs(UnmanagedType.I4)]
-            public int dwDoubleClick;
+            public Mshtml.DOCHOSTUIDBLCLK dwDoubleClick;
             [MarshalAs(UnmanagedType.I4)]
             public int dwReserved1 = 0;
             [MarshalAs(UnmanagedType.I4)]
             public int dwReserved2 = 0;
         }
-
-        public enum DOCHOSTUIFLAG
-        {
-            DIALOG = 0x1,
-            DISABLE_HELP_MENU = 0x2,
-            NO3DBORDER = 0x4,
-            SCROLL_NO = 0x8,
-            DISABLE_SCRIPT_INACTIVE = 0x10,
-            OPENNEWWIN = 0x20,
-            DISABLE_OFFSCREEN = 0x40,
-            FLAT_SCROLLBAR = 0x80,
-            DIV_BLOCKDEFAULT = 0x100,
-            ACTIVATE_CLIENTHIT_ONLY = 0x200,
-            NO3DOUTERBORDER = 0x00200000,
-            THEME = 0x00040000,
-            NOTHEME = 0x80000,
-            DISABLE_COOKIE = 0x400
-        }
-
-        public enum DOCHOSTUIDBLCLICK
-        {
-            DEFAULT = 0x0,
-            SHOWPROPERTIES = 0x1,
-            SHOWCODE = 0x2
-        }
-
-#pragma warning disable CA1712 // Don't prefix enum values with enum type
-        public enum OLECMDID
-        {
-            OLECMDID_SAVEAS = 4,
-            OLECMDID_PRINT = 6,
-            OLECMDID_PRINTPREVIEW = 7,
-            OLECMDID_PAGESETUP = 8,
-            OLECMDID_PROPERTIES = 10
-        }
-
-        public enum OLECMDEXECOPT
-        {
-            OLECMDEXECOPT_DODEFAULT = 0,
-            OLECMDEXECOPT_PROMPTUSER = 1,
-            OLECMDEXECOPT_DONTPROMPTUSER = 2,
-            OLECMDEXECOPT_SHOWHELP = 3
-        }
-
-        public enum OLECMDF
-        {
-            OLECMDF_SUPPORTED = 0x00000001,
-            OLECMDF_ENABLED = 0x00000002,
-            OLECMDF_LATCHED = 0x00000004,
-            OLECMDF_NINCHED = 0x00000008,
-            OLECMDF_INVISIBLE = 0x00000010,
-            OLECMDF_DEFHIDEONCTXTMENU = 0x00000020
-        }
-#pragma warning restore CA1712
 
         [StructLayout(LayoutKind.Sequential)]
         public class ENDROPFILES
@@ -3446,13 +2020,6 @@ namespace System.Windows.Forms
             public IntPtr hDrop = IntPtr.Zero;
             public int cp = 0;
             public bool fProtected = false;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public class REQRESIZE
-        {
-            public User32.NMHDR nmhdr;
-            public Interop.RECT rc;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
@@ -3475,32 +2042,6 @@ namespace System.Windows.Forms
         public class ActiveX
         {
             public const int OCM__BASE = 0x2000;
-            public const int DVASPECT_CONTENT = 0x1;
-            public const int DVASPECT_THUMBNAIL = 0x2;
-            public const int DVASPECT_ICON = 0x4;
-            public const int DVASPECT_DOCPRINT = 0x8;
-            public const int OLEMISC_RECOMPOSEONRESIZE = 0x1;
-            public const int OLEMISC_ONLYICONIC = 0x2;
-            public const int OLEMISC_INSERTNOTREPLACE = 0x4;
-            public const int OLEMISC_STATIC = 0x8;
-            public const int OLEMISC_CANTLINKINSIDE = 0x10;
-            public const int OLEMISC_CANLINKBYOLE1 = 0x20;
-            public const int OLEMISC_ISLINKOBJECT = 0x40;
-            public const int OLEMISC_INSIDEOUT = 0x80;
-            public const int OLEMISC_ACTIVATEWHENVISIBLE = 0x100;
-            public const int OLEMISC_RENDERINGISDEVICEINDEPENDENT = 0x200;
-            public const int OLEMISC_INVISIBLEATRUNTIME = 0x400;
-            public const int OLEMISC_ALWAYSRUN = 0x800;
-            public const int OLEMISC_ACTSLIKEBUTTON = 0x1000;
-            public const int OLEMISC_ACTSLIKELABEL = 0x2000;
-            public const int OLEMISC_NOUIACTIVATE = 0x4000;
-            public const int OLEMISC_ALIGNABLE = 0x8000;
-            public const int OLEMISC_SIMPLEFRAME = 0x10000;
-            public const int OLEMISC_SETCLIENTSITEFIRST = 0x20000;
-            public const int OLEMISC_IMEMODE = 0x40000;
-            public const int OLEMISC_IGNOREACTIVATEWHENVISIBLE = 0x80000;
-            public const int OLEMISC_WANTSTOMENUMERGE = 0x100000;
-            public const int OLEMISC_SUPPORTSMULTILEVELUNDO = 0x200000;
             public const int QACONTAINER_SHOWHATCHING = 0x1;
             public const int QACONTAINER_SHOWGRABHANDLES = 0x2;
             public const int QACONTAINER_USERMODE = 0x4;
@@ -3509,17 +2050,6 @@ namespace System.Windows.Forms
             public const int QACONTAINER_AUTOCLIP = 0x20;
             public const int QACONTAINER_MESSAGEREFLECT = 0x40;
             public const int QACONTAINER_SUPPORTSMNEMONICS = 0x80;
-            public const int PROPCAT_Nil = unchecked((int)0xFFFFFFFF);
-            public const int PROPCAT_Misc = unchecked((int)0xFFFFFFFE);
-            public const int PROPCAT_Font = unchecked((int)0xFFFFFFFD);
-            public const int PROPCAT_Position = unchecked((int)0xFFFFFFFC);
-            public const int PROPCAT_Appearance = unchecked((int)0xFFFFFFFB);
-            public const int PROPCAT_Behavior = unchecked((int)0xFFFFFFFA);
-            public const int PROPCAT_Data = unchecked((int)0xFFFFFFF9);
-            public const int PROPCAT_List = unchecked((int)0xFFFFFFF8);
-            public const int PROPCAT_Text = unchecked((int)0xFFFFFFF7);
-            public const int PROPCAT_Scale = unchecked((int)0xFFFFFFF6);
-            public const int PROPCAT_DDE = unchecked((int)0xFFFFFFF5);
             public const int ALIGN_MIN = 0x0;
             public const int ALIGN_NO_CHANGE = 0x0;
             public const int ALIGN_TOP = 0x1;
@@ -3608,35 +2138,6 @@ namespace System.Windows.Forms
             }
         }
 
-        public enum tagTYPEKIND
-        {
-            TKIND_ENUM = 0,
-            TKIND_RECORD = 1,
-            TKIND_MODULE = 2,
-            TKIND_INTERFACE = 3,
-            TKIND_DISPATCH = 4,
-            TKIND_COCLASS = 5,
-            TKIND_ALIAS = 6,
-            TKIND_UNION = 7,
-            TKIND_MAX = 8
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct tagTYPEDESC
-        {
-            public IntPtr unionMember;
-            public short vt;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct tagPARAMDESC
-        {
-            public IntPtr pparamdescex;
-
-            [MarshalAs(UnmanagedType.U2)]
-            public short wParamFlags;
-        }
-
         public delegate bool MonitorEnumProc(IntPtr monitor, IntPtr hdc, IntPtr lprcMonitor, IntPtr lParam);
 
         [ComImport]
@@ -3667,16 +2168,6 @@ namespace System.Windows.Forms
                                 IntPtr piidSource);
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public class EVENTMSG
-        {
-            public int message;
-            public int paramL;
-            public int paramH;
-            public int time;
-            public IntPtr hwnd;
-        }
-
         [ComImport]
         [Guid("B196B283-BAB4-101A-B69C-00AA00341D07")]
         [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -3684,128 +2175,6 @@ namespace System.Windows.Forms
         {
             [PreserveSig]
             HRESULT GetClassInfo(out UnsafeNativeMethods.ITypeInfo ppTI);
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct tagTYPEATTR
-        {
-            public Guid guid;
-            [MarshalAs(UnmanagedType.U4)]
-            public int lcid;
-            [MarshalAs(UnmanagedType.U4)]
-            public int dwReserved;
-            public int memidConstructor;
-            public int memidDestructor;
-            public IntPtr lpstrSchema;
-            [MarshalAs(UnmanagedType.U4)]
-            public int cbSizeInstance;
-            public    /*NativeMethods.tagTYPEKIND*/ int typekind;
-            [MarshalAs(UnmanagedType.U2)]
-            public short cFuncs;
-            [MarshalAs(UnmanagedType.U2)]
-            public short cVars;
-            [MarshalAs(UnmanagedType.U2)]
-            public short cImplTypes;
-            [MarshalAs(UnmanagedType.U2)]
-            public short cbSizeVft;
-            [MarshalAs(UnmanagedType.U2)]
-            public short cbAlignment;
-            [MarshalAs(UnmanagedType.U2)]
-            public short wTypeFlags;
-            [MarshalAs(UnmanagedType.U2)]
-            public short wMajorVerNum;
-            [MarshalAs(UnmanagedType.U2)]
-            public short wMinorVerNum;
-
-            //these are inline too
-            //public    NativeMethods.tagTYPEDESC tdescAlias;
-            [MarshalAs(UnmanagedType.U4)]
-            public int tdescAlias_unionMember;
-
-            [MarshalAs(UnmanagedType.U2)]
-            public short tdescAlias_vt;
-
-            //public    NativeMethods.tagIDLDESC idldescType;
-            [MarshalAs(UnmanagedType.U4)]
-            public int idldescType_dwReserved;
-
-            [MarshalAs(UnmanagedType.U2)]
-            public short idldescType_wIDLFlags;
-
-            public tagTYPEDESC Get_tdescAlias()
-            {
-                tagTYPEDESC td;
-                td.unionMember = (IntPtr)tdescAlias_unionMember;
-                td.vt = tdescAlias_vt;
-                return td;
-            }
-
-            public tagIDLDESC Get_idldescType()
-            {
-                tagIDLDESC id = new tagIDLDESC
-                {
-                    dwReserved = idldescType_dwReserved,
-                    wIDLFlags = idldescType_wIDLFlags
-                };
-                return id;
-            }
-        }
-
-        public enum tagVARFLAGS
-        {
-            VARFLAG_FREADONLY = 1,
-            VARFLAG_FSOURCE = 0x2,
-            VARFLAG_FBINDABLE = 0x4,
-            VARFLAG_FREQUESTEDIT = 0x8,
-            VARFLAG_FDISPLAYBIND = 0x10,
-            VARFLAG_FDEFAULTBIND = 0x20,
-            VARFLAG_FHIDDEN = 0x40,
-            VARFLAG_FDEFAULTCOLLELEM = 0x100,
-            VARFLAG_FUIDEFAULT = 0x200,
-            VARFLAG_FNONBROWSABLE = 0x400,
-            VARFLAG_FREPLACEABLE = 0x800,
-            VARFLAG_FIMMEDIATEBIND = 0x1000
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public unsafe struct tagELEMDESC
-        {
-            public tagTYPEDESC tdesc;
-            public tagPARAMDESC paramdesc;
-        }
-
-        public enum tagVARKIND
-        {
-            VAR_PERINSTANCE = 0,
-            VAR_STATIC = 1,
-            VAR_CONST = 2,
-            VAR_DISPATCH = 3
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct tagIDLDESC
-        {
-            [MarshalAs(UnmanagedType.U4)]
-            public int dwReserved;
-            [MarshalAs(UnmanagedType.U2)]
-            public short wIDLFlags;
-        }
-
-        public struct RGBQUAD
-        {
-            public byte rgbBlue;
-            public byte rgbGreen;
-            public byte rgbRed;
-            public byte rgbReserved;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct PALETTEENTRY
-        {
-            public byte peRed;
-            public byte peGreen;
-            public byte peBlue;
-            public byte peFlags;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -3840,345 +2209,11 @@ namespace System.Windows.Forms
             return uri.LocalPath + uri.Fragment;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct SYSTEM_POWER_STATUS
-        {
-            public byte ACLineStatus;
-            public byte BatteryFlag;
-            public byte BatteryLifePercent;
-            public byte Reserved1;
-            public int BatteryLifeTime;
-            public int BatteryFullLifeTime;
-        }
-
-        public enum PROCESS_DPI_AWARENESS
-        {
-            PROCESS_DPI_UNINITIALIZED = -1,
-            PROCESS_DPI_UNAWARE = 0,
-            PROCESS_SYSTEM_DPI_AWARE = 1,
-            PROCESS_PER_MONITOR_DPI_AWARE = 2
-        }
-
-        public enum MONTCALENDAR_VIEW_MODE
-        {
-            MCMV_MONTH = 0,
-            MCMV_YEAR = 1,
-            MCMV_DECADE = 2,
-            MCMV_CENTURY = 3
-        }
-
-        public const int DPI_AWARENESS_CONTEXT_UNAWARE = -1;
-        public const int DPI_AWARENESS_CONTEXT_SYSTEM_AWARE = -2;
-        public const int DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE = -3;
-        public const int DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = -4;
-        public const int DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED = -5;
-
         // Theming/Visual Styles stuff
-        public const int STAP_ALLOW_NONCLIENT = (1 << 0);
-        public const int STAP_ALLOW_CONTROLS = (1 << 1);
-        public const int STAP_ALLOW_WEBCONTENT = (1 << 2);
-
         public const int WS_EX_TRANSPARENT = 0x00000020;
-
-        public const int MM_HIMETRIC = 3;
 
         // Threading stuff
         public const uint STILL_ACTIVE = 259;
-
-        // UIAutomation IDs
-        // obtained from uiautomationclient.idl and uiautomationcore.idl
-
-        // UIA_PatternIds
-        internal const int UIA_InvokePatternId = 10000;
-        internal const int UIA_SelectionPatternId = 10001;
-        internal const int UIA_ValuePatternId = 10002;
-        internal const int UIA_RangeValuePatternId = 10003;
-        internal const int UIA_ScrollPatternId = 10004;
-        internal const int UIA_ExpandCollapsePatternId = 10005;
-        internal const int UIA_GridPatternId = 10006;
-        internal const int UIA_GridItemPatternId = 10007;
-        internal const int UIA_MultipleViewPatternId = 10008;
-        internal const int UIA_WindowPatternId = 10009;
-        internal const int UIA_SelectionItemPatternId = 10010;
-        internal const int UIA_DockPatternId = 10011;
-        internal const int UIA_TablePatternId = 10012;
-        internal const int UIA_TableItemPatternId = 10013;
-        internal const int UIA_TextPatternId = 10014;
-        internal const int UIA_TogglePatternId = 10015;
-        internal const int UIA_TransformPatternId = 10016;
-        internal const int UIA_ScrollItemPatternId = 10017;
-        internal const int UIA_LegacyIAccessiblePatternId = 10018;
-        internal const int UIA_ItemContainerPatternId = 10019;
-        internal const int UIA_VirtualizedItemPatternId = 10020;
-        internal const int UIA_SynchronizedInputPatternId = 10021;
-        internal const int UIA_ObjectModelPatternId = 10022;
-        internal const int UIA_AnnotationPatternId = 10023;
-        internal const int UIA_TextPattern2Id = 10024;
-        internal const int UIA_StylesPatternId = 10025;
-        internal const int UIA_SpreadsheetPatternId = 10026;
-        internal const int UIA_SpreadsheetItemPatternId = 10027;
-        internal const int UIA_TransformPattern2Id = 10028;
-        internal const int UIA_TextChildPatternId = 10029;
-        internal const int UIA_DragPatternId = 10030;
-        internal const int UIA_DropTargetPatternId = 10031;
-        internal const int UIA_TextEditPatternId = 10032;
-        internal const int UIA_CustomNavigationPatternId = 10033;
-
-        // UIA_EventIds
-        internal const int UIA_ToolTipOpenedEventId = 20000;
-        internal const int UIA_ToolTipClosedEventId = 20001;
-        internal const int UIA_StructureChangedEventId = 20002;
-        internal const int UIA_MenuOpenedEventId = 20003;
-        internal const int UIA_AutomationPropertyChangedEventId = 20004;
-        internal const int UIA_AutomationFocusChangedEventId = 20005;
-        internal const int UIA_AsyncContentLoadedEventId = 20006;
-        internal const int UIA_MenuClosedEventId = 20007;
-        internal const int UIA_LayoutInvalidatedEventId = 20008;
-        internal const int UIA_Invoke_InvokedEventId = 20009;
-        internal const int UIA_SelectionItem_ElementAddedToSelectionEventId = 20010;
-        internal const int UIA_SelectionItem_ElementRemovedFromSelectionEventId = 20011;
-        internal const int UIA_SelectionItem_ElementSelectedEventId = 20012;
-        internal const int UIA_Selection_InvalidatedEventId = 20013;
-        internal const int UIA_Text_TextSelectionChangedEventId = 20014;
-        internal const int UIA_Text_TextChangedEventId = 20015;
-        internal const int UIA_Window_WindowOpenedEventId = 20016;
-        internal const int UIA_Window_WindowClosedEventId = 20017;
-        internal const int UIA_MenuModeStartEventId = 20018;
-        internal const int UIA_MenuModeEndEventId = 20019;
-        internal const int UIA_InputReachedTargetEventId = 20020;
-        internal const int UIA_InputReachedOtherElementEventId = 20021;
-        internal const int UIA_InputDiscardedEventId = 20022;
-        internal const int UIA_SystemAlertEventId = 20023;
-        internal const int UIA_LiveRegionChangedEventId = 20024;
-        internal const int UIA_HostedFragmentRootsInvalidatedEventId = 20025;
-        internal const int UIA_Drag_DragStartEventId = 20026;
-        internal const int UIA_Drag_DragCancelEventId = 20027;
-        internal const int UIA_Drag_DragCompleteEventId = 20028;
-        internal const int UIA_DropTarget_DragEnterEventId = 20029;
-        internal const int UIA_DropTarget_DragLeaveEventId = 20030;
-        internal const int UIA_DropTarget_DroppedEventId = 20031;
-        internal const int UIA_TextEdit_TextChangedEventId = 20032;
-        internal const int UIA_TextEdit_ConversionTargetChangedEventId = 20033;
-        internal const int UIA_ChangesEventId = 20034;
-
-        // UIAutomation PropertyIds
-        internal const int UIA_RuntimeIdPropertyId = 30000;
-        internal const int UIA_BoundingRectanglePropertyId = 30001;
-        internal const int UIA_ProcessIdPropertyId = 30002;
-        internal const int UIA_ControlTypePropertyId = 30003;
-        internal const int UIA_LocalizedControlTypePropertyId = 30004;
-        internal const int UIA_NamePropertyId = 30005;
-        internal const int UIA_AcceleratorKeyPropertyId = 30006;
-        internal const int UIA_AccessKeyPropertyId = 30007;
-        internal const int UIA_HasKeyboardFocusPropertyId = 30008;
-        internal const int UIA_IsKeyboardFocusablePropertyId = 30009;
-        internal const int UIA_IsEnabledPropertyId = 30010;
-        internal const int UIA_AutomationIdPropertyId = 30011;
-        internal const int UIA_ClassNamePropertyId = 30012;
-        internal const int UIA_HelpTextPropertyId = 30013;
-        internal const int UIA_ClickablePointPropertyId = 30014;
-        internal const int UIA_CulturePropertyId = 30015;
-        internal const int UIA_IsControlElementPropertyId = 30016;
-        internal const int UIA_IsContentElementPropertyId = 30017;
-        internal const int UIA_LabeledByPropertyId = 30018;
-        internal const int UIA_IsPasswordPropertyId = 30019;
-        internal const int UIA_NativeWindowHandlePropertyId = 30020;
-        internal const int UIA_ItemTypePropertyId = 30021;
-        internal const int UIA_IsOffscreenPropertyId = 30022;
-        internal const int UIA_OrientationPropertyId = 30023;
-        internal const int UIA_FrameworkIdPropertyId = 30024;
-        internal const int UIA_IsRequiredForFormPropertyId = 30025;
-        internal const int UIA_ItemStatusPropertyId = 30026;
-        internal const int UIA_IsDockPatternAvailablePropertyId = 30027;
-        internal const int UIA_IsExpandCollapsePatternAvailablePropertyId = 30028;
-        internal const int UIA_IsGridItemPatternAvailablePropertyId = 30029;
-        internal const int UIA_IsGridPatternAvailablePropertyId = 30030;
-        internal const int UIA_IsInvokePatternAvailablePropertyId = 30031;
-        internal const int UIA_IsMultipleViewPatternAvailablePropertyId = 30032;
-        internal const int UIA_IsRangeValuePatternAvailablePropertyId = 30033;
-        internal const int UIA_IsScrollPatternAvailablePropertyId = 30034;
-        internal const int UIA_IsScrollItemPatternAvailablePropertyId = 30035;
-        internal const int UIA_IsSelectionItemPatternAvailablePropertyId = 30036;
-        internal const int UIA_IsSelectionPatternAvailablePropertyId = 30037;
-        internal const int UIA_IsTablePatternAvailablePropertyId = 30038;
-        internal const int UIA_IsTableItemPatternAvailablePropertyId = 30039;
-        internal const int UIA_IsTextPatternAvailablePropertyId = 30040;
-        internal const int UIA_IsTogglePatternAvailablePropertyId = 30041;
-        internal const int UIA_IsTransformPatternAvailablePropertyId = 30042;
-        internal const int UIA_IsValuePatternAvailablePropertyId = 30043;
-        internal const int UIA_IsWindowPatternAvailablePropertyId = 30044;
-        internal const int UIA_ValueValuePropertyId = 30045;
-        internal const int UIA_ValueIsReadOnlyPropertyId = 30046;
-        internal const int UIA_RangeValueValuePropertyId = 30047;
-        internal const int UIA_RangeValueIsReadOnlyPropertyId = 30048;
-        internal const int UIA_RangeValueMinimumPropertyId = 30049;
-        internal const int UIA_RangeValueMaximumPropertyId = 30050;
-        internal const int UIA_RangeValueLargeChangePropertyId = 30051;
-        internal const int UIA_RangeValueSmallChangePropertyId = 30052;
-        internal const int UIA_ScrollHorizontalScrollPercentPropertyId = 30053;
-        internal const int UIA_ScrollHorizontalViewSizePropertyId = 30054;
-        internal const int UIA_ScrollVerticalScrollPercentPropertyId = 30055;
-        internal const int UIA_ScrollVerticalViewSizePropertyId = 30056;
-        internal const int UIA_ScrollHorizontallyScrollablePropertyId = 30057;
-        internal const int UIA_ScrollVerticallyScrollablePropertyId = 30058;
-        internal const int UIA_SelectionSelectionPropertyId = 30059;
-        internal const int UIA_SelectionCanSelectMultiplePropertyId = 30060;
-        internal const int UIA_SelectionIsSelectionRequiredPropertyId = 30061;
-        internal const int UIA_GridRowCountPropertyId = 30062;
-        internal const int UIA_GridColumnCountPropertyId = 30063;
-        internal const int UIA_GridItemRowPropertyId = 30064;
-        internal const int UIA_GridItemColumnPropertyId = 30065;
-        internal const int UIA_GridItemRowSpanPropertyId = 30066;
-        internal const int UIA_GridItemColumnSpanPropertyId = 30067;
-        internal const int UIA_GridItemContainingGridPropertyId = 30068;
-        internal const int UIA_DockDockPositionPropertyId = 30069;
-        internal const int UIA_ExpandCollapseExpandCollapseStatePropertyId = 30070;
-        internal const int UIA_MultipleViewCurrentViewPropertyId = 30071;
-        internal const int UIA_MultipleViewSupportedViewsPropertyId = 30072;
-        internal const int UIA_WindowCanMaximizePropertyId = 30073;
-        internal const int UIA_WindowCanMinimizePropertyId = 30074;
-        internal const int UIA_WindowWindowVisualStatePropertyId = 30075;
-        internal const int UIA_WindowWindowInteractionStatePropertyId = 30076;
-        internal const int UIA_WindowIsModalPropertyId = 30077;
-        internal const int UIA_WindowIsTopmostPropertyId = 30078;
-        internal const int UIA_SelectionItemIsSelectedPropertyId = 30079;
-        internal const int UIA_SelectionItemSelectionContainerPropertyId = 30080;
-        internal const int UIA_TableRowHeadersPropertyId = 30081;
-        internal const int UIA_TableColumnHeadersPropertyId = 30082;
-        internal const int UIA_TableRowOrColumnMajorPropertyId = 30083;
-        internal const int UIA_TableItemRowHeaderItemsPropertyId = 30084;
-        internal const int UIA_TableItemColumnHeaderItemsPropertyId = 30085;
-        internal const int UIA_ToggleToggleStatePropertyId = 30086;
-        internal const int UIA_TransformCanMovePropertyId = 30087;
-        internal const int UIA_TransformCanResizePropertyId = 30088;
-        internal const int UIA_TransformCanRotatePropertyId = 30089;
-        internal const int UIA_IsLegacyIAccessiblePatternAvailablePropertyId = 30090;
-        internal const int UIA_LegacyIAccessibleChildIdPropertyId = 30091;
-        internal const int UIA_LegacyIAccessibleNamePropertyId = 30092;
-        internal const int UIA_LegacyIAccessibleValuePropertyId = 30093;
-        internal const int UIA_LegacyIAccessibleDescriptionPropertyId = 30094;
-        internal const int UIA_LegacyIAccessibleRolePropertyId = 30095;
-        internal const int UIA_LegacyIAccessibleStatePropertyId = 30096;
-        internal const int UIA_LegacyIAccessibleHelpPropertyId = 30097;
-        internal const int UIA_LegacyIAccessibleKeyboardShortcutPropertyId = 30098;
-        internal const int UIA_LegacyIAccessibleSelectionPropertyId = 30099;
-        internal const int UIA_LegacyIAccessibleDefaultActionPropertyId = 30100;
-        internal const int UIA_AriaRolePropertyId = 30101;
-        internal const int UIA_AriaPropertiesPropertyId = 30102;
-        internal const int UIA_IsDataValidForFormPropertyId = 30103;
-        internal const int UIA_ControllerForPropertyId = 30104;
-        internal const int UIA_DescribedByPropertyId = 30105;
-        internal const int UIA_FlowsToPropertyId = 30106;
-        internal const int UIA_ProviderDescriptionPropertyId = 30107;
-        internal const int UIA_IsItemContainerPatternAvailablePropertyId = 30108;
-        internal const int UIA_IsVirtualizedItemPatternAvailablePropertyId = 30109;
-        internal const int UIA_IsSynchronizedInputPatternAvailablePropertyId = 30110;
-        internal const int UIA_OptimizeForVisualContentPropertyId = 30111;
-        internal const int UIA_IsObjectModelPatternAvailablePropertyId = 30112;
-        internal const int UIA_AnnotationAnnotationTypeIdPropertyId = 30113;
-        internal const int UIA_AnnotationAnnotationTypeNamePropertyId = 30114;
-        internal const int UIA_AnnotationAuthorPropertyId = 30115;
-        internal const int UIA_AnnotationDateTimePropertyId = 30116;
-        internal const int UIA_AnnotationTargetPropertyId = 30117;
-        internal const int UIA_IsAnnotationPatternAvailablePropertyId = 30118;
-        internal const int UIA_IsTextPattern2AvailablePropertyId = 30119;
-        internal const int UIA_StylesStyleIdPropertyId = 30120;
-        internal const int UIA_StylesStyleNamePropertyId = 30121;
-        internal const int UIA_StylesFillColorPropertyId = 30122;
-        internal const int UIA_StylesFillPatternStylePropertyId = 30123;
-        internal const int UIA_StylesShapePropertyId = 30124;
-        internal const int UIA_StylesFillPatternColorPropertyId = 30125;
-        internal const int UIA_StylesExtendedPropertiesPropertyId = 30126;
-        internal const int UIA_IsStylesPatternAvailablePropertyId = 30127;
-        internal const int UIA_IsSpreadsheetPatternAvailablePropertyId = 30128;
-        internal const int UIA_SpreadsheetItemFormulaPropertyId = 30129;
-        internal const int UIA_SpreadsheetItemAnnotationObjectsPropertyId = 30130;
-        internal const int UIA_SpreadsheetItemAnnotationTypesPropertyId = 30131;
-        internal const int UIA_IsSpreadsheetItemPatternAvailablePropertyId = 30132;
-        internal const int UIA_Transform2CanZoomPropertyId = 30133;
-        internal const int UIA_IsTransformPattern2AvailablePropertyId = 30134;
-        internal const int UIA_LiveSettingPropertyId = 30135;
-        internal const int UIA_IsTextChildPatternAvailablePropertyId = 30136;
-        internal const int UIA_IsDragPatternAvailablePropertyId = 30137;
-        internal const int UIA_DragIsGrabbedPropertyId = 30138;
-        internal const int UIA_DragDropEffectPropertyId = 30139;
-        internal const int UIA_DragDropEffectsPropertyId = 30140;
-        internal const int UIA_IsDropTargetPatternAvailablePropertyId = 30141;
-        internal const int UIA_DropTargetDropTargetEffectPropertyId = 30142;
-        internal const int UIA_DropTargetDropTargetEffectsPropertyId = 30143;
-        internal const int UIA_DragGrabbedItemsPropertyId = 30144;
-        internal const int UIA_Transform2ZoomLevelPropertyId = 30145;
-        internal const int UIA_Transform2ZoomMinimumPropertyId = 30146;
-        internal const int UIA_Transform2ZoomMaximumPropertyId = 30147;
-        internal const int UIA_FlowsFromPropertyId = 30148;
-        internal const int UIA_IsTextEditPatternAvailablePropertyId = 30149;
-        internal const int UIA_IsPeripheralPropertyId = 30150;
-        internal const int UIA_IsCustomNavigationPatternAvailablePropertyId = 30151;
-        internal const int UIA_PositionInSetPropertyId = 30152;
-        internal const int UIA_SizeOfSetPropertyId = 30153;
-        internal const int UIA_LevelPropertyId = 30154;
-        internal const int UIA_AnnotationTypesPropertyId = 30155;
-        internal const int UIA_AnnotationObjectsPropertyId = 30156;
-        internal const int UIA_LandmarkTypePropertyId = 30157;
-        internal const int UIA_LocalizedLandmarkTypePropertyId = 30158;
-        internal const int UIA_FullDescriptionPropertyId = 30159;
-        internal const int UIA_FillColorPropertyId = 30160;
-        internal const int UIA_OutlineColorPropertyId = 30161;
-        internal const int UIA_FillTypePropertyId = 30162;
-        internal const int UIA_VisualEffectsPropertyId = 30163;
-        internal const int UIA_OutlineThicknessPropertyId = 30164;
-        internal const int UIA_CenterPointPropertyId = 30165;
-        internal const int UIA_RotationPropertyId = 30166;
-        internal const int UIA_SizePropertyId = 30167;
-
-        // UIA_ControlTypeIds
-        internal const int UIA_ButtonControlTypeId = 50000;
-        internal const int UIA_CalendarControlTypeId = 50001;
-        internal const int UIA_CheckBoxControlTypeId = 50002;
-        internal const int UIA_ComboBoxControlTypeId = 50003;
-        internal const int UIA_EditControlTypeId = 50004;
-        internal const int UIA_HyperlinkControlTypeId = 50005;
-        internal const int UIA_ImageControlTypeId = 50006;
-        internal const int UIA_ListItemControlTypeId = 50007;
-        internal const int UIA_ListControlTypeId = 50008;
-        internal const int UIA_MenuControlTypeId = 50009;
-        internal const int UIA_MenuBarControlTypeId = 50010;
-        internal const int UIA_MenuItemControlTypeId = 50011;
-        internal const int UIA_ProgressBarControlTypeId = 50012;
-        internal const int UIA_RadioButtonControlTypeId = 50013;
-        internal const int UIA_ScrollBarControlTypeId = 50014;
-        internal const int UIA_SliderControlTypeId = 50015;
-        internal const int UIA_SpinnerControlTypeId = 50016;
-        internal const int UIA_StatusBarControlTypeId = 50017;
-        internal const int UIA_TabControlTypeId = 50018;
-        internal const int UIA_TabItemControlTypeId = 50019;
-        internal const int UIA_TextControlTypeId = 50020;
-        internal const int UIA_ToolBarControlTypeId = 50021;
-        internal const int UIA_ToolTipControlTypeId = 50022;
-        internal const int UIA_TreeControlTypeId = 50023;
-        internal const int UIA_TreeItemControlTypeId = 50024;
-        internal const int UIA_CustomControlTypeId = 50025;
-        internal const int UIA_GroupControlTypeId = 50026;
-        internal const int UIA_ThumbControlTypeId = 50027;
-        internal const int UIA_DataGridControlTypeId = 50028;
-        internal const int UIA_DataItemControlTypeId = 50029;
-        internal const int UIA_DocumentControlTypeId = 50030;
-        internal const int UIA_SplitButtonControlTypeId = 50031;
-        internal const int UIA_WindowControlTypeId = 50032;
-        internal const int UIA_PaneControlTypeId = 50033;
-        internal const int UIA_HeaderControlTypeId = 50034;
-        internal const int UIA_HeaderItemControlTypeId = 50035;
-        internal const int UIA_TableControlTypeId = 50036;
-        internal const int UIA_TitleBarControlTypeId = 50037;
-        internal const int UIA_SeparatorControlTypeId = 50038;
-        internal const int UIA_SemanticZoomControlTypeId = 50039;
-        internal const int UIA_AppBarControlTypeId = 50040;
-
-        [DllImport(ExternDll.User32, ExactSpelling = true)]
-        public static extern int MapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, ref RECT rect, int cPoints);
-
-        [DllImport(ExternDll.User32, ExactSpelling = true, CharSet = CharSet.Auto)]
-        public static extern int MapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, ref Point pt, uint cPoints);
 
         [DllImport(ExternDll.User32, ExactSpelling = true, CharSet = CharSet.Auto)]
         public static extern IntPtr WindowFromPoint(int x, int y);
@@ -4195,19 +2230,7 @@ namespace System.Windows.Forms
         [DllImport(ExternDll.User32, CharSet = CharSet.Auto)]
         public extern static IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, [In, Out] TV_HITTESTINFO lParam);
 
-        [DllImport(ExternDll.User32, ExactSpelling = true, CharSet = CharSet.Auto)]
-        public static extern short GetKeyState(int keyCode);
-
         [DllImport(ExternDll.User32, ExactSpelling = true)]
         public static extern bool GetUpdateRect(IntPtr hwnd, ref RECT rc, bool fErase);
-
-        [DllImport(ExternDll.User32, ExactSpelling = true, CharSet = CharSet.Auto)]
-        public static extern IntPtr GetCursor();
-
-        [DllImport(ExternDll.User32, ExactSpelling = true, CharSet = CharSet.Auto)]
-        public static extern bool GetCursorPos(out Point pt);
-
-        [DllImport(ExternDll.User32, ExactSpelling = true, CharSet = CharSet.Auto)]
-        public static extern IntPtr SetParent(IntPtr hWnd, IntPtr hWndParent);
     }
 }

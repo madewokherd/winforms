@@ -632,7 +632,7 @@ namespace System.Windows.Forms
                         // get the client area of the topmost window.  If we're next to the edge then
                         // the sizing grip is valid.
                         RECT rootHwndClientArea = new RECT();
-                        UnsafeNativeMethods.GetClientRect(rootHwnd, ref rootHwndClientArea);
+                        User32.GetClientRect(rootHwnd, ref rootHwndClientArea);
 
                         // map the size grip FROM statusStrip coords TO the toplevel window coords.
                         Point gripLocation;
@@ -644,7 +644,7 @@ namespace System.Windows.Forms
                         {
                             gripLocation = new Point(SizeGripBounds.Right, SizeGripBounds.Bottom);
                         }
-                        UnsafeNativeMethods.MapWindowPoints(new HandleRef(this, Handle), rootHwnd, ref gripLocation, 1);
+                        User32.MapWindowPoints(new HandleRef(this, Handle), rootHwnd, ref gripLocation, 1);
 
                         int deltaBottomEdge = Math.Abs(rootHwndClientArea.bottom - gripLocation.Y);
                         int deltaRightEdge = Math.Abs(rootHwndClientArea.right - gripLocation.X);
@@ -678,7 +678,7 @@ namespace System.Windows.Forms
                 get
                 {
                     CreateParams cp = base.CreateParams;
-                    cp.ExStyle |= NativeMethods.WS_EX_LAYOUTRTL;
+                    cp.ExStyle |= (int)User32.WS_EX.LAYOUTRTL;
                     return cp;
                 }
             }
@@ -720,11 +720,11 @@ namespace System.Windows.Forms
                 }
             }
 
-            internal override object GetPropertyValue(int propertyID)
+            internal override object GetPropertyValue(UiaCore.UIA propertyID)
             {
-                if (propertyID == NativeMethods.UIA_ControlTypePropertyId)
+                if (propertyID == UiaCore.UIA.ControlTypePropertyId)
                 {
-                    return NativeMethods.UIA_StatusBarControlTypeId;
+                    return UiaCore.UIA.StatusBarControlTypeId;
                 }
 
                 return base.GetPropertyValue(propertyID);

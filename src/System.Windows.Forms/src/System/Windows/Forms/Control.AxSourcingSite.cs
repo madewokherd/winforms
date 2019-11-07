@@ -11,11 +11,11 @@ namespace System.Windows.Forms
     {
         private class AxSourcingSite : ISite
         {
-            private readonly UnsafeNativeMethods.IOleClientSite _clientSite;
+            private readonly Ole32.IOleClientSite _clientSite;
             private string _name;
             private HtmlShimManager _shimManager;
 
-            internal AxSourcingSite(IComponent component, UnsafeNativeMethods.IOleClientSite clientSite, string name)
+            internal AxSourcingSite(IComponent component, Ole32.IOleClientSite clientSite, string name)
             {
                 Component = component;
                 _clientSite = clientSite;
@@ -36,16 +36,10 @@ namespace System.Windows.Forms
             {
                 if (service == typeof(HtmlDocument))
                 {
-                    int hr = _clientSite.GetContainer(out UnsafeNativeMethods.IOleContainer iOlecontainer);
-
-                    if (NativeMethods.Succeeded(hr)
-                        && (iOlecontainer is Mshtml.IHTMLDocument))
+                    HRESULT hr = _clientSite.GetContainer(out Ole32.IOleContainer iOlecontainer);
+                    if (hr.Succeeded() && iOlecontainer is Mshtml.IHTMLDocument)
                     {
-                        if (_shimManager == null)
-                        {
-                            _shimManager = new HtmlShimManager();
-                        }
-
+                        _shimManager ??= new HtmlShimManager();
                         return new HtmlDocument(_shimManager, iOlecontainer as Mshtml.IHTMLDocument);
                     }
                 }

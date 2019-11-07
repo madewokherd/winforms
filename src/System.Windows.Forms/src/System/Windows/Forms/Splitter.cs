@@ -240,16 +240,16 @@ namespace System.Windows.Forms
             get
             {
                 CreateParams cp = base.CreateParams;
-                cp.ExStyle &= (~NativeMethods.WS_EX_CLIENTEDGE);
-                cp.Style &= (~NativeMethods.WS_BORDER);
+                cp.Style &= ~(int)User32.WS.BORDER;
+                cp.ExStyle &= ~(int)User32.WS_EX.CLIENTEDGE;
 
                 switch (borderStyle)
                 {
                     case BorderStyle.Fixed3D:
-                        cp.ExStyle |= NativeMethods.WS_EX_CLIENTEDGE;
+                        cp.ExStyle |= (int)User32.WS_EX.CLIENTEDGE;
                         break;
                     case BorderStyle.FixedSingle:
-                        cp.Style |= NativeMethods.WS_BORDER;
+                        cp.Style |= (int)User32.WS.BORDER;
                         break;
                 }
                 return cp;
@@ -733,14 +733,13 @@ namespace System.Windows.Forms
             }
 
             Rectangle r = CalcSplitLine(splitSize, 3);
-            IntPtr parentHandle = ParentInternal.Handle;
-            IntPtr dc = UnsafeNativeMethods.GetDCEx(new HandleRef(ParentInternal, parentHandle), NativeMethods.NullHandleRef, NativeMethods.DCX_CACHE | NativeMethods.DCX_LOCKWINDOWUPDATE);
+            IntPtr dc = User32.GetDCEx(ParentInternal, IntPtr.Zero, User32.DCX.CACHE | User32.DCX.LOCKWINDOWUPDATE);
             IntPtr halftone = ControlPaint.CreateHalftoneHBRUSH();
             IntPtr saveBrush = Gdi32.SelectObject(dc, halftone);
             SafeNativeMethods.PatBlt(new HandleRef(ParentInternal, dc), r.X, r.Y, r.Width, r.Height, NativeMethods.PATINVERT);
             Gdi32.SelectObject(dc, saveBrush);
             Gdi32.DeleteObject(halftone);
-            User32.ReleaseDC(new HandleRef(ParentInternal, parentHandle), dc);
+            User32.ReleaseDC(new HandleRef(ParentInternal, ParentInternal.Handle), dc);
         }
 
         /// <summary>
@@ -949,7 +948,7 @@ namespace System.Windows.Forms
                 }
                 Application.AddMessageFilter(splitterMessageFilter);
 
-                CaptureInternal = true;
+                Capture = true;
                 DrawSplitBar(DRAW_START);
             }
         }
@@ -961,7 +960,7 @@ namespace System.Windows.Forms
         {
             DrawSplitBar(DRAW_END);
             splitTarget = null;
-            CaptureInternal = false;
+            Capture = false;
             if (splitterMessageFilter != null)
             {
                 Application.RemoveMessageFilter(splitterMessageFilter);

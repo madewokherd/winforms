@@ -254,7 +254,7 @@ namespace System.Windows.Forms.Design
                     if (c != null)
                     {
                         Debug.WriteLineIf(CompModSwitches.MSAA.TraceInfo, "MSAA: SelectionAdd, traycontrol = " + c.ToString());
-                        UnsafeNativeMethods.NotifyWinEvent((int)AccessibleEvents.SelectionAdd, new HandleRef(c, c.Handle), NativeMethods.OBJID_CLIENT, 0);
+                        User32.NotifyWinEvent((uint)AccessibleEvents.SelectionAdd, new HandleRef(c, c.Handle), User32.OBJID.CLIENT, 0);
                     }
                 }
             }
@@ -265,7 +265,7 @@ namespace System.Windows.Forms.Design
                 if (c != null && IsHandleCreated)
                 {
                     ScrollControlIntoView(c);
-                    UnsafeNativeMethods.NotifyWinEvent((int)AccessibleEvents.Focus, new HandleRef(c, c.Handle), NativeMethods.OBJID_CLIENT, 0);
+                    User32.NotifyWinEvent((uint)AccessibleEvents.Focus, new HandleRef(c, c.Handle), User32.OBJID.CLIENT, 0);
                 }
                 if (glyphManager != null)
                 {
@@ -1642,7 +1642,7 @@ namespace System.Windows.Forms.Design
                         // Get a hit test on any glyhs that we are managing this way - we know where to route appropriate  messages
                         Point pt = new Point((short)NativeMethods.Util.LOWORD(unchecked((int)(long)m.LParam)), (short)NativeMethods.Util.HIWORD(unchecked((int)(long)m.LParam)));
                         var pt1 = new Point();
-                        NativeMethods.MapWindowPoints(IntPtr.Zero, Handle, ref pt1, 1);
+                        User32.MapWindowPoints(IntPtr.Zero, Handle, ref pt1, 1);
                         pt.Offset(pt1.X, pt1.Y);
                         glyphManager.GetHitTest(pt);
                     }
@@ -2180,7 +2180,7 @@ namespace System.Windows.Forms.Design
                         Capture = true;
                         _mouseDragLast = PointToScreen(new Point(me.X, me.Y));
                         // If the CTRL key isn't down, select this component, otherwise, we wait until the mouse up. Make sure the component is selected
-                        _ctrlSelect = NativeMethods.GetKeyState((int)Keys.ControlKey) != 0;
+                        _ctrlSelect = User32.GetKeyState((int)Keys.ControlKey) != 0;
                         if (!_ctrlSelect)
                         {
                             ISelectionService sel = (ISelectionService)_tray.GetService(typeof(ISelectionService));
@@ -2573,7 +2573,7 @@ namespace System.Windows.Forms.Design
                             // Make sure tha we send our glyphs hit test messages over the TrayControls too
                             Point pt = new Point((short)NativeMethods.Util.LOWORD(unchecked((int)(long)m.LParam)), (short)NativeMethods.Util.HIWORD(unchecked((int)(long)m.LParam)));
                             var pt1 = new Point();
-                            NativeMethods.MapWindowPoints(IntPtr.Zero, Handle, ref pt1, 1);
+                            User32.MapWindowPoints(IntPtr.Zero, Handle, ref pt1, 1);
                             pt.Offset(pt1.X, pt1.Y);
                             pt.Offset(Location.X, Location.Y);//offset the loc of the traycontrol -so now we're in comptray coords
                             _tray.glyphManager.GetHitTest(pt);

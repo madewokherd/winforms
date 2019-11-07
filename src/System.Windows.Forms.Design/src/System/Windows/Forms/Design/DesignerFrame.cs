@@ -133,7 +133,7 @@ namespace System.Windows.Forms.Design
             {
                 if (selSvc.PrimarySelection is Control ctrl && !ctrl.IsDisposed)
                 {
-                    UnsafeNativeMethods.NotifyWinEvent((int)AccessibleEvents.Focus, new HandleRef(ctrl, ctrl.Handle), NativeMethods.OBJID_CLIENT, 0);
+                    User32.NotifyWinEvent((uint)AccessibleEvents.Focus, new HandleRef(ctrl, ctrl.Handle), User32.OBJID.CLIENT, 0);
                 }
             }
         }
@@ -208,41 +208,41 @@ namespace System.Windows.Forms.Design
                     break;
                 // Provide keyboard access for scrolling
                 case WindowMessages.WM_KEYDOWN:
-                    int wScrollNotify = 0;
+                    User32.SBV wScrollNotify = 0;
                     int msg = 0;
                     int keycode = unchecked((int)(long)m.WParam) & 0xFFFF;
                     switch ((Keys)keycode)
                     {
                         case Keys.Up:
-                            wScrollNotify = NativeMethods.SB_LINEUP;
+                            wScrollNotify = User32.SBV.LINEUP;
                             msg = WindowMessages.WM_VSCROLL;
                             break;
                         case Keys.Down:
-                            wScrollNotify = NativeMethods.SB_LINEDOWN;
+                            wScrollNotify = User32.SBV.LINEDOWN;
                             msg = WindowMessages.WM_VSCROLL;
                             break;
                         case Keys.PageUp:
-                            wScrollNotify = NativeMethods.SB_PAGEUP;
+                            wScrollNotify = User32.SBV.PAGEUP;
                             msg = WindowMessages.WM_VSCROLL;
                             break;
                         case Keys.PageDown:
-                            wScrollNotify = NativeMethods.SB_PAGEDOWN;
+                            wScrollNotify = User32.SBV.PAGEDOWN;
                             msg = WindowMessages.WM_VSCROLL;
                             break;
                         case Keys.Home:
-                            wScrollNotify = NativeMethods.SB_TOP;
+                            wScrollNotify = User32.SBV.TOP;
                             msg = WindowMessages.WM_VSCROLL;
                             break;
                         case Keys.End:
-                            wScrollNotify = NativeMethods.SB_BOTTOM;
+                            wScrollNotify = User32.SBV.BOTTOM;
                             msg = WindowMessages.WM_VSCROLL;
                             break;
                         case Keys.Left:
-                            wScrollNotify = NativeMethods.SB_LINEUP;
+                            wScrollNotify = User32.SBV.LINEUP;
                             msg = WindowMessages.WM_HSCROLL;
                             break;
                         case Keys.Right:
-                            wScrollNotify = NativeMethods.SB_LINEDOWN;
+                            wScrollNotify = User32.SBV.LINEDOWN;
                             msg = WindowMessages.WM_HSCROLL;
                             break;
                     }
@@ -250,7 +250,7 @@ namespace System.Windows.Forms.Design
                         || (msg == WindowMessages.WM_HSCROLL))
                     {
                         // Send a message to ourselves to scroll
-                        NativeMethods.SendMessage(_designerRegion.Handle, msg, NativeMethods.Util.MAKELONG(wScrollNotify, 0), 0);
+                        NativeMethods.SendMessage(_designerRegion.Handle, msg, NativeMethods.Util.MAKELONG((int)wScrollNotify, 0), 0);
                         return;
                     }
                     break;
@@ -451,7 +451,7 @@ namespace System.Windows.Forms.Design
             /// </summary>
             private void ParentOverlay(Control control)
             {
-                NativeMethods.SetParent(control.Handle, Handle);
+                User32.SetParent(control.Handle, Handle);
                 User32.SetWindowPos(
                     control.Handle,
                     User32.HWND_TOP,

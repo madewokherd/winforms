@@ -3764,7 +3764,9 @@ namespace System.Windows.Forms
             if (ToolTipProvider != null)
             {
                 ResetToolTip();
-            } ((EventHandler)Events[EVENT_SCROLL])?.Invoke(this, e);
+            }
+            
+            ((EventHandler)Events[EVENT_SCROLL])?.Invoke(this, e);
         }
 
         /// <summary>
@@ -3961,9 +3963,9 @@ namespace System.Windows.Forms
                 try
                 {
                     Set_ListManager(DataSource, DataMember, true, false);     // we do not want to create columns
-                                                                                        // if the columns are already created
-                                                                                        // the grid should not rely on OnBindingContextChanged
-                                                                                        // to create columns.
+                                                                              // if the columns are already created
+                                                                              // the grid should not rely on OnBindingContextChanged
+                                                                              // to create columns.
                 }
                 catch
                 {
@@ -5291,7 +5293,7 @@ namespace System.Windows.Forms
                 clip.Width = layout.Data.X + layout.Data.Width - leftEdge - 2;
             }
 
-            CaptureInternal = true;
+            Capture = true;
             Cursor.Clip = RectangleToScreen(clip);
             gridState[GRIDSTATE_trackColResize] = true;
             trackColAnchor = x;
@@ -5414,7 +5416,7 @@ namespace System.Windows.Forms
             finally
             {
                 Cursor.Clip = Rectangle.Empty;
-                CaptureInternal = false;
+                Capture = false;
                 gridState[GRIDSTATE_layoutSuspended] = false;
             }
 
@@ -5529,7 +5531,7 @@ namespace System.Windows.Forms
             clip.Y = topEdge + 3;
             clip.Height = layout.Data.Y + layout.Data.Height - topEdge - 2;
 
-            CaptureInternal = true;
+            Capture = true;
             Cursor.Clip = RectangleToScreen(clip);
             gridState[GRIDSTATE_trackRowResize] = true;
             trackRowAnchor = y;
@@ -5584,7 +5586,7 @@ namespace System.Windows.Forms
             finally
             {
                 Cursor.Clip = Rectangle.Empty;
-                CaptureInternal = false;
+                Capture = false;
             }
             // OnRowResize(EventArgs.Empty);
         }
@@ -5654,7 +5656,9 @@ namespace System.Windows.Forms
             // 1. the user was editing or navigating around the data grid and
             // 2. this is not the result of moving focus inside the data grid and
             // 3. if the user was scrolling
+#pragma warning disable SA1408 // Conditional expressions should declare precedence
             if (!gridState[GRIDSTATE_isEditing] && !gridState[GRIDSTATE_isNavigating] || (gridState[GRIDSTATE_editControlChanging] && !gridState[GRIDSTATE_isScrolling]))
+#pragma warning restore SA1408 // Conditional expressions should declare precedence
             {
                 return true;
             }
@@ -6398,14 +6402,13 @@ namespace System.Windows.Forms
         /// </summary>
         private void DrawSplitBar(Rectangle r)
         {
-            IntPtr parentHandle = Handle;
-            IntPtr dc = UnsafeNativeMethods.GetDCEx(new HandleRef(this, parentHandle), NativeMethods.NullHandleRef, NativeMethods.DCX_CACHE | NativeMethods.DCX_LOCKWINDOWUPDATE);
+            IntPtr dc = User32.GetDCEx(this, IntPtr.Zero, User32.DCX.CACHE | User32.DCX.LOCKWINDOWUPDATE);
             IntPtr halftone = ControlPaint.CreateHalftoneHBRUSH();
             IntPtr saveBrush = Gdi32.SelectObject(dc, halftone);
             SafeNativeMethods.PatBlt(new HandleRef(this, dc), r.X, r.Y, r.Width, r.Height, NativeMethods.PATINVERT);
             Gdi32.SelectObject(dc, saveBrush);
             Gdi32.DeleteObject(halftone);
-            User32.ReleaseDC(new HandleRef(this, parentHandle), dc);
+            User32.ReleaseDC(new HandleRef(this, Handle), dc);
         }
 
         /// <summary>
@@ -7011,9 +7014,11 @@ namespace System.Windows.Forms
             int previousLastTotallyVisibleCol = lastTotallyVisibleCol;
 
             while (col < firstVisibleCol
+#pragma warning disable SA1408 // Conditional expressions should declare precedence
                 || col == firstVisibleCol && negOffset != 0
                 || lastTotallyVisibleCol == -1 && col > firstVisibleCol
                 || lastTotallyVisibleCol > -1 && col > lastTotallyVisibleCol)
+#pragma warning restore SA1408 // Conditional expressions should declare precedence
             {
 
                 ScrollToColumn(col);
@@ -8238,25 +8243,6 @@ namespace System.Windows.Forms
                 rowBounds.Height = localGridRows[row].Height;
                 rowBounds.Y = boundingRect.Y + cy;
 
-                // will add some errors
-#if false
-                    if (forDebug == 0 || forDebug == 1)
-                    {
-                        object dRowView = listManager[row];
-                        DataRow dRow= ((DataRowView) dRowView).Row;
-                        // dRow.RowError = "Error " + forDebug.ToString();
-                        dRow.SetColumnError(forDebug, "another error " + forDebug.ToString());
-
-                        /*
-                        if (localGridRows[row].DataRow != null)
-                        {
-                            localGridRows[row].DataRow.RowError = "error " + forDebug.ToString();
-                            localGridRows[row].DataRow.SetColumnError(forDebug, "another error " + forDebug.ToString());
-                        }
-                        */
-                        forDebug ++;
-                    }
-#endif // false
                 if (paintRowHeaders)
                 {
                     headerBounds = rowBounds;
@@ -9622,8 +9608,10 @@ namespace System.Windows.Forms
                 }
             }
 
+#pragma warning disable SA1408 // Conditional expressions should declare precedence
             if (lastTotallyVisibleCol == nVisibleCols - 1 && columns > 0 ||
                 firstVisibleCol == 0 && columns < 0 && negOffset == 0)
+#pragma warning restore SA1408 // Conditional expressions should declare precedence
             {
                 return;
             }

@@ -194,12 +194,12 @@ namespace System.Windows.Forms
                     cp.Style |= NativeMethods.TBS_VERT; // HORIZ == 0
                 }
 
-                if (RightToLeft == RightToLeft.Yes && RightToLeftLayout == true)
+                if (RightToLeft == RightToLeft.Yes && RightToLeftLayout)
                 {
                     //We want to turn on mirroring for Trackbar explicitly.
-                    cp.ExStyle |= NativeMethods.WS_EX_LAYOUTRTL | NativeMethods.WS_EX_NOINHERITLAYOUT;
+                    cp.ExStyle |= (int)(User32.WS_EX.LAYOUTRTL | User32.WS_EX.NOINHERITLAYOUT);
                     //Don't need these styles when mirroring is turned on.
-                    cp.ExStyle &= ~(NativeMethods.WS_EX_RTLREADING | NativeMethods.WS_EX_RIGHT | NativeMethods.WS_EX_LEFTSCROLLBAR);
+                    cp.ExStyle &= ~(int)(User32.WS_EX.RTLREADING | User32.WS_EX.RIGHT | User32.WS_EX.LEFTSCROLLBAR);
                 }
                 return cp;
             }
@@ -812,11 +812,11 @@ namespace System.Windows.Forms
                 IntPtr userCookie = UnsafeNativeMethods.ThemingScope.Activate();
                 try
                 {
-                    NativeMethods.INITCOMMONCONTROLSEX icc = new NativeMethods.INITCOMMONCONTROLSEX
+                    var icc = new ComCtl32.INITCOMMONCONTROLSEX
                     {
-                        dwICC = NativeMethods.ICC_BAR_CLASSES
+                        dwICC = ComCtl32.ICC.BAR_CLASSES
                     };
-                    SafeNativeMethods.InitCommonControlsEx(icc);
+                    ComCtl32.InitCommonControlsEx(ref icc);
                 }
                 finally
                 {

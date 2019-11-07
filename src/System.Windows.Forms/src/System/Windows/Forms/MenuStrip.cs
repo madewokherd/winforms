@@ -176,7 +176,9 @@ namespace System.Windows.Forms
             if (IsHandleCreated)
             {
                 AccessibilityNotifyClients(AccessibleEvents.SystemMenuStart, -1);
-            } ((EventHandler)Events[EventMenuActivate])?.Invoke(this, e);
+            }
+            
+            ((EventHandler)Events[EventMenuActivate])?.Invoke(this, e);
         }
 
         protected virtual void OnMenuDeactivate(EventArgs e)
@@ -184,7 +186,9 @@ namespace System.Windows.Forms
             if (IsHandleCreated)
             {
                 AccessibilityNotifyClients(AccessibleEvents.SystemMenuEnd, -1);
-            } ((EventHandler)Events[EventMenuDeactivate])?.Invoke(this, e);
+            }
+            
+            ((EventHandler)Events[EventMenuDeactivate])?.Invoke(this, e);
         }
 
         /// <summary>
@@ -231,7 +235,7 @@ namespace System.Windows.Forms
                         Debug.WriteLineIf(ToolStrip.SnapFocusDebug.TraceVerbose, "[MenuStrip.ProcessCmdKey] Rolling up the menu and invoking the system menu");
                         ToolStripManager.ModalMenuFilter.ExitMenuMode();
                         // send a WM_SYSCOMMAND SC_KEYMENU + Space to activate the system menu.
-                        UnsafeNativeMethods.PostMessage(WindowsFormsUtils.GetRootHWnd(this), WindowMessages.WM_SYSCOMMAND, NativeMethods.SC_KEYMENU, (int)Keys.Space);
+                        UnsafeNativeMethods.PostMessage(WindowsFormsUtils.GetRootHWnd(this), WindowMessages.WM_SYSCOMMAND, (int)User32.SC.KEYMENU, (int)Keys.Space);
                         return true;
                     }
                 }
@@ -282,11 +286,11 @@ namespace System.Windows.Forms
                 }
             }
 
-            internal override object GetPropertyValue(int propertyID)
+            internal override object GetPropertyValue(UiaCore.UIA propertyID)
             {
-                if (propertyID == NativeMethods.UIA_ControlTypePropertyId)
+                if (propertyID == UiaCore.UIA.ControlTypePropertyId)
                 {
-                    return NativeMethods.UIA_MenuBarControlTypeId;
+                    return UiaCore.UIA.MenuBarControlTypeId;
                 }
 
                 return base.GetPropertyValue(propertyID);

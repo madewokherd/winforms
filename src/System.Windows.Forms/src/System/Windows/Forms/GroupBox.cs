@@ -148,7 +148,7 @@ namespace System.Windows.Forms
                     cp.ClassName = null;
                     cp.Style &= ~NativeMethods.BS_GROUPBOX;
                 }
-                cp.ExStyle |= NativeMethods.WS_EX_CONTROLPARENT;
+                cp.ExStyle |= (int)User32.WS_EX.CONTROLPARENT;
 
                 return cp;
             }
@@ -724,7 +724,7 @@ namespace System.Windows.Forms
         private void WmEraseBkgnd(ref Message m)
         {
             RECT rect = new RECT();
-            SafeNativeMethods.GetClientRect(new HandleRef(this, Handle), ref rect);
+            User32.GetClientRect(new HandleRef(this, Handle), ref rect);
             using (Graphics graphics = Graphics.FromHdcInternal(m.WParam))
             {
                 using (Brush b = new SolidBrush(BackColor))
@@ -757,7 +757,7 @@ namespace System.Windows.Forms
                     // will always be exposed through MSAA. Reason: When FlatStyle=System, we map down to the Win32
                     // "Button" window class to get OS group box rendering; but the OS does not expose the children
                     // of buttons to MSAA (beacuse it assumes buttons won't have children).
-                    if (unchecked((int)(long)m.LParam) == NativeMethods.OBJID_QUERYCLASSNAMEIDX)
+                    if (unchecked((int)(long)m.LParam) == User32.OBJID.QUERYCLASSNAMEIDX)
                     {
                         m.Result = IntPtr.Zero;
                     }
@@ -795,13 +795,13 @@ namespace System.Windows.Forms
 
             internal override bool IsIAccessibleExSupported() => true;
 
-            internal override object GetPropertyValue(int propertyID)
+            internal override object GetPropertyValue(UiaCore.UIA propertyID)
             {
                 switch (propertyID)
                 {
-                    case NativeMethods.UIA_ControlTypePropertyId:
-                        return NativeMethods.UIA_GroupControlTypeId;
-                    case NativeMethods.UIA_IsKeyboardFocusablePropertyId:
+                    case UiaCore.UIA.ControlTypePropertyId:
+                        return UiaCore.UIA.GroupControlTypeId;
+                    case UiaCore.UIA.IsKeyboardFocusablePropertyId:
                         return true;
                 }
 

@@ -188,18 +188,17 @@ namespace System.Windows.Forms
             get
             {
                 CreateParams cp = base.CreateParams;
-                cp.ExStyle |= NativeMethods.WS_EX_CONTROLPARENT;
-
-                cp.ExStyle &= (~NativeMethods.WS_EX_CLIENTEDGE);
-                cp.Style &= (~NativeMethods.WS_BORDER);
+                cp.Style &= ~(int)User32.WS.BORDER;
+                cp.ExStyle |= (int)User32.WS_EX.CONTROLPARENT;
+                cp.ExStyle &= ~(int)User32.WS_EX.CLIENTEDGE;
 
                 switch (borderStyle)
                 {
                     case BorderStyle.Fixed3D:
-                        cp.ExStyle |= NativeMethods.WS_EX_CLIENTEDGE;
+                        cp.ExStyle |= (int)User32.WS_EX.CLIENTEDGE;
                         break;
                     case BorderStyle.FixedSingle:
-                        cp.Style |= NativeMethods.WS_BORDER;
+                        cp.Style |= (int)User32.WS.BORDER;
                         break;
                 }
                 return cp;
@@ -279,19 +278,14 @@ namespace System.Windows.Forms
                 return false;
             }
 
-            IntPtr hwndFocus = UnsafeNativeMethods.GetFocus();
+            IntPtr hwndFocus = User32.GetFocus();
             if (hwndFocus == IntPtr.Zero)
             {
                 return false;
             }
 
             IntPtr hwnd = Handle;
-            if (hwnd == hwndFocus || SafeNativeMethods.IsChild(new HandleRef(this, hwnd), new HandleRef(null, hwndFocus)))
-            {
-                return true;
-            }
-
-            return false;
+            return hwnd == hwndFocus || User32.IsChild(new HandleRef(this, hwnd), hwndFocus).IsTrue();
         }
 
         /// <summary>

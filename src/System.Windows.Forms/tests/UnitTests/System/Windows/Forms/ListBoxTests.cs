@@ -96,21 +96,58 @@ namespace System.Windows.Forms.Tests
 
         [Theory]
         [MemberData(nameof(BackColor_Set_TestData))]
-        public void BackColor_Set_GetReturnsExpected(Color value, Color expected)
+        public void ListBox_BackColor_Set_GetReturnsExpected(Color value, Color expected)
         {
             var control = new ListBox
             {
                 BackColor = value
             };
             Assert.Equal(expected, control.BackColor);
+            Assert.False(control.IsHandleCreated);
 
             // Set same.
             control.BackColor = value;
             Assert.Equal(expected, control.BackColor);
+            Assert.False(control.IsHandleCreated);
+        }
+
+        public static IEnumerable<object[]> BackColor_SetWithHandle_TestData()
+        {
+            yield return new object[] { Color.Empty, SystemColors.Window, 0 };
+            yield return new object[] { Color.Red, Color.Red, 1 };
+        }
+
+        [Theory]
+        [MemberData(nameof(BackColor_SetWithHandle_TestData))]
+        public void ListBox_BackColor_SetWithHandle_GetReturnsExpected(Color value, Color expected, int expectedInvalidatedCallCount)
+        {
+            var control = new ListBox();
+            Assert.NotEqual(IntPtr.Zero, control.Handle);
+            int invalidatedCallCount = 0;
+            control.Invalidated += (sender, e) => invalidatedCallCount++;
+            int styleChangedCallCount = 0;
+            control.StyleChanged += (sender, e) => styleChangedCallCount++;
+            int createdCallCount = 0;
+            control.HandleCreated += (sender, e) => createdCallCount++;
+
+            control.BackColor = value;
+            Assert.Equal(expected, control.BackColor);
+            Assert.True(control.IsHandleCreated);
+            Assert.Equal(expectedInvalidatedCallCount, invalidatedCallCount);
+            Assert.Equal(0, styleChangedCallCount);
+            Assert.Equal(0, createdCallCount);
+
+            // Set same.
+            control.BackColor = value;
+            Assert.Equal(expected, control.BackColor);
+            Assert.True(control.IsHandleCreated);
+            Assert.Equal(expectedInvalidatedCallCount, invalidatedCallCount);
+            Assert.Equal(0, styleChangedCallCount);
+            Assert.Equal(0, createdCallCount);
         }
 
         [Fact]
-        public void BackColor_SetWithHandler_CallsBackColorChanged()
+        public void ListBox_BackColor_SetWithHandler_CallsBackColorChanged()
         {
             var control = new ListBox();
             int callCount = 0;
@@ -409,26 +446,69 @@ namespace System.Windows.Forms.Tests
         public static IEnumerable<object[]> ForeColor_Set_TestData()
         {
             yield return new object[] { Color.Empty, SystemColors.WindowText };
+            yield return new object[] { Color.FromArgb(254, 1, 2, 3), Color.FromArgb(254, 1, 2, 3) };
+            yield return new object[] { Color.White, Color.White };
+            yield return new object[] { Color.Black, Color.Black };
             yield return new object[] { Color.Red, Color.Red };
         }
 
         [Theory]
         [MemberData(nameof(ForeColor_Set_TestData))]
-        public void ForeColor_Set_GetReturnsExpected(Color value, Color expected)
+        public void ListBox_ForeColor_Set_GetReturnsExpected(Color value, Color expected)
         {
             var control = new ListBox
             {
                 ForeColor = value
             };
             Assert.Equal(expected, control.ForeColor);
+            Assert.False(control.IsHandleCreated);
 
             // Set same.
             control.ForeColor = value;
             Assert.Equal(expected, control.ForeColor);
+            Assert.False(control.IsHandleCreated);
+        }
+
+        public static IEnumerable<object[]> ForeColor_SetWithHandle_TestData()
+        {
+            yield return new object[] { Color.Empty, SystemColors.WindowText, 0 };
+            yield return new object[] { Color.FromArgb(254, 1, 2, 3), Color.FromArgb(254, 1, 2, 3), 1 };
+            yield return new object[] { Color.White, Color.White, 1 };
+            yield return new object[] { Color.Black, Color.Black, 1 };
+            yield return new object[] { Color.Red, Color.Red, 1 };
+        }
+
+        [Theory]
+        [MemberData(nameof(ForeColor_SetWithHandle_TestData))]
+        public void ListBox_ForeColor_SetWithHandle_GetReturnsExpected(Color value, Color expected, int expectedInvalidatedCallCount)
+        {
+            var control = new ListBox();
+            Assert.NotEqual(IntPtr.Zero, control.Handle);
+            int invalidatedCallCount = 0;
+            control.Invalidated += (sender, e) => invalidatedCallCount++;
+            int styleChangedCallCount = 0;
+            control.StyleChanged += (sender, e) => styleChangedCallCount++;
+            int createdCallCount = 0;
+            control.HandleCreated += (sender, e) => createdCallCount++;
+
+            control.ForeColor = value;
+            Assert.Equal(expected, control.ForeColor);
+            Assert.True(control.IsHandleCreated);
+            Assert.Equal(expectedInvalidatedCallCount, invalidatedCallCount);
+            Assert.Equal(0, styleChangedCallCount);
+            Assert.Equal(0, createdCallCount);
+
+            // Set same.
+            control.ForeColor = value;
+            Assert.Equal(expected, control.ForeColor);
+            Assert.True(control.IsHandleCreated);
+            Assert.Equal(expectedInvalidatedCallCount, invalidatedCallCount);
+            Assert.Equal(0, styleChangedCallCount);
+            Assert.Equal(0, createdCallCount);
         }
 
         [Fact]
-        public void ForeColor_SetWithHandler_CallsForeColorChanged()
+        public void ListBox_ForeColor_SetWithHandler_CallsForeColorChanged()
         {
             var control = new ListBox();
             int callCount = 0;
@@ -464,51 +544,84 @@ namespace System.Windows.Forms.Tests
 
         [Theory]
         [CommonMemberData(nameof(CommonTestHelper.GetPaddingNormalizedTheoryData))]
-        public void Padding_Set_GetReturnsExpected(Padding value, Padding expected)
+        public void ListBox_Padding_Set_GetReturnsExpected(Padding value, Padding expected)
         {
-            var control = new ListBox
+            using var control = new ListBox
             {
                 Padding = value
             };
             Assert.Equal(expected, control.Padding);
+            Assert.False(control.IsHandleCreated);
 
             // Set same.
             control.Padding = value;
             Assert.Equal(expected, control.Padding);
+            Assert.False(control.IsHandleCreated);
+        }
+
+        [Theory]
+        [CommonMemberData(nameof(CommonTestHelper.GetPaddingNormalizedTheoryData))]
+        public void ListBox_Padding_SetWithHandle_GetReturnsExpected(Padding value, Padding expected)
+        {
+            using var control = new ListBox();
+            Assert.NotEqual(IntPtr.Zero, control.Handle);
+            int invalidatedCallCount = 0;
+            control.Invalidated += (sender, e) => invalidatedCallCount++;
+            int styleChangedCallCount = 0;
+            control.StyleChanged += (sender, e) => styleChangedCallCount++;
+            int createdCallCount = 0;
+            control.HandleCreated += (sender, e) => createdCallCount++;
+
+            control.Padding = value;
+            Assert.Equal(expected, control.Padding);
+            Assert.True(control.IsHandleCreated);
+            Assert.Equal(0, invalidatedCallCount);
+            Assert.Equal(0, styleChangedCallCount);
+            Assert.Equal(0, createdCallCount);
+
+            // Set same.
+            control.Padding = value;
+            Assert.Equal(expected, control.Padding);
+            Assert.True(control.IsHandleCreated);
+            Assert.Equal(0, invalidatedCallCount);
+            Assert.Equal(0, styleChangedCallCount);
+            Assert.Equal(0, createdCallCount);
         }
 
         [Fact]
-        public void Padding_SetWithHandler_CallsPaddingChanged()
+        public void ListBox_Padding_SetWithHandler_CallsPaddingChanged()
         {
-            var control = new ListBox();
+            using var control = new ListBox();
             int callCount = 0;
             EventHandler handler = (sender, e) =>
             {
-                Assert.Same(control, sender);
-                Assert.Same(EventArgs.Empty, e);
+                Assert.Equal(control, sender);
+                Assert.Equal(EventArgs.Empty, e);
                 callCount++;
             };
             control.PaddingChanged += handler;
 
             // Set different.
-            control.Padding = new Padding(1);
-            Assert.Equal(new Padding(1), control.Padding);
+            var padding1 = new Padding(1);
+            control.Padding = padding1;
+            Assert.Equal(padding1, control.Padding);
             Assert.Equal(1, callCount);
 
             // Set same.
-            control.Padding = new Padding(1);
-            Assert.Equal(new Padding(1), control.Padding);
+            control.Padding = padding1;
+            Assert.Equal(padding1, control.Padding);
             Assert.Equal(1, callCount);
 
             // Set different.
-            control.Padding = new Padding(2);
-            Assert.Equal(new Padding(2), control.Padding);
+            var padding2 = new Padding(2);
+            control.Padding = padding2;
+            Assert.Equal(padding2, control.Padding);
             Assert.Equal(2, callCount);
 
             // Remove handler.
             control.PaddingChanged -= handler;
-            control.Padding = new Padding(1);
-            Assert.Equal(new Padding(1), control.Padding);
+            control.Padding = padding1;
+            Assert.Equal(padding1, control.Padding);
             Assert.Equal(2, callCount);
         }
 

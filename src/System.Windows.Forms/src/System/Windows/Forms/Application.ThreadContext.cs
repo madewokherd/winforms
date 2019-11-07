@@ -1201,7 +1201,7 @@ namespace System.Windows.Forms
                             // If the component wants us to process the message, do it.
                             // The component manager hosts windows from many places.  We must be sensitive
                             // to ansi / Unicode windows here.
-                            if (msg.hwnd != IntPtr.Zero && SafeNativeMethods.IsWindowUnicode(new HandleRef(null, msg.hwnd)))
+                            if (msg.hwnd != IntPtr.Zero && User32.IsWindowUnicode(msg.hwnd).IsTrue())
                             {
                                 unicodeWindow = true;
                                 if (User32.GetMessageW(ref msg).IsFalse())
@@ -1242,7 +1242,7 @@ namespace System.Windows.Forms
                         }
                         else if (User32.PeekMessageW(ref msg).IsFalse())
                         {
-                            UnsafeNativeMethods.WaitMessage();
+                            User32.WaitMessage();
                         }
                     }
                     return continueLoop;
@@ -1555,7 +1555,7 @@ namespace System.Windows.Forms
                         case msoloop.FocusWait:
 
                             // For focus wait, check to see if we are now the active application.
-                            User32.GetWindowThreadProcessId(UnsafeNativeMethods.GetActiveWindow(), out uint pid);
+                            User32.GetWindowThreadProcessId(User32.GetActiveWindow(), out uint pid);
                             if (pid == Kernel32.GetCurrentProcessId())
                             {
                                 continueLoop = false;

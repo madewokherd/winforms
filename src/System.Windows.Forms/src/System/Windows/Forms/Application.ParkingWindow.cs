@@ -96,7 +96,7 @@ namespace System.Windows.Forms
                 if (_childCount != 0)
                     return;
 
-                IntPtr hwndChild = UnsafeNativeMethods.GetWindow(new HandleRef(this, Handle), NativeMethods.GW_CHILD);
+                IntPtr hwndChild = User32.GetWindow(new HandleRef(this, Handle), User32.GW.CHILD);
                 if (hwndChild == IntPtr.Zero)
                 {
                     DestroyHandle();
@@ -119,7 +119,7 @@ namespace System.Windows.Forms
                     CreateHandle();
                 }
 
-                UnsafeNativeMethods.SetParent(handle, new HandleRef(this, Handle));
+                User32.SetParent(handle, new HandleRef(this, Handle));
             }
 
             /// <summary>
@@ -129,10 +129,12 @@ namespace System.Windows.Forms
             internal void UnparkHandle(HandleRef handle)
             {
                 if (!IsHandleCreated)
+                {
                     return;
+                }
 
                 Debug.Assert(
-                    UnsafeNativeMethods.GetParent(handle) != Handle,
+                    User32.GetParent(handle) != Handle,
                     "Always set the handle's parent to someone else before calling UnparkHandle");
 
                 // If there are no child windows in this handle any longer, destroy the parking window.

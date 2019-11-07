@@ -758,8 +758,8 @@ namespace System.ComponentModel.Design
                 InitializeComponent();
                 if (DpiHelper.IsScalingRequired)
                 {
-                    DpiHelper.ScaleButtonImageLogicalToDevice(_downButton);
-                    DpiHelper.ScaleButtonImageLogicalToDevice(_upButton);
+                    ScaleButtonImageLogicalToDevice(_downButton);
+                    ScaleButtonImageLogicalToDevice(_upButton);
                 }
                 Text = string.Format(SR.CollectionEditorCaption, CollectionItemType.Name);
 
@@ -1814,6 +1814,23 @@ namespace System.ComponentModel.Design
             }
 
             /// <summary>
+            ///  Create a new button bitmap scaled for the device units.
+            ///  Note: original image might be disposed.
+            /// </summary>
+            /// <param name="button">button with an image, image size is defined in logical units</param>
+            private static void ScaleButtonImageLogicalToDevice(Button button)
+            {
+                if (button == null || !(button.Image is Bitmap buttonBitmap))
+                {
+                    return;
+                }
+
+                Bitmap deviceBitmap = DpiHelper.CreateScaledBitmap(buttonBitmap);
+                button.Image.Dispose();
+                button.Image = deviceBitmap;
+            }
+
+            /// <summary>
             ///  This class implements a custom type descriptor that is used to provide
             ///  properties for the set of selected items in the collection editor.
             ///  It provides a single property that is equivalent to the editor's collection item type.
@@ -2136,7 +2153,7 @@ namespace System.ComponentModel.Design
                             if (PropertyGrid != null)
                             {
                                 PropertyGrid.Focus();
-                                UnsafeNativeMethods.SetFocus(new HandleRef(PropertyGrid, PropertyGrid.Handle));
+                                User32.SetFocus(new HandleRef(PropertyGrid, PropertyGrid.Handle));
                                 Application.DoEvents();
                             }
                             else
@@ -2147,7 +2164,7 @@ namespace System.ComponentModel.Design
                             if (PropertyGrid.Focused || PropertyGrid.ContainsFocus)
                             {
                                 // recreate the keystroke to the newly activated window
-                                NativeMethods.SendMessage(UnsafeNativeMethods.GetFocus(), WindowMessages.WM_KEYDOWN, _lastKeyDown.WParam, _lastKeyDown.LParam);
+                                NativeMethods.SendMessage(User32.GetFocus(), WindowMessages.WM_KEYDOWN, _lastKeyDown.WParam, _lastKeyDown.LParam);
                             }
                         }
                         break;
@@ -2162,7 +2179,7 @@ namespace System.ComponentModel.Design
                         if (PropertyGrid != null)
                         {
                             PropertyGrid.Focus();
-                            UnsafeNativeMethods.SetFocus(new HandleRef(PropertyGrid, PropertyGrid.Handle));
+                            User32.SetFocus(new HandleRef(PropertyGrid, PropertyGrid.Handle));
                             Application.DoEvents();
                         }
                         else
@@ -2173,7 +2190,7 @@ namespace System.ComponentModel.Design
                         // Make sure we changed focus properly recreate the keystroke to the newly activated window
                         if (PropertyGrid.Focused || PropertyGrid.ContainsFocus)
                         {
-                            IntPtr hWnd = UnsafeNativeMethods.GetFocus();
+                            IntPtr hWnd = User32.GetFocus();
                             NativeMethods.SendMessage(hWnd, WindowMessages.WM_KEYDOWN, _lastKeyDown.WParam, _lastKeyDown.LParam);
                             NativeMethods.SendMessage(hWnd, WindowMessages.WM_CHAR, m.WParam, m.LParam);
                             return;

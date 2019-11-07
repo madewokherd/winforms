@@ -151,7 +151,7 @@ namespace System.Windows.Forms
 
             // Set up color table --
             IntPtr palette = SafeNativeMethods.CreateHalftonePalette(new HandleRef(null, hdcS));
-            Gdi32.GetObject(palette, out uint entryCount);
+            Gdi32.GetObjectW(palette, out uint entryCount);
             var entries = new Gdi32.PALETTEENTRY[entryCount];
             Gdi32.GetPaletteEntries(palette, entries);
             int[] colors = new int[entryCount];
@@ -315,8 +315,16 @@ namespace System.Windows.Forms
             //
             Gdi32.SetBkColor(target, 0x00ffffff); // white
             Gdi32.SetTextColor(target, 0x00000000); // black
-            SafeNativeMethods.BitBlt(new HandleRef(null, target), 0, 0, size.Width, size.Height, new HandleRef(null, source),
-                                     0, 0, 0x220326); // RasterOp.SOURCE.Invert().AndWith(RasterOp.TARGET).GetRop());
+            Gdi32.BitBlt(
+                target,
+                0,
+                0,
+                size.Width,
+                size.Height,
+                source,
+                0,
+                0,
+                (Gdi32.ROP)0x220326); // RasterOp.SOURCE.Invert().AndWith(RasterOp.TARGET).GetRop());
 
             Gdi32.SelectObject(source, previousSourceBitmap);
             Gdi32.SelectObject(target, previousTargetBitmap);
@@ -358,17 +366,22 @@ namespace System.Windows.Forms
             int destHeight = blockRegionSize.Height;
 
             DeviceContext dc = DeviceContext.FromHwnd(sourceHwnd);
-            HandleRef targetHDC = new HandleRef(null, targetDC.GetHdc());
-            HandleRef screenHDC = new HandleRef(null, dc.Hdc);
-
+            IntPtr targetHDC = targetDC.GetHdc();
             try
             {
-                bool result = SafeNativeMethods.BitBlt(targetHDC, destinationLocation.X, destinationLocation.Y, destWidth, destHeight,
-                                                      screenHDC,
-                                                      sourceLocation.X, sourceLocation.Y, (int)copyPixelOperation);
+                BOOL result = Gdi32.BitBlt(
+                    targetHDC,
+                    destinationLocation.X,
+                    destinationLocation.Y,
+                    destWidth,
+                    destHeight,
+                    dc.Hdc,
+                    sourceLocation.X,
+                    sourceLocation.Y,
+                    (Gdi32.ROP)copyPixelOperation);
 
-                //a zero result indicates a win32 exception has been thrown
-                if (!result)
+                // Zero result indicates a win32 exception has been thrown
+                if (!result.IsTrue())
                 {
                     throw new Win32Exception();
                 }
@@ -573,7 +586,6 @@ namespace System.Windows.Forms
                     break;
 
                 default:
-                    Debug.Fail("Unknown border style");
                     break;
             }
         }
@@ -1261,8 +1273,7 @@ namespace System.Windows.Forms
         /// </summary>
         public static void DrawButton(Graphics graphics, int x, int y, int width, int height, ButtonState state)
         {
-            DrawFrameControl(graphics, x, y, width, height, NativeMethods.DFC_BUTTON,
-                             NativeMethods.DFCS_BUTTONPUSH | (int)state, Color.Empty, Color.Empty);
+            DrawFrameControl(graphics, x, y, width, height, User32.DFC.BUTTON, User32.DFCS.BUTTONPUSH | (User32.DFCS)state, Color.Empty, Color.Empty);
         }
 
         /// <summary>
@@ -1278,8 +1289,7 @@ namespace System.Windows.Forms
         /// </summary>
         public static void DrawCaptionButton(Graphics graphics, int x, int y, int width, int height, CaptionButton button, ButtonState state)
         {
-            DrawFrameControl(graphics, x, y, width, height, NativeMethods.DFC_CAPTION,
-                             (int)button | (int)state, Color.Empty, Color.Empty);
+            DrawFrameControl(graphics, x, y, width, height, User32.DFC.CAPTION, (User32.DFCS)button | (User32.DFCS)state, Color.Empty, Color.Empty);
         }
 
         /// <summary>
@@ -1302,8 +1312,7 @@ namespace System.Windows.Forms
             }
             else
             {
-                DrawFrameControl(graphics, x, y, width, height, NativeMethods.DFC_BUTTON,
-                                 NativeMethods.DFCS_BUTTONCHECK | (int)state, Color.Empty, Color.Empty);
+                DrawFrameControl(graphics, x, y, width, height, User32.DFC.BUTTON, User32.DFCS.BUTTONCHECK | (User32.DFCS)state, Color.Empty, Color.Empty);
             }
         }
 
@@ -1320,8 +1329,7 @@ namespace System.Windows.Forms
         /// </summary>
         public static void DrawComboButton(Graphics graphics, int x, int y, int width, int height, ButtonState state)
         {
-            DrawFrameControl(graphics, x, y, width, height, NativeMethods.DFC_SCROLL,
-                             NativeMethods.DFCS_SCROLLCOMBOBOX | (int)state, Color.Empty, Color.Empty);
+            DrawFrameControl(graphics, x, y, width, height, User32.DFC.SCROLL, User32.DFCS.SCROLLCOMBOBOX | (User32.DFCS)state, Color.Empty, Color.Empty);
         }
 
         /// <summary>
@@ -1433,8 +1441,7 @@ namespace System.Windows.Forms
                         IntPtr dc = g2.GetHdc();
                         try
                         {
-                            SafeNativeMethods.DrawFrameControl(new HandleRef(null, dc), ref rcCheck,
-                                                               NativeMethods.DFC_MENU, NativeMethods.DFCS_MENUCHECK);
+                            User32.DrawFrameControl(dc, ref rcCheck, User32.DFC.MENU, User32.DFCS.MENUCHECK);
                         }
                         finally
                         {
@@ -1499,8 +1506,16 @@ namespace System.Windows.Forms
         /// <summary>
         ///  Draws a win32 frame control.
         /// </summary>
-        private static void DrawFrameControl(Graphics graphics, int x, int y, int width, int height,
-                                             int kind, int state, Color foreColor, Color backColor)
+        private static void DrawFrameControl(
+            Graphics graphics,
+            int x,
+            int y,
+            int width,
+            int height,
+            User32.DFC kind,
+            User32.DFCS state,
+            Color foreColor,
+            Color backColor)
         {
             if (graphics == null)
             {
@@ -1523,8 +1538,9 @@ namespace System.Windows.Forms
                     g2.Clear(Color.Transparent);
 
                     using (WindowsGraphics wg = WindowsGraphics.FromGraphics(g2))
-                    { // Get Win32 dc with Graphics properties applied to it.
-                        SafeNativeMethods.DrawFrameControl(new HandleRef(wg, wg.DeviceContext.Hdc), ref rcFrame, kind, (int)state);
+                    { 
+                        // Get Win32 dc with Graphics properties applied to it.
+                        User32.DrawFrameControl(new HandleRef(wg, wg.DeviceContext.Hdc), ref rcFrame, kind, state);
                     }
 
                     if (foreColor == Color.Empty || backColor == Color.Empty)
@@ -1912,8 +1928,7 @@ namespace System.Windows.Forms
         /// </summary>
         public static void DrawMenuGlyph(Graphics graphics, int x, int y, int width, int height, MenuGlyph glyph)
         {
-            DrawFrameControl(graphics, x, y, width, height, NativeMethods.DFC_MENU,
-                             (int)glyph, Color.Empty, Color.Empty);
+            DrawFrameControl(graphics, x, y, width, height, User32.DFC.MENU, (User32.DFCS)glyph, Color.Empty, Color.Empty);
         }
 
         /// <summary>
@@ -1922,7 +1937,7 @@ namespace System.Windows.Forms
         /// </summary>
         public static void DrawMenuGlyph(Graphics graphics, int x, int y, int width, int height, MenuGlyph glyph, Color foreColor, Color backColor)
         {
-            DrawFrameControl(graphics, x, y, width, height, NativeMethods.DFC_MENU, (int)glyph, foreColor, backColor);
+            DrawFrameControl(graphics, x, y, width, height, User32.DFC.MENU, (User32.DFCS)glyph, foreColor, backColor);
         }
 
         /// <summary>
@@ -1935,8 +1950,7 @@ namespace System.Windows.Forms
 
         public static void DrawMixedCheckBox(Graphics graphics, int x, int y, int width, int height, ButtonState state)
         {
-            DrawFrameControl(graphics, x, y, width, height, NativeMethods.DFC_BUTTON,
-                             NativeMethods.DFCS_BUTTON3STATE | (int)state, Color.Empty, Color.Empty);
+            DrawFrameControl(graphics, x, y, width, height, User32.DFC.BUTTON, User32.DFCS.BUTTON3STATE | (User32.DFCS)state, Color.Empty, Color.Empty);
         }
 
         /// <summary>
@@ -1952,8 +1966,7 @@ namespace System.Windows.Forms
         /// </summary>
         public static void DrawRadioButton(Graphics graphics, int x, int y, int width, int height, ButtonState state)
         {
-            DrawFrameControl(graphics, x, y, width, height, NativeMethods.DFC_BUTTON,
-                             NativeMethods.DFCS_BUTTONRADIO | ((int)state), Color.Empty, Color.Empty);
+            DrawFrameControl(graphics, x, y, width, height, User32.DFC.BUTTON, User32.DFCS.BUTTONRADIO | (User32.DFCS)state, Color.Empty, Color.Empty);
         }
 
         /// <summary>
@@ -1978,7 +1991,7 @@ namespace System.Windows.Forms
                 graphicsColor = Color.Black;
             }
 
-            IntPtr dc = UnsafeNativeMethods.GetDCEx(new HandleRef(null, UnsafeNativeMethods.GetDesktopWindow()), NativeMethods.NullHandleRef, NativeMethods.DCX_WINDOW | NativeMethods.DCX_LOCKWINDOWUPDATE | NativeMethods.DCX_CACHE);
+            IntPtr dc = User32.GetDCEx(UnsafeNativeMethods.GetDesktopWindow(), IntPtr.Zero, User32.DCX.WINDOW | User32.DCX.LOCKWINDOWUPDATE | User32.DCX.CACHE);
             IntPtr pen;
 
             switch (style)
@@ -1997,7 +2010,7 @@ namespace System.Windows.Forms
             IntPtr oldBrush = Gdi32.SelectObject(dc, Gdi32.GetStockObject(Gdi32.StockObject.HOLLOW_BRUSH));
             IntPtr oldPen = Gdi32.SelectObject(dc, pen);
             Gdi32.SetBkColor(dc, ColorTranslator.ToWin32(graphicsColor));
-            SafeNativeMethods.Rectangle(new HandleRef(null, dc), rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom);
+            Gdi32.Rectangle(dc, rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom);
 
             Gdi32.SetROP2(dc, prevRop2);
             Gdi32.SelectObject(dc, oldBrush);
@@ -2019,15 +2032,15 @@ namespace System.Windows.Forms
         {
             Gdi32.R2 rop2 = (Gdi32.R2)GetColorRop(backColor, (int)Gdi32.R2.NOTXORPEN, (int)Gdi32.R2.XORPEN);
 
-            IntPtr dc = UnsafeNativeMethods.GetDCEx(new HandleRef(null, UnsafeNativeMethods.GetDesktopWindow()), NativeMethods.NullHandleRef, NativeMethods.DCX_WINDOW | NativeMethods.DCX_LOCKWINDOWUPDATE | NativeMethods.DCX_CACHE);
+            IntPtr dc = User32.GetDCEx(UnsafeNativeMethods.GetDesktopWindow(), IntPtr.Zero, User32.DCX.WINDOW | User32.DCX.LOCKWINDOWUPDATE | User32.DCX.CACHE);
             IntPtr pen = Gdi32.CreatePen(Gdi32.PS.SOLID, 1, ColorTranslator.ToWin32(backColor));
 
             Gdi32.R2 prevRop2 = Gdi32.SetROP2(dc, rop2);
             IntPtr oldBrush = Gdi32.SelectObject(dc, Gdi32.GetStockObject(Gdi32.StockObject.HOLLOW_BRUSH));
             IntPtr oldPen = Gdi32.SelectObject(dc, pen);
 
-            SafeNativeMethods.MoveToEx(new HandleRef(null, dc), start.X, start.Y, null);
-            SafeNativeMethods.LineTo(new HandleRef(null, dc), end.X, end.Y);
+            Gdi32.MoveToEx(dc, start.X, start.Y, null);
+            Gdi32.LineTo(dc, end.X, end.Y);
 
             Gdi32.SetROP2(dc, prevRop2);
             Gdi32.SelectObject(dc, oldBrush);
@@ -2049,8 +2062,7 @@ namespace System.Windows.Forms
         /// </summary>
         public static void DrawScrollButton(Graphics graphics, int x, int y, int width, int height, ScrollButton button, ButtonState state)
         {
-            DrawFrameControl(graphics, x, y, width, height, NativeMethods.DFC_SCROLL,
-                             (int)button | (int)state, Color.Empty, Color.Empty);
+            DrawFrameControl(graphics, x, y, width, height, User32.DFC.SCROLL, (User32.DFCS)button | (User32.DFCS)state, Color.Empty, Color.Empty);
         }
 
         /// <summary>
@@ -2210,7 +2222,7 @@ namespace System.Windows.Forms
                                    0x5a0049); // RasterOp.BRUSH.XorWith(RasterOp.TARGET));
             Gdi32.R2 rop2 = Gdi32.R2.NOT;
 
-            IntPtr dc = UnsafeNativeMethods.GetDCEx(new HandleRef(null, UnsafeNativeMethods.GetDesktopWindow()), NativeMethods.NullHandleRef, NativeMethods.DCX_WINDOW | NativeMethods.DCX_LOCKWINDOWUPDATE | NativeMethods.DCX_CACHE);
+            IntPtr dc = User32.GetDCEx(UnsafeNativeMethods.GetDesktopWindow(), IntPtr.Zero, User32.DCX.WINDOW | User32.DCX.LOCKWINDOWUPDATE | User32.DCX.CACHE);
             IntPtr brush = Gdi32.CreateSolidBrush(ColorTranslator.ToWin32(backColor));
 
             Gdi32.R2 prevRop2 = Gdi32.SetROP2(dc, rop2);
@@ -2237,7 +2249,7 @@ namespace System.Windows.Forms
         }
 
         // Returns whether or not target was changed
-        internal static bool FontToIFont(Font source, UnsafeNativeMethods.IFont target)
+        internal static bool FontToIFont(Font source, Ole32.IFont target)
         {
             bool changed = false;
 
@@ -2245,10 +2257,10 @@ namespace System.Windows.Forms
             // it looks like setting them all has different results based on the
             // order and each individual IFont implementor...
             //
-            string fontName = target.GetName();
+            string fontName = target.Name;
             if (!source.Name.Equals(fontName))
             {
-                target.SetName(source.Name);
+                target.Name = source.Name;
                 changed = true;
             }
 
@@ -2262,57 +2274,61 @@ namespace System.Windows.Forms
             // or, worse case, just create another Font object
             // from the handle, but that's pretty heavy...
             //
-            float fontSize = (float)target.GetSize() / 10000;
+            float fontSize = (float)target.Size / 10000;
 
             // size must be in points
             float winformsSize = source.SizeInPoints;
             if (winformsSize != fontSize)
             {
-                target.SetSize((long)(winformsSize * 10000));
+                target.Size = (long)(winformsSize * 10000);
                 changed = true;
             }
 
-            NativeMethods.LOGFONTW logfont = NativeMethods.LOGFONTW.FromFont(source);
+            User32.LOGFONTW logfont = User32.LOGFONTW.FromFont(source);
 
-            short fontWeight = target.GetWeight();
-            if (fontWeight != logfont.lfWeight)
+            short fontWeight = target.Weight;
+            if (fontWeight != (short)logfont.lfWeight)
             {
-                target.SetWeight((short)logfont.lfWeight);
+                target.Weight = (short)logfont.lfWeight;
                 changed = true;
             }
 
-            bool fontBold = target.GetBold();
-            if (fontBold != (logfont.lfWeight >= 700))
+            bool fontBold = target.Bold.IsTrue();
+            bool isBold = logfont.lfWeight >= Gdi32.FW.BOLD;
+            if (fontBold != isBold)
             {
-                target.SetBold(logfont.lfWeight >= 700);
+                target.Bold = isBold.ToBOOL();
                 changed = true;
             }
 
-            bool fontItalic = target.GetItalic();
-            if (fontItalic != (0 != logfont.lfItalic))
+            bool fontItalic = target.Italic.IsTrue();
+            bool isItalic = logfont.lfItalic != 0;
+            if (fontItalic != isItalic)
             {
-                target.SetItalic(0 != logfont.lfItalic);
+                target.Italic = isItalic.ToBOOL();
                 changed = true;
             }
 
-            bool fontUnderline = target.GetUnderline();
-            if (fontUnderline != (0 != logfont.lfUnderline))
+            bool fontUnderline = target.Underline.IsTrue();
+            bool isUnderline = logfont.lfUnderline != 0;
+            if (fontUnderline != isUnderline)
             {
-                target.SetUnderline(0 != logfont.lfUnderline);
+                target.Underline = isUnderline.ToBOOL();
                 changed = true;
             }
 
-            bool fontStrike = target.GetStrikethrough();
-            if (fontStrike != (0 != logfont.lfStrikeOut))
+            bool fontStrike = target.Strikethrough.IsTrue();
+            bool isStrike = logfont.lfStrikeOut != 0;
+            if (fontStrike != isStrike)
             {
-                target.SetStrikethrough(0 != logfont.lfStrikeOut);
+                target.Strikethrough = isStrike.ToBOOL();
                 changed = true;
             }
 
-            short fontCharset = target.GetCharset();
+            short fontCharset = target.Charset;
             if (fontCharset != logfont.lfCharSet)
             {
-                target.SetCharset(logfont.lfCharSet);
+                target.Charset = logfont.lfCharSet;
                 changed = true;
             }
 

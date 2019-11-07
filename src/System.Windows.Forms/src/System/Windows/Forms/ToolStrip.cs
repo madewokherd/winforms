@@ -822,7 +822,7 @@ namespace System.Windows.Forms
                 {
                     CreateParams cp = new CreateParams
                     {
-                        ExStyle = NativeMethods.WS_EX_TOOLWINDOW
+                        ExStyle = (int)User32.WS_EX.TOOLWINDOW
                     };
                     dropDownOwnerWindow.CreateHandle(cp);
                 }
@@ -2057,7 +2057,7 @@ namespace System.Windows.Forms
                 {
                     if (hwndThatLostFocus == IntPtr.Zero)
                     {
-                        SnapFocus(UnsafeNativeMethods.GetFocus());
+                        SnapFocus(User32.GetFocus());
                     }
                     controlHost.Control.Select();
                     controlHost.Control.Focus();
@@ -3079,21 +3079,34 @@ namespace System.Windows.Forms
 
         // This function will print to the PrinterDC. ToolStrip have there own buffered painting and doesnt play very well
         // with the DC translations done by base Control class. Hence we do our own Painting and the BitBLT the DC into the printerDc.
-        internal override void PrintToMetaFileRecursive(HandleRef hDC, IntPtr lParam, Rectangle bounds)
+        private protected override void PrintToMetaFileRecursive(IntPtr hDC, IntPtr lParam, Rectangle bounds)
         {
             using (Bitmap image = new Bitmap(bounds.Width, bounds.Height))
             using (Graphics g = Graphics.FromImage(image))
             {
                 IntPtr imageHdc = g.GetHdc();
-                //send the actual wm_print message
-                UnsafeNativeMethods.SendMessage(new HandleRef(this, Handle), WindowMessages.WM_PRINT, (IntPtr)imageHdc,
-                    (IntPtr)(NativeMethods.PRF_CHILDREN | NativeMethods.PRF_CLIENT | NativeMethods.PRF_ERASEBKGND | NativeMethods.PRF_NONCLIENT));
+                try
+                {
+                    //send the actual wm_print message
+                    UnsafeNativeMethods.SendMessage(new HandleRef(this, Handle), WindowMessages.WM_PRINT, (IntPtr)imageHdc,
+                        (IntPtr)(NativeMethods.PRF_CHILDREN | NativeMethods.PRF_CLIENT | NativeMethods.PRF_ERASEBKGND | NativeMethods.PRF_NONCLIENT));
 
-                //now BLT the result to the destination bitmap.
-                IntPtr desthDC = hDC.Handle;
-                SafeNativeMethods.BitBlt(new HandleRef(this, desthDC), bounds.X, bounds.Y, bounds.Width, bounds.Height,
-                                             new HandleRef(g, imageHdc), 0, 0, NativeMethods.SRCCOPY);
-                g.ReleaseHdcInternal(imageHdc);
+                    // Now BLT the result to the destination bitmap.
+                    Gdi32.BitBlt(
+                        new HandleRef(this, hDC),
+                        bounds.X,
+                        bounds.Y,
+                        bounds.Width,
+                        bounds.Height,
+                        new HandleRef(g, imageHdc),
+                        0,
+                        0,
+                        Gdi32.ROP.SRCCOPY);
+                }
+                finally
+                {
+                    g.ReleaseHdcInternal(imageHdc);
+                }
             }
         }
 
@@ -3617,29 +3630,36 @@ namespace System.Windows.Forms
             }
         }
 
+#if DEBUG
         protected override void OnInvalidated(InvalidateEventArgs e)
         {
             base.OnInvalidated(e);
-#if false
-// DEBUG code which is helpful for FlickerFest debugging.
-            if (FlickerDebug.TraceVerbose) {
+            // Debug code which is helpful for FlickerFest debugging.
+            if (FlickerDebug.TraceVerbose)
+            {
                 string name = this.Name;
-                if (string.IsNullOrEmpty(name)) {
-                    if (IsDropDown) {
+                if (string.IsNullOrEmpty(name))
+                {
+                    if (IsDropDown)
+                    {
                         ToolStripItem item = ((ToolStripDropDown)this).OwnerItem;
-                        if (item != null && item.Name != null) {
+                        if (item != null && item.Name != null)
+                        {
                             name = item.Name = ".DropDown";
                         }
                     }
-                    if (string.IsNullOrEmpty(name)) {
-                        name = this.GetType().Name;
+                    if (string.IsNullOrEmpty(name))
+                    {
+                        name = GetType().Name;
                     }
                 }
+
                 // for debugging VS we want to filter out the propgrid toolstrip
-                Debug.WriteLineIf(!(this.ParentInternal is PropertyGrid), "Invalidate called on: " + name + new StackTrace().ToString());
+                Debug.WriteLineIf(!(ParentInternal is PropertyGrid), "Invalidate called on: " + name + new StackTrace().ToString());
             }
-#endif
         }
+#endif
+
         /// <summary>
         ///  Summary of OnHandleCreated.
         /// </summary>
@@ -3678,7 +3698,9 @@ namespace System.Windows.Forms
                 // it becomes visible.)   We will recalculate this in SetDisplayedItems, but for the moment
                 // if we find an item that ParticipatesInLayout, mark us as having visible items.
                 HasVisibleItems = true;
-            } ((ToolStripItemEventHandler)Events[EventItemAdded])?.Invoke(this, e);
+            }
+            
+            ((ToolStripItemEventHandler)Events[EventItemAdded])?.Invoke(this, e);
         }
 
         /// <summary>
@@ -3795,7 +3817,7 @@ namespace System.Windows.Forms
                     // set capture only when we know we're not on a dropdown (already effectively have capture due to modal menufilter)
                     // and the item in question requires the mouse to be in the same item to be clicked.
                     SetToolStripState(STATE_LASTMOUSEDOWNEDITEMCAPTURE, true);
-                    CaptureInternal = true;
+                    Capture = true;
                 }
                 MenuAutoExpand = true;
 
@@ -4040,7 +4062,7 @@ namespace System.Windows.Forms
 
                                     // PERF - consider - we only actually need to copy the clipping rect.
                                     // copy the background from the toolstrip onto the offscreen bitmap
-                                    SafeNativeMethods.BitBlt(
+                                    Gdi32.BitBlt(
                                         new HandleRef(ItemHdcInfo, itemHDC),
                                         0,
                                         0,
@@ -4049,7 +4071,7 @@ namespace System.Windows.Forms
                                         toolStripHDC,
                                         item.Bounds.X,
                                         item.Bounds.Y,
-                                        NativeMethods.SRCCOPY);
+                                        Gdi32.ROP.SRCCOPY);
 
                                     // paint the item into the offscreen bitmap
                                     using (PaintEventArgs itemPaintEventArgs = new PaintEventArgs(itemGraphics, clippingRect))
@@ -4058,7 +4080,7 @@ namespace System.Windows.Forms
                                     }
 
                                     // copy the item back onto the toolstrip
-                                    SafeNativeMethods.BitBlt(
+                                    Gdi32.BitBlt(
                                         toolStripHDC,
                                         item.Bounds.X,
                                         item.Bounds.Y,
@@ -4067,7 +4089,7 @@ namespace System.Windows.Forms
                                         new HandleRef(ItemHdcInfo, itemHDC),
                                         0,
                                         0,
-                                        NativeMethods.SRCCOPY);
+                                        Gdi32.ROP.SRCCOPY);
 
                                     GC.KeepAlive(ItemHdcInfo);
                                 }
@@ -4493,7 +4515,7 @@ namespace System.Windows.Forms
             if (!focusSuccess)
             {
                 // clear out the focus, we have focus, we're not supposed to anymore.
-                UnsafeNativeMethods.SetFocus(NativeMethods.NullHandleRef);
+                User32.SetFocus(IntPtr.Zero);
             }
         }
 
@@ -4937,27 +4959,19 @@ namespace System.Windows.Forms
                     // otherwise we'd unexpectedly change selection to whatever the cursor was over at this moment.
                     SnapMouseLocation();
 
-                    // start auto expanding for keyboard and mouse.
-                    // MenuAutoExpand = true;
-
-                    HandleRef thisHandle = new HandleRef(this, Handle);
-                    HandleRef otherHandle = new HandleRef(null, otherHwnd);
-
                     // make sure the otherHandle is not a child of thisHandle
-                    if ((thisHandle.Handle != otherHandle.Handle) &&
-                        !UnsafeNativeMethods.IsChild(thisHandle, otherHandle))
+                    if ((Handle != otherHwnd) && !User32.IsChild(new HandleRef(this, Handle), otherHwnd).IsTrue())
                     {
-
                         // make sure the root window of the otherHwnd is the same as
                         // the root window of thisHwnd.
                         HandleRef thisHwndRoot = WindowsFormsUtils.GetRootHWnd(this);
-                        HandleRef otherHwndRoot = WindowsFormsUtils.GetRootHWnd(otherHandle);
+                        HandleRef otherHwndRoot = WindowsFormsUtils.GetRootHWnd(new HandleRef(null, otherHwnd));
 
                         if (thisHwndRoot.Handle == otherHwndRoot.Handle && (thisHwndRoot.Handle != IntPtr.Zero))
                         {
-                            Debug.WriteLineIf(SnapFocusDebug.TraceVerbose, "[ToolStrip SnapFocus]: Caching for return focus:" + WindowsFormsUtils.GetControlInformation(otherHandle.Handle));
+                            Debug.WriteLineIf(SnapFocusDebug.TraceVerbose, "[ToolStrip SnapFocus]: Caching for return focus:" + WindowsFormsUtils.GetControlInformation(otherHwnd));
                             // we know we're in the same window heirarchy.
-                            hwndThatLostFocus = otherHandle.Handle;
+                            hwndThatLostFocus = otherHwnd;
                         }
                     }
                 }
@@ -5151,7 +5165,7 @@ namespace System.Windows.Forms
                         {
 
                             // snap the active window and compare to our root window.
-                            IntPtr hwndActive = UnsafeNativeMethods.GetActiveWindow();
+                            IntPtr hwndActive = User32.GetActiveWindow();
                             if (hwndActive != rootHwnd.Handle)
                             {
                                 // Activate the window, and discard the mouse message.
@@ -5166,7 +5180,7 @@ namespace System.Windows.Forms
                 {
                     // we're setting focus to a child control - remember who gave it to us
                     // so we can restore it on ESC.
-                    SnapFocus(UnsafeNativeMethods.GetFocus());
+                    SnapFocus(User32.GetFocus());
                     if (!IsDropDown && !TabStop)
                     {
                         Debug.WriteLineIf(SnapFocusDebug.TraceVerbose, "Installing restoreFocusFilter");
@@ -5583,11 +5597,11 @@ namespace System.Windows.Forms
                 return base.FragmentNavigate(direction);
             }
 
-            internal override object GetPropertyValue(int propertyID)
+            internal override object GetPropertyValue(UiaCore.UIA propertyID)
             {
-                if (propertyID == NativeMethods.UIA_ControlTypePropertyId)
+                if (propertyID == UiaCore.UIA.ControlTypePropertyId)
                 {
-                    return NativeMethods.UIA_ToolBarControlTypeId;
+                    return UiaCore.UIA.ToolBarControlTypeId;
                 }
 
                 return base.GetPropertyValue(propertyID);
@@ -5615,7 +5629,7 @@ namespace System.Windows.Forms
 
         // When we click somewhere outside of the toolstrip it should be as if we hit esc.
 
-        internal class RestoreFocusMessageFilter : IMessageFilter
+        internal sealed class RestoreFocusMessageFilter : IMessageFilter
         {
             private readonly ToolStrip ownerToolStrip;
 
@@ -5635,7 +5649,6 @@ namespace System.Windows.Forms
 
                 switch (m.Msg)
                 {
-
                     case WindowMessages.WM_LBUTTONDOWN:
                     case WindowMessages.WM_RBUTTONDOWN:
                     case WindowMessages.WM_MBUTTONDOWN:
@@ -5646,10 +5659,10 @@ namespace System.Windows.Forms
                         {
                             // if we've clicked on something that's not a child of the toolstrip and we
                             // currently have focus, restore it.
-                            if (!UnsafeNativeMethods.IsChild(new HandleRef(this, ownerToolStrip.Handle), new HandleRef(this, m.HWnd)))
+                            if (!User32.IsChild(new HandleRef(ownerToolStrip, ownerToolStrip.Handle), m.HWnd).IsTrue())
                             {
                                 HandleRef rootHwnd = WindowsFormsUtils.GetRootHWnd(ownerToolStrip);
-                                if (rootHwnd.Handle == m.HWnd || UnsafeNativeMethods.IsChild(rootHwnd, new HandleRef(this, m.HWnd)))
+                                if (rootHwnd.Handle == m.HWnd || User32.IsChild(rootHwnd, m.HWnd).IsTrue())
                                 {
                                     // Only RestoreFocus if the hwnd is a child of the root window and isnt on the toolstrip.
                                     RestoreFocusInternal();
@@ -5716,7 +5729,7 @@ namespace System.Windows.Forms
                 }
 
                 // create compatible bitmap with the correct size.
-                _cachedItemBitmap = SafeNativeMethods.CreateCompatibleBitmap(toolStripHDC, bitmapSize.Width, bitmapSize.Height);
+                _cachedItemBitmap = Gdi32.CreateCompatibleBitmap(toolStripHDC, bitmapSize.Width, bitmapSize.Height);
                 IntPtr oldBitmap = Gdi32.SelectObject(_cachedItemHDC, _cachedItemBitmap);
 
                 // delete the old bitmap

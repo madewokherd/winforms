@@ -1282,7 +1282,9 @@ namespace System.Windows.Forms
                             // or Guid.Emtpy, assume the classes are different.
                             //
                             if (classesSame &&
+#pragma warning disable SA1408 // Conditional expressions should declare precedence
                                 (oldType != newType || oldType.IsCOMObject && newType.IsCOMObject))
+#pragma warning restore SA1408 // Conditional expressions should declare precedence
                             {
                                 classesSame = false;
                             }
@@ -3330,22 +3332,21 @@ namespace System.Windows.Forms
             }
         }
 
-        //
         protected override void OnMouseDown(MouseEventArgs me)
         {
             SnappableControl target = DividerInside(me.X, me.Y);
             if (target != null && me.Button == MouseButtons.Left)
             {
-                // capture mouse.
-                CaptureInternal = true;
+                // Capture the mouse.
+                Capture = true;
                 targetMove = target;
                 dividerMoveY = me.Y;
                 DividerDraw(dividerMoveY);
             }
+
             base.OnMouseDown(me);
         }
 
-        //
         protected override void OnMouseMove(MouseEventArgs me)
         {
             if (dividerMoveY == -1)
@@ -3369,10 +3370,10 @@ namespace System.Windows.Forms
                 dividerMoveY = yNew;
                 DividerDraw(dividerMoveY);
             }
+
             base.OnMouseMove(me);
         }
 
-        //
         protected override void OnMouseUp(MouseEventArgs me)
         {
             if (dividerMoveY == -1)
@@ -3402,8 +3403,8 @@ namespace System.Windows.Forms
                 gridView.Invalidate(new Rectangle(0, gridView.Size.Height - cyDivider, Size.Width, cyDivider));
             }
 
-            // end the move
-            CaptureInternal = false;
+            // End the move
+            Capture = false;
             dividerMoveY = -1;
             targetMove = null;
             base.OnMouseUp(me);
@@ -3617,7 +3618,7 @@ namespace System.Windows.Forms
                 for (int i = 0; i < currentObjects.Length; i++)
                 {
                     Type typeChanged = e.TypeChanged;
-                    if (currentObjects[i] == e.ComponentChanged || typeChanged != null && typeChanged.IsAssignableFrom(currentObjects[i].GetType()))
+                    if (currentObjects[i] == e.ComponentChanged || typeChanged?.IsAssignableFrom(currentObjects[i].GetType()) == true)
                     {
                         // clear our property hashes
                         ClearCachedProps();
@@ -3997,10 +3998,10 @@ namespace System.Windows.Forms
                             // if we're not hosted in a windows forms thing, just give the parent the focus
                             if (!result && Parent == null)
                             {
-                                IntPtr hWndParent = UnsafeNativeMethods.GetParent(new HandleRef(this, Handle));
+                                IntPtr hWndParent = User32.GetParent(this);
                                 if (hWndParent != IntPtr.Zero)
                                 {
-                                    UnsafeNativeMethods.SetFocus(new HandleRef(null, hWndParent));
+                                    User32.SetFocus(hWndParent);
                                 }
                             }
                             return result;
@@ -4931,7 +4932,7 @@ namespace System.Windows.Forms
             {
                 // convert the coordinates to
                 var temp = new Point(me.X, me.Y);
-                UnsafeNativeMethods.MapWindowPoints(new HandleRef(child, child.Handle), new HandleRef(this, Handle), ref temp, 1);
+                User32.MapWindowPoints(new HandleRef(child, child.Handle), new HandleRef(this, Handle), ref temp, 1);
 
                 // forward the message
                 pt = temp;
@@ -6027,13 +6028,13 @@ namespace System.Windows.Forms
         /// </summary>
         /// <param name="propertyId">Identifier indicating the property to return</param>
         /// <returns>Returns a ValInfo indicating whether the element supports this property, or has no value for it.</returns>
-        internal override object GetPropertyValue(int propertyID)
+        internal override object GetPropertyValue(UiaCore.UIA propertyID)
         {
-            if (propertyID == NativeMethods.UIA_ControlTypePropertyId)
+            if (propertyID == UiaCore.UIA.ControlTypePropertyId)
             {
-                return NativeMethods.UIA_ToolBarControlTypeId;
+                return UiaCore.UIA.ToolBarControlTypeId;
             }
-            else if (propertyID == NativeMethods.UIA_NamePropertyId)
+            else if (propertyID == UiaCore.UIA.NamePropertyId)
             {
                 return Name;
             }

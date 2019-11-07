@@ -826,7 +826,7 @@ namespace System.Windows.Forms
             private DeviceContext _mirrordc;
             private Size _mirrordcExtent;
             private Point _mirrordcOrigin;
-            private DeviceContextMapMode _mirrordcMode = DeviceContextMapMode.Text;
+            private Gdi32.MM _mirrordcMode = Gdi32.MM.TEXT;
 
             /// <summary>
             ///  Construct an error window for this provider and control parent.
@@ -873,8 +873,8 @@ namespace System.Windows.Forms
                     CreateParams cparams = new CreateParams
                     {
                         Caption = string.Empty,
-                        Style = NativeMethods.WS_VISIBLE | NativeMethods.WS_CHILD,
-                        ClassStyle = (int)NativeMethods.ClassStyle.CS_DBLCLKS,
+                        Style = (int)(User32.WS.VISIBLE | User32.WS.CHILD),
+                        ClassStyle = (int)User32.CS.DBLCLKS,
                         X = 0,
                         Y = 0,
                         Width = 0,
@@ -884,12 +884,12 @@ namespace System.Windows.Forms
 
                     CreateHandle(cparams);
 
-                    NativeMethods.INITCOMMONCONTROLSEX icc = new NativeMethods.INITCOMMONCONTROLSEX
+                    var icc = new ComCtl32.INITCOMMONCONTROLSEX
                     {
-                        dwICC = NativeMethods.ICC_TAB_CLASSES
+                        dwICC = ComCtl32.ICC.TAB_CLASSES
                     };
-                    icc.dwSize = Marshal.SizeOf(icc);
-                    SafeNativeMethods.InitCommonControlsEx(icc);
+                    ComCtl32.InitCommonControlsEx(ref icc);
+
                     cparams = new CreateParams
                     {
                         Parent = Handle,
@@ -963,7 +963,7 @@ namespace System.Windows.Forms
                     _mirrordcExtent = _mirrordc.ViewportExtent;
                     _mirrordcOrigin = _mirrordc.ViewportOrigin;
 
-                    _mirrordcMode = _mirrordc.SetMapMode(DeviceContextMapMode.Anisotropic);
+                    _mirrordcMode = _mirrordc.SetMapMode(Gdi32.MM.ANISOTROPIC);
                     _mirrordc.ViewportExtent = new Size(-(_mirrordcExtent.Width), _mirrordcExtent.Height);
                     _mirrordc.ViewportOrigin = new Point(_mirrordcOrigin.X + originOffset, _mirrordcOrigin.Y);
                 }
@@ -983,7 +983,7 @@ namespace System.Windows.Forms
                 _mirrordc = null;
                 _mirrordcExtent = Size.Empty;
                 _mirrordcOrigin = Point.Empty;
-                _mirrordcMode = DeviceContextMapMode.Text;
+                _mirrordcMode = Gdi32.MM.TEXT;
             }
 
             /// <summary>

@@ -286,7 +286,7 @@ namespace System.Windows.Forms.Tests
         public static IEnumerable<object[]> InvalidColor_TestData()
         {
             yield return new object[] { Color.Empty };
-            yield return new object[] { Color.FromArgb(244, 1, 2, 3) };
+            yield return new object[] { Color.FromArgb(254, 1, 2, 3) };
         }
 
         [Theory]
@@ -602,6 +602,8 @@ namespace System.Windows.Forms.Tests
         public static IEnumerable<object[]> ForeColor_Set_TestData()
         {
             yield return new object[] { Color.FromArgb(254, 1, 2, 3) };
+            yield return new object[] { Color.White };
+            yield return new object[] { Color.Black };
             yield return new object[] { Color.Red };
         }
 

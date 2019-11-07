@@ -594,14 +594,14 @@ namespace System.Windows.Forms
                     return VisualStyleState.NoneEnabled;
                 }
 
-                VisualStyleState vState = (VisualStyleState)SafeNativeMethods.GetThemeAppProperties();
+                VisualStyleState vState = (VisualStyleState)UxTheme.GetThemeAppProperties();
                 return vState;
             }
             set
             {
                 if (VisualStyleInformation.IsSupportedByOS)
                 {
-                    SafeNativeMethods.SetThemeAppProperties((int)value);
+                    UxTheme.SetThemeAppProperties((UxTheme.STAP)value);
 
                     // 248887 we need to send a WM_THEMECHANGED to the top level windows of this application.
                     // We do it this way to ensure that we get all top level windows -- whether we created them or not.
@@ -1073,7 +1073,7 @@ namespace System.Windows.Forms
         internal static void ParkHandle(HandleRef handle, DpiAwarenessContext dpiAwarenessContext = DpiAwarenessContext.DPI_AWARENESS_CONTEXT_UNSPECIFIED)
         {
             Debug.Assert(UnsafeNativeMethods.IsWindow(handle), "Handle being parked is not a valid window handle");
-            Debug.Assert(((int)UnsafeNativeMethods.GetWindowLong(handle, NativeMethods.GWL_STYLE) & NativeMethods.WS_CHILD) != 0, "Only WS_CHILD windows should be parked.");
+            Debug.Assert(((int)UnsafeNativeMethods.GetWindowLong(handle, NativeMethods.GWL_STYLE) & (int)User32.WS.CHILD) != 0, "Only WS_CHILD windows should be parked.");
 
             ThreadContext cxt = GetContextForHandle(handle);
             if (cxt != null)
@@ -1241,7 +1241,7 @@ namespace System.Windows.Forms
         ///  Returns true if the call succeeded, else false.
         /// </summary>
         public static bool SetSuspendState(PowerState state, bool force, bool disableWakeEvent)
-            => UnsafeNativeMethods.SetSuspendState(state == PowerState.Hibernate, force, disableWakeEvent);
+            => Powrprof.SetSuspendState((state == PowerState.Hibernate).ToBOOLEAN(), force.ToBOOLEAN(), disableWakeEvent.ToBOOLEAN()).IsTrue();
 
         /// <summary>
         ///  Overload version of SetUnhandledExceptionMode that sets the UnhandledExceptionMode

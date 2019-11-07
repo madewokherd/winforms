@@ -580,7 +580,7 @@ namespace System.Windows.Forms
                         var r = new RECT();
                         User32.GetCursorPos(out Point p);
                         UnsafeNativeMethods.GetWindowRect(new HandleRef(this, Handle), ref r);
-                        if ((r.left <= p.X && p.X < r.right && r.top <= p.Y && p.Y < r.bottom) || UnsafeNativeMethods.GetCapture() == Handle)
+                        if ((r.left <= p.X && p.X < r.right && r.top <= p.Y && p.Y < r.bottom) || User32.GetCapture() == Handle)
                         {
                             SendMessage(WindowMessages.WM_SETCURSOR, Handle, NativeMethods.HTCLIENT);
                         }
@@ -1131,9 +1131,8 @@ namespace System.Windows.Forms
                     return;
                 }
                 //valid Keys that move the splitter...
-                if (e.KeyData == Keys.Right || e.KeyData == Keys.Down ||
-                    e.KeyData == Keys.Left || e.KeyData == Keys.Up
-                    && splitterFocused)
+                if (splitterFocused &&
+                    (e.KeyData == Keys.Right || e.KeyData == Keys.Down || e.KeyData == Keys.Left || e.KeyData == Keys.Up))
                 {
                     if (splitBegin)
                     {
@@ -1141,13 +1140,13 @@ namespace System.Windows.Forms
                     }
 
                     //left OR up
-                    if (e.KeyData == Keys.Left || e.KeyData == Keys.Up && splitterFocused)
+                    if (splitterFocused && (e.KeyData == Keys.Left || e.KeyData == Keys.Up))
                     {
                         splitterDistance -= SplitterIncrement;
                         splitterDistance = (splitterDistance < Panel1MinSize) ? splitterDistance + SplitterIncrement : Math.Max(splitterDistance, BORDERSIZE);
                     }
                     //right OR down
-                    if (e.KeyData == Keys.Right || e.KeyData == Keys.Down && splitterFocused)
+                    if (splitterFocused && (e.KeyData == Keys.Right || e.KeyData == Keys.Down))
                     {
                         splitterDistance += SplitterIncrement;
                         if (Orientation == Orientation.Vertical)
@@ -1198,9 +1197,8 @@ namespace System.Windows.Forms
             base.OnKeyUp(e);
             if (splitBegin && IsSplitterMovable)
             {
-                if (e.KeyData == Keys.Right || e.KeyData == Keys.Down ||
-                    e.KeyData == Keys.Left || e.KeyData == Keys.Up
-                    && splitterFocused)
+                if (splitterFocused &&
+                    (e.KeyData == Keys.Right || e.KeyData == Keys.Down || e.KeyData == Keys.Left || e.KeyData == Keys.Up))
                 {
                     DrawSplitBar(DRAW_END);
                     ApplySplitterDistance();
@@ -1373,7 +1371,7 @@ namespace System.Windows.Forms
             }
             if (!IsSplitterFixed && IsSplitterMovable && splitterClick)
             {
-                CaptureInternal = false;
+                Capture = false;
 
                 if (splitterDrag)
                 {
@@ -1678,14 +1676,13 @@ namespace System.Windows.Forms
         private void DrawSplitHelper(int splitSize)
         {
             Rectangle r = CalcSplitLine(splitSize, 3);
-            IntPtr parentHandle = Handle;
-            IntPtr dc = UnsafeNativeMethods.GetDCEx(new HandleRef(this, parentHandle), NativeMethods.NullHandleRef, NativeMethods.DCX_CACHE | NativeMethods.DCX_LOCKWINDOWUPDATE);
+            IntPtr dc = User32.GetDCEx(this, IntPtr.Zero, User32.DCX.CACHE | User32.DCX.LOCKWINDOWUPDATE);
             IntPtr halftone = ControlPaint.CreateHalftoneHBRUSH();
             IntPtr saveBrush = Gdi32.SelectObject(dc, halftone);
             SafeNativeMethods.PatBlt(new HandleRef(this, dc), r.X, r.Y, r.Width, r.Height, NativeMethods.PATINVERT);
             Gdi32.SelectObject(dc, saveBrush);
             Gdi32.DeleteObject(halftone);
-            User32.ReleaseDC(new HandleRef(this, parentHandle), dc);
+            User32.ReleaseDC(new HandleRef(this, Handle), dc);
         }
 
         /// <summary>
@@ -2015,7 +2012,9 @@ namespace System.Windows.Forms
         private bool SelectNextControlInContainer(Control ctl, bool forward, bool tabStopOnly,
                                       bool nested, bool wrap)
         {
+#pragma warning disable SA1408 // Conditional expressions should declare precedence
             if (!Contains(ctl) || !nested && ctl.ParentInternal != this)
+#pragma warning restore SA1408 // Conditional expressions should declare precedence
             {
                 ctl = null;
             }
@@ -2111,7 +2110,9 @@ namespace System.Windows.Forms
         private bool SelectNextControlInPanel(Control ctl, bool forward, bool tabStopOnly,
                                       bool nested, bool wrap)
         {
+#pragma warning disable SA1408 // Conditional expressions should declare precedence
             if (!Contains(ctl) || !nested && ctl.ParentInternal != this)
+#pragma warning restore SA1408 // Conditional expressions should declare precedence
             {
                 ctl = null;
             }
@@ -2277,7 +2278,7 @@ namespace System.Windows.Forms
             }
             Application.AddMessageFilter(splitContainerMessageFilter);
 
-            CaptureInternal = true;
+            Capture = true;
             DrawSplitBar(DRAW_START);
         }
 

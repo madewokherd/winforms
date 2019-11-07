@@ -294,7 +294,7 @@ namespace System.Windows.Forms
             if (window is Control windowControl &&
                 (windowControl.ShowParams & (User32.SW)0xF) != User32.SW.SHOWNOACTIVATE)
             {
-                IntPtr hWnd = UnsafeNativeMethods.GetActiveWindow();
+                IntPtr hWnd = User32.GetActiveWindow();
                 IntPtr rootHwnd = UnsafeNativeMethods.GetAncestor(new HandleRef(window, window.Handle), NativeMethods.GA_ROOT);
                 if (hWnd != rootHwnd)
                 {
@@ -736,11 +736,11 @@ namespace System.Windows.Forms
             try
             {
 
-                var icc = new NativeMethods.INITCOMMONCONTROLSEX
+                var icc = new ComCtl32.INITCOMMONCONTROLSEX
                 {
-                    dwICC = NativeMethods.ICC_TAB_CLASSES
+                    dwICC = ComCtl32.ICC.TAB_CLASSES
                 };
-                SafeNativeMethods.InitCommonControlsEx(icc);
+                ComCtl32.InitCommonControlsEx(ref icc);
 
                 CreateParams cp = CreateParams; // Avoid reentrant call to CreateHandle
                 if (GetHandleCreated())
@@ -764,7 +764,7 @@ namespace System.Windows.Forms
             if (OwnerDraw)
             {
                 int style = unchecked((int)((long)UnsafeNativeMethods.GetWindowLong(new HandleRef(this, Handle), NativeMethods.GWL_STYLE)));
-                style &= ~NativeMethods.WS_BORDER;
+                style &= ~(int)User32.WS.BORDER;
                 UnsafeNativeMethods.SetWindowLong(new HandleRef(this, Handle), NativeMethods.GWL_STYLE, new HandleRef(null, (IntPtr)style));
             }
 
@@ -1008,7 +1008,7 @@ namespace System.Windows.Forms
             if (TopLevelControl?.RightToLeft == RightToLeft.Yes)
             {
                 bool isWindowMirrored = ((unchecked((int)(long)UnsafeNativeMethods.GetWindowLong(
-                    new HandleRef(this, Control.GetSafeHandle(hWnd)), NativeMethods.GWL_STYLE)) & NativeMethods.WS_EX_LAYOUTRTL) == NativeMethods.WS_EX_LAYOUTRTL);
+                    new HandleRef(this, Control.GetSafeHandle(hWnd)), NativeMethods.GWL_STYLE)) & (int)User32.WS_EX.LAYOUTRTL) == (int)User32.WS_EX.LAYOUTRTL);
 
                 // Indicates that the ToolTip text will be displayed in the opposite direction
                 // to the text in the parent window.
