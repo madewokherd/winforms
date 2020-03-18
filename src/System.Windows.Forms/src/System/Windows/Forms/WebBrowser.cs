@@ -320,12 +320,13 @@ namespace System.Windows.Forms
         {
             get
             {
-                Stream stream = DocumentStream;
+                using Stream stream = DocumentStream;
                 if (stream == null)
                 {
-                    return "";
+                    return string.Empty;
                 }
-                StreamReader reader = new StreamReader(stream);
+
+                using var reader = new StreamReader(stream);
                 stream.Position = 0;
                 return reader.ReadToEnd();
             }
@@ -493,14 +494,12 @@ namespace System.Windows.Forms
             {
                 if (value != null)
                 {
-                    Type t = value.GetType();
-#if Marshal_IsTypeVisibleFromCom
-                    if (!Marshal.IsTypeVisibleFromCom(t))
+                    if (!Marshal.IsTypeVisibleFromCom(value.GetType()))
                     {
-                        throw new ArgumentException(SR.WebBrowserObjectForScriptingComVisibleOnly);
+                        throw new ArgumentException(SR.WebBrowserObjectForScriptingComVisibleOnly, nameof(value));
                     }
-#endif
                 }
+
                 objectForScripting = value;
             }
         }
@@ -642,12 +641,8 @@ namespace System.Windows.Forms
             {
                 AxIWebBrowser2.GoBack();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
             {
-                if (ClientUtils.IsSecurityOrCriticalException(ex))
-                {
-                    throw;
-                }
                 retVal = false;
             }
             return retVal;
@@ -666,12 +661,8 @@ namespace System.Windows.Forms
             {
                 AxIWebBrowser2.GoForward();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
             {
-                if (ClientUtils.IsSecurityOrCriticalException(ex))
-                {
-                    throw;
-                }
                 retVal = false;
             }
             return retVal;
@@ -781,7 +772,13 @@ namespace System.Windows.Forms
         /// </summary>
         public void Print()
         {
-            AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PRINT, Ole32.OLECMDEXECOPT.DONTPROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            try
+            {
+                AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PRINT, Ole32.OLECMDEXECOPT.DONTPROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            }
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
+            {
+            }
         }
 
         /// <summary>
@@ -802,12 +799,8 @@ namespace System.Windows.Forms
                     AxIWebBrowser2.Refresh();
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
             {
-                if (ClientUtils.IsSecurityOrCriticalException(ex))
-                {
-                    throw;
-                }
             }
         }
 
@@ -832,12 +825,8 @@ namespace System.Windows.Forms
                     AxIWebBrowser2.Refresh2(ref level);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
             {
-                if (ClientUtils.IsSecurityOrCriticalException(ex))
-                {
-                    throw;
-                }
             }
         }
 
@@ -868,7 +857,13 @@ namespace System.Windows.Forms
         /// </summary>
         public void ShowPageSetupDialog()
         {
-            AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PAGESETUP, Ole32.OLECMDEXECOPT.PROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            try
+            {
+                AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PAGESETUP, Ole32.OLECMDEXECOPT.PROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            }
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
+            {
+            }
         }
 
         /// <summary>
@@ -877,7 +872,13 @@ namespace System.Windows.Forms
         /// </summary>
         public void ShowPrintDialog()
         {
-            AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PRINT, Ole32.OLECMDEXECOPT.PROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            try
+            {
+                AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PRINT, Ole32.OLECMDEXECOPT.PROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            }
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
+            {
+            }
         }
 
         /// <summary>
@@ -885,7 +886,13 @@ namespace System.Windows.Forms
         /// </summary>
         public void ShowPrintPreviewDialog()
         {
-            AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PRINTPREVIEW, Ole32.OLECMDEXECOPT.PROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            try
+            {
+                AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PRINTPREVIEW, Ole32.OLECMDEXECOPT.PROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            }
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
+            {
+            }
         }
 
         /// <summary>
@@ -894,7 +901,13 @@ namespace System.Windows.Forms
         /// </summary>
         public void ShowPropertiesDialog()
         {
-            AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PROPERTIES, Ole32.OLECMDEXECOPT.PROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            try
+            {
+                AxIWebBrowser2.ExecWB(Ole32.OLECMDID.PROPERTIES, Ole32.OLECMDEXECOPT.PROMPTUSER, IntPtr.Zero, IntPtr.Zero);
+            }
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
+            {
+            }
         }
 
         /// <summary>
@@ -903,7 +916,13 @@ namespace System.Windows.Forms
         /// </summary>
         public void ShowSaveAsDialog()
         {
-            AxIWebBrowser2.ExecWB(Ole32.OLECMDID.SAVEAS, Ole32.OLECMDEXECOPT.DODEFAULT, IntPtr.Zero, IntPtr.Zero);
+            try
+            {
+                AxIWebBrowser2.ExecWB(Ole32.OLECMDID.SAVEAS, Ole32.OLECMDEXECOPT.DODEFAULT, IntPtr.Zero, IntPtr.Zero);
+            }
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
+            {
+            }
         }
 
         /// <summary>
@@ -915,12 +934,8 @@ namespace System.Windows.Forms
             {
                 AxIWebBrowser2.Stop();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!ClientUtils.IsSecurityOrCriticalException(ex))
             {
-                if (ClientUtils.IsSecurityOrCriticalException(ex))
-                {
-                    throw;
-                }
             }
         }
 
