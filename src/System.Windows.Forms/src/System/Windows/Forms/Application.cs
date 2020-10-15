@@ -561,6 +561,17 @@ namespace System.Windows.Forms {
             }
         }
 
+		private static string RemoveTrailingDirectorySeparator(string path)
+		{
+			while (path.Length != 0 &&
+					(path[path.Length-1] == Path.DirectorySeparatorChar ||
+					 path[path.Length-1] == Path.AltDirectorySeparatorChar))
+			{
+				path = path.Substring(0, path.Length - 1);
+			}
+			return path;
+		}
+
         /// <summary>
         ///    <para>
         ///       Gets the
@@ -575,7 +586,7 @@ namespace System.Windows.Forms {
                 if (startupPath == null) {
                     // StringBuilder sb = UnsafeNativeMethods.GetModuleFileNameLongPath(NativeMethods.NullHandleRef);
                     // startupPath = Path.GetDirectoryName(sb.ToString());
-                    startupPath = AppContext.BaseDirectory;
+                    startupPath = RemoveTrailingDirectorySeparator(AppContext.BaseDirectory);
                 }
                 return startupPath;
             }
