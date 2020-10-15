@@ -29,7 +29,7 @@ namespace System.Resources {
             SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")  // Shipped like this in Everett.
         ]
         public ResXResourceSet(string fileName) : base(new ResXResourceReader(fileName)) {
-            ReadResources();
+            // ReadResources();
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace System.Resources {
             SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")  // Shipped like this in Everett.
         ]
         public ResXResourceSet(Stream stream) : base(new ResXResourceReader(stream)) {
-            ReadResources();
+            // ReadResources();
         }
 
         /// <summary>
