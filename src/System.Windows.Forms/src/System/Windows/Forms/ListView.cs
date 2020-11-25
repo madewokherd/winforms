@@ -4752,6 +4752,7 @@ namespace System.Windows.Forms {
             if (IsHandleCreated && listItemSorter != null) {
                 NativeMethods.ListViewCompareCallback callback = new NativeMethods.ListViewCompareCallback(this.CompareFunc);
                 UnsafeNativeMethods.SendMessage(new HandleRef(this, Handle), NativeMethods.LVM_SORTITEMS, IntPtr.Zero, callback);
+                GC.KeepAlive(callback);
             }
         }
 
