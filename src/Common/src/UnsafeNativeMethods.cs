@@ -2325,13 +2325,13 @@ namespace System.Windows.Forms {
             [DispId(272)] void PrivacyImpactedStateChange([In] bool bImpacted);
         }
 
-        [ComVisible(true), Guid("626FC520-A41E-11cf-A731-00A0C9082637"),
+        [ComVisible(true), ComImport(), Guid("626FC520-A41E-11cf-A731-00A0C9082637"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLDocument {
             [return: MarshalAs(UnmanagedType.IDispatch)] object GetScript();
         }
         
-        [ComVisible(true), Guid("332C4425-26CB-11D0-B483-00C04FD90119"),
+        [ComVisible(true), ComImport(), Guid("332C4425-26CB-11D0-B483-00C04FD90119"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLDocument2 {
             [return: MarshalAs(UnmanagedType.IDispatch)] object GetScript();
@@ -2447,7 +2447,7 @@ namespace System.Windows.Forms {
             [return: MarshalAs(UnmanagedType.Interface)] object CreateStyleSheet(string bstrHref,int lIndex);
         }
 
-        [ComVisible(true), Guid("3050F485-98B5-11CF-BB82-00AA00BDCE0B"),
+        [ComVisible(true), ComImport(), Guid("3050F485-98B5-11CF-BB82-00AA00BDCE0B"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLDocument3 {
             void ReleaseCapture();
@@ -2493,7 +2493,7 @@ namespace System.Windows.Forms {
             [return: MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IHTMLElementCollection GetElementsByTagName([In] string v);
         }
 
-        [ComVisible(true), Guid("3050F69A-98B5-11CF-BB82-00AA00BDCE0B"),
+        [ComVisible(true), ComImport(), Guid("3050F69A-98B5-11CF-BB82-00AA00BDCE0B"),
         InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLDocument4 {
             void Focus();
@@ -2558,14 +2558,14 @@ namespace System.Windows.Forms {
         }
 
 
-        [ComVisible(true), Guid("332C4426-26CB-11D0-B483-00C04FD90119"),
+        [ComVisible(true), ComImport(), Guid("332C4426-26CB-11D0-B483-00C04FD90119"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLFramesCollection2 {
             object Item(ref object idOrName);
             int GetLength();
         }
 
-        [ComVisible(true), Guid("332C4427-26CB-11D0-B483-00C04FD90119"),
+        [ComVisible(true), ComImport(), Guid("332C4427-26CB-11D0-B483-00C04FD90119"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         public interface IHTMLWindow2 {
             [return: MarshalAs(UnmanagedType.IDispatch)] object Item([In] ref object pvarIndex);
@@ -2640,7 +2640,7 @@ namespace System.Windows.Forms {
             object GetExternal();
         }
 
-        [ComVisible(true), Guid("3050f4ae-98b5-11cf-bb82-00aa00bdce0b"),
+        [ComVisible(true), ComImport(), Guid("3050f4ae-98b5-11cf-bb82-00aa00bdce0b"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         public interface IHTMLWindow3 {
             int GetScreenLeft();
@@ -2658,7 +2658,7 @@ namespace System.Windows.Forms {
             object ShowModelessDialog(string url, object varArgIn, object options);
         }
         
-        [ComVisible(true), Guid("3050f6cf-98b5-11cf-bb82-00aa00bdce0b"),
+        [ComVisible(true), ComImport(), Guid("3050f6cf-98b5-11cf-bb82-00aa00bdce0b"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         public interface IHTMLWindow4 {
             [return: MarshalAs(UnmanagedType.IDispatch)] object CreatePopup([In] ref object reserved);
@@ -2684,7 +2684,7 @@ namespace System.Windows.Forms {
         }
 
 
-        [ComVisible(true), Guid("3050f666-98b5-11cf-bb82-00aa00bdce0b"),
+        [ComVisible(true), ComImport(), Guid("3050f666-98b5-11cf-bb82-00aa00bdce0b"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         public interface IHTMLPopup {
             void show(int x, int y, int w, int h, ref object element);
@@ -2693,7 +2693,7 @@ namespace System.Windows.Forms {
             bool IsOpen();
         }
         
-        [ComVisible(true), Guid("3050f35c-98b5-11cf-bb82-00aa00bdce0b"),
+        [ComVisible(true), ComImport(), Guid("3050f35c-98b5-11cf-bb82-00aa00bdce0b"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         public interface IHTMLScreen {
             int GetColorDepth();
@@ -2709,7 +2709,7 @@ namespace System.Windows.Forms {
         }
 
 
-        [ComVisible(true), Guid("163BB1E0-6E00-11CF-837A-48DC04C10000"),
+        [ComVisible(true), ComImport(), Guid("163BB1E0-6E00-11CF-837A-48DC04C10000"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLLocation {
             void SetHref([In] string p);
@@ -2733,7 +2733,7 @@ namespace System.Windows.Forms {
             void Assign([In] string bstr);
         }
 
-        [ComVisible(true), Guid("FECEAAA2-8405-11CF-8BA1-00AA00476DA6"),
+        [ComVisible(true), ComImport(), Guid("FECEAAA2-8405-11CF-8BA1-00AA00476DA6"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IOmHistory {
             short GetLength();
@@ -2742,7 +2742,7 @@ namespace System.Windows.Forms {
             void Go([In] ref object pvargdistance);
         }
 
-        [ComVisible(true), Guid("FECEAAA5-8405-11CF-8BA1-00AA00476DA6"),
+        [ComVisible(true), ComImport(), Guid("FECEAAA5-8405-11CF-8BA1-00AA00476DA6"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IOmNavigator {
             string GetAppCodeName();
@@ -2766,7 +2766,7 @@ namespace System.Windows.Forms {
             object GetUserProfile();
         }
 
-        [ComVisible(true), Guid("3050F32D-98B5-11CF-BB82-00AA00BDCE0B"),
+        [ComVisible(true), ComImport(), Guid("3050F32D-98B5-11CF-BB82-00AA00BDCE0B"),
         InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLEventObj {
             [return: MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IHTMLElement GetSrcElement();
@@ -2796,7 +2796,7 @@ namespace System.Windows.Forms {
             object GetSrcFilter();
         }
 
-        [ComVisible(true), Guid("3050f48B-98b5-11cf-bb82-00aa00bdce0b"),
+        [ComVisible(true), ComImport(), Guid("3050f48B-98b5-11cf-bb82-00aa00bdce0b"),
         InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLEventObj2 {
             void SetAttribute(string attributeName, object attributeValue, int lFlags);
@@ -2857,13 +2857,13 @@ namespace System.Windows.Forms {
             object GetDataTransfer();
         }
 
-        [ComVisible(true), Guid("3050f814-98b5-11cf-bb82-00aa00bdce0b"),
+        [ComVisible(true), ComImport(), Guid("3050f814-98b5-11cf-bb82-00aa00bdce0b"),
         InterfaceTypeAttribute(System.Runtime.InteropServices.ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLEventObj4 {
             int GetWheelDelta();
         };
         
-        [ComVisible(true), Guid("3050F21F-98B5-11CF-BB82-00AA00BDCE0B"),
+        [ComVisible(true), ComImport(), Guid("3050F21F-98B5-11CF-BB82-00AA00BDCE0B"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLElementCollection {
             string toString();
@@ -2874,7 +2874,7 @@ namespace System.Windows.Forms {
             [return: MarshalAs(UnmanagedType.Interface)] object Tags(object tagName);
         }
         
-        [ComVisible(true), Guid("3050F1FF-98B5-11CF-BB82-00AA00BDCE0B"),
+        [ComVisible(true), ComImport(), Guid("3050F1FF-98B5-11CF-BB82-00AA00BDCE0B"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLElement {
             void SetAttribute(string attributeName, object attributeValue, int lFlags);
@@ -2969,7 +2969,7 @@ namespace System.Windows.Forms {
         }
         
 
-        [ComVisible(true), Guid("3050f434-98b5-11cf-bb82-00aa00bdce0b"),
+        [ComVisible(true), ComImport(), Guid("3050f434-98b5-11cf-bb82-00aa00bdce0b"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLElement2 {
             string ScopeName();
@@ -3076,7 +3076,7 @@ namespace System.Windows.Forms {
             [return: MarshalAs(UnmanagedType.Interface)] UnsafeNativeMethods.IHTMLElementCollection GetElementsByTagName(string v);
         }
 
-        [ComVisible(true), Guid("3050f673-98b5-11cf-bb82-00aa00bdce0b"),
+        [ComVisible(true), ComImport(), Guid("3050f673-98b5-11cf-bb82-00aa00bdce0b"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLElement3 {
             void MergeAttributes(object mergeThis, object pvarFlags);
@@ -3124,7 +3124,7 @@ namespace System.Windows.Forms {
             int GlyphMode();
         }
 
-        [ComVisible(true), Guid("3050f5da-98b5-11cf-bb82-00aa00bdce0b"),
+        [ComVisible(true), ComImport(), Guid("3050f5da-98b5-11cf-bb82-00aa00bdce0b"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         public interface IHTMLDOMNode {
             long GetNodeType();
@@ -4608,7 +4608,7 @@ namespace System.Windows.Forms {
             [DispId(1002)]void onerror(UnsafeNativeMethods.IHTMLEventObj evtObj);
         }
 
-        [ComVisible(true), Guid("3050F25E-98B5-11CF-BB82-00AA00BDCE0B"),
+        [ComVisible(true), ComImport(), Guid("3050F25E-98B5-11CF-BB82-00AA00BDCE0B"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         internal interface IHTMLStyle {
             void SetFontFamily(string p);
@@ -5372,7 +5372,7 @@ namespace System.Windows.Forms {
                 int dwReserved);
         }
 
-        [ComVisible(true), Guid("8CC497C0-A1DF-11ce-8098-00AA0047BE5D"),
+        [ComVisible(true), ComImport(), Guid("8CC497C0-A1DF-11ce-8098-00AA0047BE5D"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         public interface ITextDocument {
             string GetName();
@@ -5396,7 +5396,7 @@ namespace System.Windows.Forms {
             [return: MarshalAs(UnmanagedType.Interface)] ITextRange RangeFromPoint(int x, int y);
         };
 
-        [ComVisible(true), Guid("8CC497C2-A1DF-11ce-8098-00AA0047BE5D"),
+        [ComVisible(true), ComImport(), Guid("8CC497C2-A1DF-11ce-8098-00AA0047BE5D"),
         InterfaceTypeAttribute(ComInterfaceType.InterfaceIsDual)]
         public interface ITextRange {
             string GetText();
@@ -7408,7 +7408,7 @@ namespace System.Windows.Forms {
             public static extern int SHILCreateFromPath([MarshalAs(UnmanagedType.LPWStr)]string pszPath, out IntPtr ppIdl, ref uint rgflnOut);
         }
 
-          [ComVisible(true), Guid("B722BCC6-4E68-101B-A2BC-00AA00404770"), InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
+          [ComVisible(true), ComImport(), Guid("B722BCC6-4E68-101B-A2BC-00AA00404770"), InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
                public interface IOleDocumentView 
           {
     
