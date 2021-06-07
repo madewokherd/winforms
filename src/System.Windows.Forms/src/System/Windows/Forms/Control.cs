@@ -14257,8 +14257,9 @@ example usage
 
         /// <summary>
         /// </summary>
-        void UnsafeNativeMethods.IPersistStreamInit.GetSizeMax(long pcbSize) {
+        void UnsafeNativeMethods.IPersistStreamInit.GetSizeMax(out long pcbSize) {
             Debug.WriteLineIf(CompModSwitches.ActiveX.TraceInfo, "AxSource:GetSizeMax");
+			pcbSize = 0;
         }
 
         /// <summary>

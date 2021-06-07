@@ -6235,7 +6235,7 @@ namespace System.Windows.Forms {
         
          void GetSizeMax(
                 [Out, MarshalAs(UnmanagedType.LPArray)] 
-                 long pcbSize);
+                 out long pcbSize);
 
         
          void InitNew();
