@@ -6894,6 +6894,38 @@ namespace System.Windows.Forms {
         IEnumConnectionPoints Clone();
     }
 
+	// WINE MONO HACK: Work around Mono not supporting object[] marshaling as variant array.
+	[DllImport("oleaut32")]
+	extern static int VariantClear(IntPtr nativeVariant);
+
+	public static int IDispatchInvoke(IDispatch disp, int dispIdMember, ref Guid riid, int lcid, int dwFlags,
+		NativeMethods.tagDISPPARAMS pDispParams, object[] result, NativeMethods.tagEXCEPINFO pExcepInfo, IntPtr[] pArgErr)
+	{
+		IntPtr nativeResult;
+		int ret;
+
+		if (result is null)
+		{
+			nativeResult = IntPtr.Zero;
+		}
+		else
+		{
+			int sizeOfVariant = 8 + Marshal.SizeOf(typeof(IntPtr)) * 2;
+			nativeResult = Marshal.AllocCoTaskMem(sizeOfVariant);
+			Marshal.GetNativeVariantForObject(null, nativeResult);
+		}
+
+		ret = disp.Invoke(dispIdMember, ref riid, lcid, dwFlags, pDispParams, nativeResult, pExcepInfo, pArgErr);
+
+		if (nativeResult != IntPtr.Zero)
+		{
+			result[0] = Marshal.GetObjectForNativeVariant(nativeResult);
+			VariantClear(nativeResult);
+			Marshal.FreeCoTaskMem(nativeResult);
+		}
+
+		return ret;
+	}
 
     [ComImport(), Guid("00020400-0000-0000-C000-000000000046"), InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IDispatch {
@@ -6933,8 +6965,7 @@ namespace System.Windows.Forms {
                  int dwFlags,
                 [Out, In] 
                   NativeMethods.tagDISPPARAMS pDispParams,
-                [Out, MarshalAs(UnmanagedType.LPArray)] 
-                  object[] pVarResult,
+                  IntPtr pVarResult,
                 [Out, In] 
                   NativeMethods.tagEXCEPINFO pExcepInfo,
                 [Out, MarshalAs(UnmanagedType.LPArray)] 

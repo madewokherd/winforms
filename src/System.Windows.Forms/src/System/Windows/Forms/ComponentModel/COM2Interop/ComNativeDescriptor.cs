@@ -195,7 +195,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop {
 
                 try{
 
-                   hr = iDispatch.Invoke(dispid,
+                   hr = UnsafeNativeMethods.IDispatchInvoke(iDispatch, dispid,
                                              ref g,
                                              SafeNativeMethods.GetThreadLCID(),
                                              NativeMethods.DISPATCH_PROPERTYGET,

@@ -782,7 +782,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop {
             NativeMethods.tagEXCEPINFO pExcepInfo = new NativeMethods.tagEXCEPINFO();
             Guid g = Guid.Empty;
 
-            int hr = pDisp.Invoke(this.dispid,
+            int hr = UnsafeNativeMethods.IDispatchInvoke(pDisp, this.dispid,
                                   ref g,
                                   SafeNativeMethods.GetThreadLCID(),
                                   NativeMethods.DISPATCH_PROPERTYGET,
@@ -1131,7 +1131,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop {
                 try {
 
                     Guid g = Guid.Empty;
-                    int hr = pDisp.Invoke(this.dispid,
+                    int hr = UnsafeNativeMethods.IDispatchInvoke(pDisp, this.dispid,
                                           ref g,
                                           SafeNativeMethods.GetThreadLCID(),
                                           NativeMethods.DISPATCH_PROPERTYPUT,

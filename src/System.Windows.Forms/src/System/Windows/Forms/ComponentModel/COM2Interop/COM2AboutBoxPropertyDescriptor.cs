@@ -150,7 +150,7 @@ namespace System.Windows.Forms.ComponentModel.Com2Interop {
                         NativeMethods.tagEXCEPINFO pExcepInfo = new NativeMethods.tagEXCEPINFO();
                         Guid g = Guid.Empty;
             
-                        int hr = pDisp.Invoke(NativeMethods.ActiveX.DISPID_ABOUTBOX,
+                        int hr = UnsafeNativeMethods.IDispatchInvoke(pDisp, NativeMethods.ActiveX.DISPID_ABOUTBOX,
                                               ref g,
                                               SafeNativeMethods.GetThreadLCID(),
                                               NativeMethods.DISPATCH_METHOD,

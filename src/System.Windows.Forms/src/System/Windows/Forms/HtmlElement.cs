@@ -476,7 +476,7 @@ namespace System.Windows.Forms
 
                         object[] retVals = new object[1];
 
-                        hr = scriptObject.Invoke(dispids[0], ref g, SafeNativeMethods.GetThreadLCID(),
+                        hr = UnsafeNativeMethods.IDispatchInvoke(scriptObject, dispids[0], ref g, SafeNativeMethods.GetThreadLCID(),
                                 NativeMethods.DISPATCH_METHOD, dp,
                                 retVals, new NativeMethods.tagEXCEPINFO(), null);
                         if (hr == NativeMethods.S_OK)

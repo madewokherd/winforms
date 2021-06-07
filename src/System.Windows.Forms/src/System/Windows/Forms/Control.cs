@@ -15144,7 +15144,7 @@ example usage
                     UnsafeNativeMethods.IDispatch disp = (UnsafeNativeMethods.IDispatch)clientSite;
                     object[] pvt = new object[1];
                     Guid g = Guid.Empty;
-                    int hr = disp.Invoke(dispid, ref g, NativeMethods.LOCALE_USER_DEFAULT,
+                    int hr = UnsafeNativeMethods.IDispatchInvoke(disp, dispid, ref g, NativeMethods.LOCALE_USER_DEFAULT,
                                         NativeMethods.DISPATCH_PROPERTYGET, new NativeMethods.tagDISPPARAMS(),
                                         pvt, null, null);
                     if (NativeMethods.Succeeded(hr)) {
