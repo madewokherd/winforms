@@ -70,9 +70,14 @@ Namespace Microsoft.VisualBasic.ApplicationServices
                     stream.Write(buffer, 0, bytesRead)
                 End While
                 stream.Seek(0, SeekOrigin.Begin)
-                Dim serializer = New DataContractSerializer(GetType(String()))
+                Dim reader = New BinaryReader(stream)
                 Try
-                    Return DirectCast(serializer.ReadObject(stream), String())
+					Dim length = reader.ReadInt32()
+					Dim result = New String(length - 1) {}
+					For i = 0 To length-1
+						result(i) = reader.ReadString()
+					Next i
+                    Return result
                 Catch ex As Exception
                     Return Nothing
                 End Try
@@ -82,8 +87,11 @@ Namespace Microsoft.VisualBasic.ApplicationServices
         Private Async Function WriteArgsAsync(pipeClient As NamedPipeClientStream, args As String(), cancellationToken As CancellationToken) As Task
             Dim content As Byte()
             Using stream As New MemoryStream
-                Dim serializer = New DataContractSerializer(GetType(String()))
-                serializer.WriteObject(stream, args)
+                Dim writer = New BinaryWriter(stream)
+				writer.Write(CInt(args.Length))
+				For Each arg As String In args
+					writer.Write(arg)
+				Next arg
                 content = stream.ToArray()
             End Using
             Await pipeClient.WriteAsync(content.AsMemory(0, content.Length), cancellationToken).ConfigureAwait(False)
