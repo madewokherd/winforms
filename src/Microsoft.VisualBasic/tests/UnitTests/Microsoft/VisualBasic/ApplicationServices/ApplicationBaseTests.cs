@@ -74,6 +74,7 @@ namespace Microsoft.VisualBasic.ApplicationServices.Tests
             {
                 pairs.Add(((string)key, (string)vars[key]));
             }
+
             return pairs.OrderBy(pair => pair.Item1).ToArray();
         }
 
@@ -86,6 +87,15 @@ namespace Microsoft.VisualBasic.ApplicationServices.Tests
             var assemblyName = assembly.GetName();
             Assert.Equal(assemblyName.Name, app.Info.AssemblyName);
             Assert.Equal(assemblyName.Version, app.Info.Version);
+        }
+
+        [Fact]
+        public void Log()
+        {
+            var app = new ApplicationBase();
+            var log = app.Log;
+            _ = log.TraceSource;
+            _ = log.DefaultFileLogWriter;
         }
     }
 }
