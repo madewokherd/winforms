@@ -77,10 +77,10 @@ Namespace Microsoft.VisualBasic
                         'If not, throw FileNotFound
                         Const ERROR_ACCESS_DENIED As Integer = 5
                         If ErrorCode = ERROR_ACCESS_DENIED Then
-                            Throw VbMakeException(vbErrors.PermissionDenied)
+                            Throw VbMakeException(vbErrorCodes.PermissionDenied)
                         End If
 
-                        Throw VbMakeException(vbErrors.FileNotFound)
+                        Throw VbMakeException(vbErrorCodes.FileNotFound)
                     End If
                 Finally
                     safeProcessHandle.Close() ' Close the process handle will not cause the process to stop.

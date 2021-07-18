@@ -8,24 +8,24 @@ Imports Microsoft.VisualBasic.CompilerServices.Utils
 
 Namespace Microsoft.VisualBasic.CompilerServices
 
-    Friend Enum vbErrors
+    Friend Enum vbErrorCodes
         None = 0
         FileNotFound = 53
         PermissionDenied = 70
     End Enum
 
     ' Implements error utilities for Basic
-    Friend NotInheritable Class ExceptionUtils
+    Public Partial NotInheritable Class ExceptionUtils
 
-        ' Prevent creation.
-        Private Sub New()
-        End Sub
+        ' Commented to prevent conflict with mono-basic's version of this class
+        'Private Sub New()
+        'End Sub
 
         Friend Shared Function VbMakeException(hr As Integer) As Exception
             Dim sMsg As String
 
             If hr > 0 AndAlso hr <= &HFFFFI Then
-                sMsg = GetResourceString(CType(hr, vbErrors))
+                sMsg = GetResourceString(CType(hr, vbErrorCodes))
             Else
                 sMsg = ""
             End If
@@ -50,12 +50,12 @@ Namespace Microsoft.VisualBasic.CompilerServices
 
             Select Case Number
 
-                Case vbErrors.None
+                Case vbErrorCodes.None
 
-                Case vbErrors.FileNotFound
+                Case vbErrorCodes.FileNotFound
                     Return New IO.FileNotFoundException(Description)
 
-                Case vbErrors.PermissionDenied
+                Case vbErrorCodes.PermissionDenied
                     Return New IO.IOException(Description)
 
                 Case Else
