@@ -224,11 +224,16 @@ namespace System.Windows.Forms
         private void SetFileTypes(FileDialogNative.IFileDialog dialog)
         {
             FileDialogNative.COMDLG_FILTERSPEC[] filterItems = FilterItems;
-            dialog.SetFileTypes((uint)filterItems.Length, filterItems);
             if (filterItems.Length > 0)
             {
+				dialog.SetFileTypes((uint)filterItems.Length, filterItems);
                 dialog.SetFileTypeIndex(unchecked((uint)FilterIndex));
             }
+			else
+			{
+				// Work around Mono marshaling empty array as null
+				dialog.SetFileTypes(0, new FileDialogNative.COMDLG_FILTERSPEC[1] { default(FileDialogNative.COMDLG_FILTERSPEC) } );
+			}
         }
 
         private FileDialogNative.COMDLG_FILTERSPEC[] FilterItems => GetFilterItems(_filter);
