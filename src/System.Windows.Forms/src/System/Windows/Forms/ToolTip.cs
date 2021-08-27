@@ -814,6 +814,12 @@ namespace System.Windows.Forms {
                 if (GetHandleCreated()) {
                     return;
                 }
+
+				if ((cp.Style & (NativeMethods.WS_CAPTION | NativeMethods.WS_CHILD)) == 0)
+					// Prevent user32 from applying a default WS_CAPTION style, which causes winex11.drv
+					// to create a managed window.
+					cp.Style |= NativeMethods.WS_POPUP;
+
                 window.CreateHandle(cp);
             }
             finally {
