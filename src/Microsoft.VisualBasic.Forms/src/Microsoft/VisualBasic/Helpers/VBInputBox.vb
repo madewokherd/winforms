@@ -43,7 +43,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
         End Sub
 
         Private Sub InitializeComponent()
-            Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(VBInputBox))
+            'Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(VBInputBox))
             OKButton = New Windows.Forms.Button
             MyCancelButton = New Windows.Forms.Button
             TextBox = New Windows.Forms.TextBox
@@ -52,29 +52,47 @@ Namespace Microsoft.VisualBasic.CompilerServices
             '
             'OKButton
             '
-            resources.ApplyResources(OKButton, "OKButton", CultureInfo.CurrentUICulture)
+			OKButton.Location = New Point(290,12)
+			OKButton.Size = New Size(60,22)
+			OKButton.TabIndex = 2
+			OKButton.Text = "OK"
+            'resources.ApplyResources(OKButton, "OKButton", CultureInfo.CurrentUICulture)
             OKButton.Name = "OKButton"
             '
             'MyCancelButton
             '
             MyCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-            resources.ApplyResources(MyCancelButton, "MyCancelButton", CultureInfo.CurrentUICulture)
+			MyCancelButton.Location = New Point(290,40)
+			MyCancelButton.Size = New Size(60,22)
+			MyCancelButton.TabIndex = 3
+			MyCancelButton.Text = "Cancel"
+            'resources.ApplyResources(MyCancelButton, "MyCancelButton", CultureInfo.CurrentUICulture)
             MyCancelButton.Name = "MyCancelButton"
             '
             'TextBox
             '
-            resources.ApplyResources(TextBox, "TextBox", CultureInfo.CurrentUICulture)
+			TextBox.Location = New Point(10,90)
+			TextBox.Size = New Size(335,20)
+			TextBox.TabIndex = 0
+            'resources.ApplyResources(TextBox, "TextBox", CultureInfo.CurrentUICulture)
             TextBox.Name = "TextBox"
             '
             'Label
             '
-            resources.ApplyResources(Label, "Label", CultureInfo.CurrentUICulture)
+			Label.Location = New Point(10,10)
+			Label.Size = New Size(250,70)
+			Label.TabIndex = 1
+			Label.Text = "#"
+            'resources.ApplyResources(Label, "Label", CultureInfo.CurrentUICulture)
             Label.Name = "Label"
             '
             'VBInputBox
             '
             AcceptButton = OKButton
-            resources.ApplyResources(Me, "$this", CultureInfo.CurrentUICulture)
+			AutoScaleBaseSize = New Size(5,13)
+			ClientSize = New Size(353,120)
+			Text = "#"
+            'resources.ApplyResources(Me, "$this", CultureInfo.CurrentUICulture)
             CancelButton = MyCancelButton
             Controls.Add(TextBox)
             Controls.Add(Label)

@@ -14,9 +14,9 @@ Namespace Microsoft.VisualBasic
 
     ' Helper methods invoked through reflection from Microsoft.VisualBasic.Interaction in Microsoft.VisualBasic.Core.dll. 
     ' Do not change this API without also updating that dependent module.
-    Friend Module _Interaction
+    Partial Public NotInheritable Class Interaction
 
-        Public Function Shell(PathName As String, Style As AppWinStyle, Wait As Boolean, Timeout As Integer) As Integer
+        Public Shared Function Shell(ByVal PathName As String, Optional ByVal Style As AppWinStyle = AppWinStyle.MinimizedFocus, Optional ByVal Wait As Boolean = False, Optional ByVal Timeout As Integer = -1) As Integer
             Dim StartupInfo As New NativeTypes.STARTUPINFO
             Dim ProcessInfo As New NativeTypes.PROCESS_INFORMATION
             Dim ok As Integer
@@ -91,7 +91,7 @@ Namespace Microsoft.VisualBasic
             End Try
         End Function
 
-        Public Sub AppActivateByProcessId(ProcessId As Integer)
+        Public Shared Sub AppActivate(ByVal ProcessId As Integer)
             'As an optimization, we will only check the UI permission once we actually know we found the app to activate - we'll do that in AppActivateHelper
 
             Dim ProcessIdOwningWindow As Integer
@@ -132,7 +132,7 @@ Namespace Microsoft.VisualBasic
             End If
         End Sub
 
-        Public Sub AppActivateByTitle(Title As String)
+        Public Shared Sub AppActivate(ByVal Title As String)
             'As an optimization, we will only check the UI permission once we actually know we found the app to activate - we'll do that in AppActivateHelper
             Dim WindowHandle As IntPtr = NativeMethods.FindWindow(Nothing, Title) 'see if we can find the window using an exact match on the title
             Const MAX_TITLE_LENGTH As Integer = 511
@@ -144,7 +144,7 @@ Namespace Microsoft.VisualBasic
                 ' Interop code will extend string builder to handle NULL character.
                 Dim AppTitleBuilder As New StringBuilder(MAX_TITLE_LENGTH)
                 Dim AppTitleLength As Integer
-                Dim TitleLength As Integer = Len(Title)
+                Dim TitleLength As Integer = Title.Length
 
                 'Loop through all children of the desktop
                 WindowHandle = NativeMethods.GetWindow(NativeMethods.GetDesktopWindow(), NativeTypes.GW_CHILD)
@@ -173,7 +173,7 @@ Namespace Microsoft.VisualBasic
                         AppTitle = AppTitleBuilder.ToString()
 
                         If AppTitleLength >= TitleLength Then
-                            If String.Compare(Right(AppTitle, TitleLength), 0, Title, 0, TitleLength, StringComparison.OrdinalIgnoreCase) = 0 Then
+                            If String.Compare(AppTitle.Substring(AppTitle.Length - TitleLength), 0, Title, 0, TitleLength, StringComparison.OrdinalIgnoreCase) = 0 Then
                                 Exit Do 'found a match
                             End If
                         End If
@@ -191,7 +191,7 @@ Namespace Microsoft.VisualBasic
             End If
         End Sub
 
-        Private Sub AppActivateHelper(hwndApp As IntPtr, ProcessId As String)
+        Private Shared Sub AppActivateHelper(hwndApp As IntPtr, ProcessId As String)
             '  if no window with name (full or truncated) or task id, return an error
             '  if the window is not enabled or not visible, get the first window owned by it that is not enabled or not visible
             Dim hwndOwned As IntPtr
@@ -277,7 +277,7 @@ Namespace Microsoft.VisualBasic
             End Property
         End Class
 
-        Public Function InputBox(Prompt As String, Title As String, DefaultResponse As String, XPos As Integer, YPos As Integer) As String
+        Public Shared Function InputBox(ByVal Prompt As String, Optional ByVal Title As String = "", Optional ByVal DefaultResponse As String = "", Optional ByVal XPos As Integer = -1, Optional ByVal YPos As Integer = -1) As String
             Dim vbhost As IVbHost
             Dim ParentWindow As Windows.Forms.IWin32Window = Nothing
 
@@ -313,7 +313,7 @@ Namespace Microsoft.VisualBasic
             End If
         End Function
 
-        Private Function GetTitleFromAssembly(CallingAssembly As Reflection.Assembly) As String
+        Private Shared Function GetTitleFromAssembly(CallingAssembly As Reflection.Assembly) As String
 
             Dim Title As String
 
@@ -341,7 +341,7 @@ Namespace Microsoft.VisualBasic
 
         End Function
 
-        Private Function InternalInputBox(Prompt As String, Title As String, DefaultResponse As String, XPos As Integer, YPos As Integer, ParentWindow As Windows.Forms.IWin32Window) As String
+        Private Shared Function InternalInputBox(Prompt As String, Title As String, DefaultResponse As String, XPos As Integer, YPos As Integer, ParentWindow As Windows.Forms.IWin32Window) As String
             Dim Box As VBInputBox = New VBInputBox(Prompt, Title, DefaultResponse, XPos, YPos)
             Box.ShowDialog(ParentWindow)
 
@@ -349,7 +349,7 @@ Namespace Microsoft.VisualBasic
             Box.Dispose()
         End Function
 
-        Public Function MsgBox(Prompt As Object, Buttons As MsgBoxStyle, Title As Object) As MsgBoxResult
+        Public Shared Function MsgBox(ByVal Prompt As Object, Optional ByVal Buttons As MsgBoxStyle = MsgBoxStyle.OkOnly, Optional ByVal Title As Object = Nothing) As MsgBoxResult
             Dim sPrompt As String = Nothing
             Dim sTitle As String
             Dim vbhost As IVbHost
@@ -412,7 +412,7 @@ Namespace Microsoft.VisualBasic
                  MsgBoxResult)
         End Function
 
-    End Module
+    End Class
 
 End Namespace
 
