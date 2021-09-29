@@ -1,7 +1,6 @@
 System/Windows/Forms/ActiveDocumentHost.ico
 System/Windows/Forms/Animation.ico
 System/Windows/Forms/App/Timer.ico
-System/Windows/Forms/Arrow.ico
 System/Windows/Forms/BindingNavigator.AddNew.ico
 System/Windows/Forms/BindingNavigator.Delete.ico
 System/Windows/Forms/BindingNavigator.MoveFirst.ico
@@ -159,7 +158,7 @@ System/Windows/Forms/ToolStrip/printToolstripMenuItem.ico
 System/Windows/Forms/ToolStrip/propertiestoolstripmenuitem.ico
 System/Windows/Forms/ToolStrip/saveToolstripMenuItem.ico
 System/Windows/Forms/ToolStrip/viewcodetoolstripmenuitem.ico
-System/Windows/Forms/ToolStripContainer.ico
+System/Windows/Forms/ToolStrip/ToolStripContainer.ico
 System/Windows/Forms/ToolTip.ico
 System/Windows/Forms/TrackBar.ico
 System/Windows/Forms/TrayIcon.ico
@@ -185,7 +184,7 @@ System/Windows/Forms/IndeterminateChecked.ico
 System/Windows/Forms/DataGridViewRow.star.ico
 System/Windows/Forms/west.cur
 System/Windows/Forms/DataGridViewRow.leftstar.ico
-System/Windows/Forms/PropertyGrid/arrow.ico
+System/Windows/Forms/PropertyGrid/Arrow.ico
 System/Windows/Forms/PropertyGrid/dotdotdot.ico
 System/Windows/Forms/IconInError.ico
 System/Windows/Forms/DataGridViewRow.pencil_ltr.ico
