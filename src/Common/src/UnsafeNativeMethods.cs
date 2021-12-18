@@ -238,7 +238,7 @@ namespace System.Windows.Forms {
         public static extern int PrintDlgEx([In, Out] NativeMethods.PRINTDLGEX lppdex);
         [DllImport(ExternDll.Ole32, ExactSpelling=true, CharSet=CharSet.Auto)]
         
-        public static extern int OleGetClipboard(ref IComDataObject data);
+        public static extern int OleGetClipboard([In, Out] ref IComDataObject data);
         [DllImport(ExternDll.Ole32, ExactSpelling=true, CharSet=CharSet.Auto)]
         
         public static extern int OleSetClipboard(IComDataObject pDataObj);
