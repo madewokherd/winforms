@@ -262,6 +262,7 @@ namespace System.Windows.Forms {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private static void LoadSendMethodFromConfig()
         {
+		/* Wine Mono HACK: journal hooks are not supported on Wine
             if (!sendMethod.HasValue)
             {
                 sendMethod = SendMethodTypes.Default;
@@ -281,6 +282,8 @@ namespace System.Windows.Forms {
                 }
                 catch {} // ignore any exceptions to keep existing SendKeys behavior
             }
+			*/
+			sendMethod = SendMethodTypes.SendInput;
         }
 
         /// <summary>
