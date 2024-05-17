@@ -28,7 +28,7 @@ EMBEDDED_RESOURCES=$(shell cat embeddedresources.list)
 EMBEDDED_RES_PATHS=$(foreach f,$(EMBEDDED_RESOURCES),Resources/$(f))
 
 embeddedresources.flags: embeddedresources.list
-	for i in `cat embeddedresources.list`; do printf -- '-resource:Resources/%s,%s\n' $$i `echo $$i|sed "s:/PropertyGrid/EventsTab:.Design.EventsTab:g"|sed "s:/PropertyGrid/PropertiesTab:.PropertyGridInternal.PropertiesTab:g"|sed "s:-Temporary::g"|sed "s:/PropertyGrid/:/:g"|sed "s:/Printing/:/:g"|sed "s:/ToolStripPanel.ico:/ToolStripPanel_standalone:g"|sed "s:/App/:/:g"|sed "s:/ToolStrip/:/:g"|sed "s:/ToolStripMenuItem.ico:.ToolStripMenuItem:g"|sed "s:/BlankToolstrip.ico:/blank:g"|sed "s:/SendToBackHS.ico:/sendToBack:g"|sed "s:/BringToFrontHS.ico:/bringToFront:g"|sed "s:/AlignToGridHS.ico:/alignToGrid:g"|sed "s:ToolStripMenuItem.ico::gi"|sed "s:\\.ico$$::g"|sed "s:/:.:g"`; done > $@ || rm -f $@
+	for i in `cat embeddedresources.list`; do printf -- '-resource:Resources/%s,%s\n' $$i `echo $$i|sed "s:/PropertyGrid/EventsTab:.Design.EventsTab:g"|sed "s:/PropertyGrid/PropertiesTab:.PropertyGridInternal.PropertiesTab:g"|sed "s:-Temporary::g"|sed "s:/PropertyGrid/:/:g"|sed "s:/Printing/:/:g"|sed "s:/ToolStripPanel.ico:/ToolStripPanel_standalone:g"|sed "s:/App/:/:g"|sed "s:/ToolStrip/:/:g"|sed "s:/ToolStripMenuItem.ico:.ToolStripMenuItem:g"|sed "s:/BlankToolstrip.ico:/blank:g"|sed "s:/SendToBackHS.ico:/sendToBack:g"|sed "s:/BringToFrontHS.ico:/bringToFront:g"|sed "s:/AlignToGridHS.ico:/alignToGrid:g"|sed "s:ToolStripMenuItem.ico::gi"|sed "s:/:.:g"`; done > $@ || rm -f $@
 
 System.Windows.Forms.dll: sources.list $(LIB_SRCS) $(SIBLING_PATHS) embeddedresources.flags $(EMBEDDED_RES_PATHS)
 	$(COMPILE_LIB) $(LIB_FLAGS) $(LIB_REFS) $(SIBLING_REFS) -out:$@ @sources.list @embeddedresources.flags
