@@ -48,13 +48,27 @@ namespace System.Windows.Forms
         {
         }
 
+        /* Unused for now.
+        private static Bitmap ErrorBitmap
+        {
+            get
+            {
+                if (errorBmp == null)
+                {
+                    errorBmp = GetBitmap("DataGridViewRow.error.bmp");
+                }
+                return errorBmp;
+            }
+        }
+        */
+
         private static Bitmap LeftArrowBitmap
         {
             get
             {
                 if (leftArrowBmp == null)
                 {
-                    leftArrowBmp = GetBitmapFromIcon("DataGridViewRow.left");
+                    leftArrowBmp = GetBitmapFromIcon("DataGridViewRow.left.ico");
                 }
                 return leftArrowBmp;
             }
@@ -66,7 +80,7 @@ namespace System.Windows.Forms
             {
                 if (leftArrowStarBmp == null)
                 {
-                    leftArrowStarBmp = GetBitmapFromIcon("DataGridViewRow.leftstar");
+                    leftArrowStarBmp = GetBitmapFromIcon("DataGridViewRow.leftstar.ico");
                 }
                 return leftArrowStarBmp;
             }
@@ -78,7 +92,7 @@ namespace System.Windows.Forms
             {
                 if (pencilLTRBmp == null)
                 {
-                    pencilLTRBmp = GetBitmapFromIcon("DataGridViewRow.pencil_ltr");
+                    pencilLTRBmp = GetBitmapFromIcon("DataGridViewRow.pencil_ltr.ico");
                 }
                 return pencilLTRBmp;
             }
@@ -90,7 +104,7 @@ namespace System.Windows.Forms
             {
                 if (pencilRTLBmp == null)
                 {
-                    pencilRTLBmp = GetBitmapFromIcon("DataGridViewRow.pencil_rtl");
+                    pencilRTLBmp = GetBitmapFromIcon("DataGridViewRow.pencil_rtl.ico");
                 }
                 return pencilRTLBmp;
             }
@@ -102,7 +116,7 @@ namespace System.Windows.Forms
             {
                 if (rightArrowBmp == null)
                 {
-                    rightArrowBmp = GetBitmapFromIcon("DataGridViewRow.right");
+                    rightArrowBmp = GetBitmapFromIcon("DataGridViewRow.right.ico");
                 }
                 return rightArrowBmp;
             }
@@ -114,7 +128,7 @@ namespace System.Windows.Forms
             {
                 if (rightArrowStarBmp == null)
                 {
-                    rightArrowStarBmp = GetBitmapFromIcon("DataGridViewRow.rightstar");
+                    rightArrowStarBmp = GetBitmapFromIcon("DataGridViewRow.rightstar.ico");
                 }
                 return rightArrowStarBmp;
             }
@@ -126,7 +140,7 @@ namespace System.Windows.Forms
             {
                 if (starBmp == null)
                 {
-                    starBmp = GetBitmapFromIcon("DataGridViewRow.star");
+                    starBmp = GetBitmapFromIcon("DataGridViewRow.star.ico");
                 }
                 return starBmp;
             }

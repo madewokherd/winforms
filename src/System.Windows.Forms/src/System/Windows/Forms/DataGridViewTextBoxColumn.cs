@@ -11,7 +11,7 @@ namespace System.Windows.Forms
     using System.Drawing;
     using System.Globalization;
     
-    [ToolboxBitmapAttribute(typeof(DataGridViewTextBoxColumn), "DataGridViewTextBoxColumn")]
+    [ToolboxBitmapAttribute(typeof(DataGridViewTextBoxColumn), "DataGridViewTextBoxColumn.bmp")]
     public class DataGridViewTextBoxColumn : DataGridViewColumn
     {
         private const int DATAGRIDVIEWTEXTBOXCOLUMN_maxInputLength = 32767;

@@ -199,13 +199,16 @@ namespace System.Windows.Forms {
         ///    <para>Gets the bitmap associated with the row.</para>
         /// </summary>
         protected Bitmap GetBitmap(string bitmapName) {
+            Bitmap b = null;
             try {
-                return DpiHelper.GetBitmapFromIcon(typeof(DataGridCaption), bitmapName);
+                b = new Bitmap(typeof(DataGridCaption), bitmapName);
+                b.MakeTransparent();
             }
             catch (Exception e) {
                 Debug.Fail("Failed to load bitmap: " + bitmapName, e.ToString());
                 throw e;
             }
+            return b;
         }
 
         /// <summary>
@@ -244,7 +247,7 @@ namespace System.Windows.Forms {
         /// </summary>
         protected Bitmap GetStarBitmap() {
             if (starBmp == null)
-                starBmp = GetBitmap("DataGridRow.star");
+                starBmp = GetBitmap("DataGridRow.star.bmp");
             return starBmp;
         }
 
@@ -254,7 +257,7 @@ namespace System.Windows.Forms {
         /// </summary>
         protected Bitmap GetPencilBitmap() {
             if (pencilBmp == null)
-                pencilBmp = GetBitmap("DataGridRow.pencil");
+                pencilBmp = GetBitmap("DataGridRow.pencil.bmp");
             return pencilBmp;
         }
 
@@ -263,19 +266,20 @@ namespace System.Windows.Forms {
         /// </summary>
         protected Bitmap GetErrorBitmap() {
             if (errorBmp == null)
-                errorBmp = GetBitmap("DataGridRow.error");
+                errorBmp = GetBitmap("DataGridRow.error.bmp");
+            errorBmp.MakeTransparent();
             return errorBmp;
         }
 
         protected Bitmap GetLeftArrowBitmap() {
             if (leftArrow == null)
-                leftArrow = GetBitmap("DataGridRow.left");
+                leftArrow = GetBitmap("DataGridRow.left.bmp");
             return leftArrow;
         }
 
         protected Bitmap GetRightArrowBitmap() {
             if (rightArrow == null)
-                rightArrow = GetBitmap("DataGridRow.right");
+                rightArrow = GetBitmap("DataGridRow.right.bmp");
             return rightArrow;
         }
 

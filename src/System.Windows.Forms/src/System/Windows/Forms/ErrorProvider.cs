@@ -531,7 +531,7 @@ namespace System.Windows.Forms {
                 if (defaultIcon == null) {
                     lock (typeof(ErrorProvider)) {
                         if (defaultIcon == null) {
-                            defaultIcon = new Icon(typeof(ErrorProvider), "Error");
+                            defaultIcon = new Icon(typeof(ErrorProvider), "Error.ico");
                         }
                     }
                 }
@@ -1586,6 +1586,7 @@ namespace System.Windows.Forms {
                         try {
                             Size size = icon.Size;
                             Bitmap bitmap = icon.ToBitmap();
+                            bitmap.MakeTransparent();
                             mask = ControlPaint.CreateHBitmapTransparencyMask(bitmap);
                             bitmap.Dispose();
 

@@ -933,7 +933,7 @@ namespace System.Windows.Forms {
                         // race condition.
                         //
                         if (defaultIcon == null) {
-                            defaultIcon = new Icon(typeof(Form), "wfc");
+                            defaultIcon = new Icon(typeof(Form), "wfc.ico");
                         }
                     }
                 }

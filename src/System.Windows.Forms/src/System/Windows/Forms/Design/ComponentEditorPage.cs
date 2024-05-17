@@ -143,7 +143,7 @@ namespace System.Windows.Forms.Design {
             
             get {
                 if (icon == null) {
-                    icon = new Icon(typeof(ComponentEditorPage), "ComponentEditorPage");
+                    icon = new Icon(typeof(ComponentEditorPage), "ComponentEditorPage.ico");
                 }
                 return icon;
             }

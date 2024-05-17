@@ -262,7 +262,7 @@ namespace System.Windows.Forms
             {
                 if (errorBmp == null)
                 {
-                    errorBmp = GetBitmap("DataGridViewRow.error");
+                    errorBmp = GetBitmap("DataGridViewRow.error.bmp");
                 }
                 return errorBmp;
             }
@@ -1476,7 +1476,8 @@ namespace System.Windows.Forms
 
         private static Bitmap GetBitmap(string bitmapName)
         {
-            Bitmap b = DpiHelper.GetBitmapFromIcon(typeof(DataGridViewCell), bitmapName);
+            Bitmap b = new Bitmap(typeof(DataGridViewCell), bitmapName);
+            b.MakeTransparent();
             if (DpiHelper.IsScalingRequired)
             {
                 Bitmap scaledBitmap = DpiHelper.CreateResizedBitmap(b, new Size(iconsWidth, iconsHeight));

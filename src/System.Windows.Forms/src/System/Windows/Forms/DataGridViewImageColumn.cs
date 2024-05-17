@@ -13,7 +13,7 @@ namespace System.Windows.Forms
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
 
-    [ToolboxBitmapAttribute(typeof(DataGridViewImageColumn), "DataGridViewImageColumn")]
+    [ToolboxBitmapAttribute(typeof(DataGridViewImageColumn), "DataGridViewImageColumn.bmp")]
     public class DataGridViewImageColumn : DataGridViewColumn
     {
         private static Type columnType = typeof(DataGridViewImageColumn);

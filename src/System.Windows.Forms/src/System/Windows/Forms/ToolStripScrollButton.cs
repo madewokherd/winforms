@@ -59,7 +59,9 @@ namespace System.Windows.Forms {
          private static Image DownImage {
             get { 
                 if (downScrollImage == null) {
-                    downScrollImage = DpiHelper.GetBitmapFromIcon(typeof(ToolStripScrollButton), "ScrollButtonDown");
+                      downScrollImage = new Bitmap(typeof(ToolStripScrollButton), "ScrollButtonDown.bmp"); 
+                      downScrollImage.MakeTransparent(Color.White);
+
                 }
                 return downScrollImage;
             }
@@ -75,7 +77,9 @@ namespace System.Windows.Forms {
         private static Image UpImage {
             get { 
                 if (upScrollImage == null) {
-                    upScrollImage = DpiHelper.GetBitmapFromIcon(typeof(ToolStripScrollButton), "ScrollButtonUp");
+                      upScrollImage = new Bitmap(typeof(ToolStripScrollButton), "ScrollButtonUp.bmp"); 
+                      upScrollImage.MakeTransparent(Color.White);
+
                 }
                 return upScrollImage;
             }

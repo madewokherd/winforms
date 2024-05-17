@@ -11,7 +11,7 @@ namespace System.Windows.Forms
     using System.Windows.Forms;
     using System.Globalization;
 
-    [ToolboxBitmapAttribute(typeof(DataGridViewLinkColumn), "DataGridViewLinkColumn")]
+    [ToolboxBitmapAttribute(typeof(DataGridViewLinkColumn), "DataGridViewLinkColumn.bmp")]
     public class DataGridViewLinkColumn : DataGridViewColumn
     {
         private static Type columnType = typeof(DataGridViewLinkColumn);

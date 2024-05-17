@@ -23,8 +23,8 @@ namespace System.Windows.Forms {
         ClassInterface(ClassInterfaceType.AutoDispatch)]
     public class ThreadExceptionDialog : Form {
 
-        private const string DownBitmapName = "down";
-        private const string UpBitmapName = "up";
+        private const string DownBitmapName = "down.bmp";
+        private const string UpBitmapName = "up.bmp";
 
         private const int MAXWIDTH = 440;
         private const int MAXHEIGHT = 325;
@@ -280,8 +280,10 @@ namespace System.Windows.Forms {
             if (detailAnchor) {
                 b = detailsButton;
 
-                expandImage = DpiHelper.GetBitmapFromIcon(GetType(), DownBitmapName);
-                collapseImage = DpiHelper.GetBitmapFromIcon(GetType(), UpBitmapName);
+                expandImage = new Bitmap(GetType(), DownBitmapName);
+                expandImage.MakeTransparent();
+                collapseImage = new Bitmap(GetType(), UpBitmapName);
+                collapseImage.MakeTransparent();
 
                 if (DpiHelper.IsScalingRequirementMet)
                 {
@@ -325,12 +327,14 @@ namespace System.Windows.Forms {
             if (expandImage != null) {
                 expandImage.Dispose();
             }
-            expandImage = DpiHelper.GetBitmapFromIcon(GetType(), DownBitmapName);
+            expandImage = new Bitmap(GetType(), DownBitmapName);
+            expandImage.MakeTransparent();
 
             if (collapseImage != null) {
                 collapseImage.Dispose();
             }
-            collapseImage = DpiHelper.GetBitmapFromIcon(GetType(), UpBitmapName);
+            collapseImage = new Bitmap(GetType(), UpBitmapName);
+            collapseImage.MakeTransparent();
 
             ScaleBitmapLogicalToDevice(ref expandImage);
             ScaleBitmapLogicalToDevice(ref collapseImage);

@@ -27,10 +27,10 @@ namespace System.Windows.Forms.Design
             {
                 if (!_checkedBmp && _bitmap == null)
                 {
-                    string bmpName = GetType().Name;
+                    string bmpName = GetType().Name + ".bmp";
                     try
                     {
-                        _bitmap = DpiHelper.GetBitmapFromIcon(GetType(), bmpName);
+                        _bitmap = new Bitmap(GetType(), bmpName);
                     }
                     catch (Exception)
                     {

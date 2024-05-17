@@ -12,7 +12,7 @@ namespace System.Windows.Forms
     using System.Globalization;
     using System.Diagnostics.CodeAnalysis;
 
-    [ToolboxBitmapAttribute(typeof(DataGridViewButtonColumn), "DataGridViewButtonColumn")]
+    [ToolboxBitmapAttribute(typeof(DataGridViewButtonColumn), "DataGridViewButtonColumn.bmp")]
     public class DataGridViewButtonColumn : DataGridViewColumn
     {
         private static Type columnType = typeof(DataGridViewButtonColumn);

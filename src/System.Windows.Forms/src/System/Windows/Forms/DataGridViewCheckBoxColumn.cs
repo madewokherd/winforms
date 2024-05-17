@@ -12,7 +12,7 @@ namespace System.Windows.Forms
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     
-    [ToolboxBitmapAttribute(typeof(DataGridViewCheckBoxColumn), "DataGridViewCheckBoxColumn")]
+    [ToolboxBitmapAttribute(typeof(DataGridViewCheckBoxColumn), "DataGridViewCheckBoxColumn.bmp")]
     public class DataGridViewCheckBoxColumn : DataGridViewColumn
     {
         public DataGridViewCheckBoxColumn() : this(false)

@@ -14,7 +14,7 @@ namespace System.Windows.Forms
     
     [
         Designer("System.Windows.Forms.Design.DataGridViewComboBoxColumnDesigner, " + AssemblyRef.SystemDesign),
-        ToolboxBitmapAttribute(typeof(DataGridViewComboBoxColumn), "DataGridViewComboBoxColumn")
+        ToolboxBitmapAttribute(typeof(DataGridViewComboBoxColumn), "DataGridViewComboBoxColumn.bmp")
     ]
     public class DataGridViewComboBoxColumn : DataGridViewColumn
     {
