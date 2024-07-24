@@ -6302,7 +6302,6 @@ namespace System.Windows.Forms {
          int Next(
                 [In, MarshalAs(UnmanagedType.U4)] 
                  int celt,
-                [In, Out] 
                  IntPtr rgvar,
                 [Out, MarshalAs(UnmanagedType.LPArray)] 
                  int[] pceltFetched);
